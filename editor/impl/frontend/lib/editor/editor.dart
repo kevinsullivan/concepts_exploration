@@ -1,17 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:intsite/int/int_repository.dart';
-import 'package:intsite/int/view/view.dart';
 
 import 'editor_repository.dart';
 
-abstract class EditorStuff {
+abstract class Editor {
   String getTitle();
 
-  // Route.
-  Widget getHomePage(EditorStuff editorStuff);
-
-// view, repo, bloc
+  Widget getHomePage(Editor editorStuff);
   Widget getView();
   EditorRepository getEditorRepository();
   Bloc getBloc();

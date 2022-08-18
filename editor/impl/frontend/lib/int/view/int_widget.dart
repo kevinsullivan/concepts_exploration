@@ -1,8 +1,10 @@
+import '../bloc/int_bloc.dart';
+import '../getset_viewproxy_int.dart';
+
+import 'package:intapi/src/model/int.dart' as int_state;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intapi/src/model/int.dart' as int_state;
-import 'package:intsite/int/bloc/int_bloc.dart';
-import '../getset_viewproxy_int.dart';
 
 class Get extends StatelessWidget {
   final GetSet_ViewProxy_int val;

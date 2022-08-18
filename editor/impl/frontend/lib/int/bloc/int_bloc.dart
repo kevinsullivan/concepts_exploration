@@ -1,9 +1,9 @@
-import 'package:bloc/bloc.dart';
-import 'package:intsite/int/int_repository.dart';
-import '../../editorstuff/editor_repository.dart';
+import '../../editor/editor_repository.dart';
 import 'int_event.dart';
+
 import 'package:intapi/src/model/int.dart' as int_state;
-import '../getset_viewproxy_int.dart';
+
+import 'package:bloc/bloc.dart';
 
 // TODO: Come back and reconsider use of "part" and "part of"
 

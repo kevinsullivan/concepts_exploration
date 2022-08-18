@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intsite/int/bloc/int_bloc.dart';
-import '../getset_viewproxy_int.dart';
+
 import "int_widget.dart";
+import '../bloc/int_bloc.dart';
+import '../getset_viewproxy_int.dart';
 
 class IntView extends StatelessWidget {
   @override

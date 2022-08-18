@@ -1,15 +1,16 @@
+import '../editor/editor_repository.dart';
+import '../editor/editor.dart';
+import 'bloc/int_bloc.dart';
+import 'int_repository.dart';
+import 'view/int_homepage.dart';
+import 'view/int_view.dart';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:intsite/int/bloc/int_bloc.dart';
-import 'package:intsite/int/int_repository.dart';
-import 'package:intsite/int/view/view.dart';
 
-import '../editorstuff/editor_repository.dart';
-import '../editorstuff/editorstuff.dart';
-
-class IntEditorStuff implements EditorStuff {
+class IntEditor implements Editor {
   @override
-  Widget getHomePage(EditorStuff e) {
+  Widget getHomePage(Editor e) {
     return IntHomepage(e: e);
   }
 
