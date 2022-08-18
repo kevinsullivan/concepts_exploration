@@ -1,5 +1,6 @@
+import 'package:editorsite/editor/editor_viewproxy.dart';
+
 import '../bloc/int_bloc.dart';
-import '../getset_viewproxy_int.dart';
 
 import 'package:intapi/src/model/int.dart' as int_state;
 
@@ -7,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Get extends StatelessWidget {
-  final GetSet_ViewProxy_int val;
+  final EditorViewProxy val;
 
   const Get({required this.val, Key? key}) : super(key: key);
 
@@ -29,7 +30,7 @@ class Get extends StatelessWidget {
 }
 
 class Set extends StatelessWidget {
-  final GetSet_ViewProxy_int val;
+  final EditorViewProxy val;
 
   const Set({required this.val, Key? key}) : super(key: key);
 
@@ -40,7 +41,9 @@ class Set extends StatelessWidget {
         decoration: const InputDecoration(
             border: OutlineInputBorder(), hintText: 'Set'),
         onChanged: (String val) {
-          this.val.set(int.parse(val));
+          final builder = int_state.IntBuilder();
+          builder.value = int.parse(val);
+          this.val.set(builder.build());
         });
   }
 }
