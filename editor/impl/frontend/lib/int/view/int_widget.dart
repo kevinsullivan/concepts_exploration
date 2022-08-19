@@ -1,3 +1,4 @@
+import 'package:editorsite/editor/bloc/editor_event.dart';
 import 'package:editorsite/editor/editor_viewproxy.dart';
 
 import '../bloc/int_bloc.dart';
@@ -15,7 +16,8 @@ class Get extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      BlocBuilder<IntBloc, int_state.Int>(builder: (context, state) {
+      BlocBuilder<Bloc<EditorEvent, int_state.Int>, int_state.Int>(
+          builder: (context, state) {
         val.state = state;
         return Text(val.state.value!.toString());
       }),

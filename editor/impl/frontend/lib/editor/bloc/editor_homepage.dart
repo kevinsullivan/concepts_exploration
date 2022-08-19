@@ -1,5 +1,6 @@
+import 'package:editorsite/editor/bloc/editor_event.dart';
+
 import '../../editor/editor.dart';
-import '../bloc/int_bloc.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,9 +10,9 @@ This hand-crafted file defines the home page of the
 GetSet app, constructed using build, returning bloc 
 provider that provides access to IntBloc
 */
-class IntHomepage extends StatelessWidget {
-  final Editor e;
-  const IntHomepage({required this.e, Key? key}) : super(key: key);
+class EditorHomepage<T> extends StatelessWidget {
+  final Editor<T> e;
+  const EditorHomepage({required this.e, Key? key}) : super(key: key);
 
   @override
   /*
@@ -20,7 +21,7 @@ class IntHomepage extends StatelessWidget {
   */
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (_) => (e.getBloc() as IntBloc),
+        create: (_) => e.getBloc(),
         child: Scaffold(body: Center(child: e.getView())));
   }
 }
