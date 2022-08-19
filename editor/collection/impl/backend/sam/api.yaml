@@ -1,0 +1,192 @@
+openapi: "3.0.1"            # near current version of open api specification
+info:
+  title: REST specification of Collection concept (for AWS using S3)
+  description: TODO
+  version: 1.0.0
+paths:
+  /Collection/get:   # this "get" is from our concept
+
+    # REST spec
+
+    get:      # this "get" is HTTP GET method
+      operationId: get
+      summary: Get Collection
+      description: >
+        Get the collection
+      tags:
+        - Collection
+      responses:
+        '200':
+          description: |-
+            200 response
+          headers:    # for CORS headers
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collection'
+
+      # AWS implementation of preceding REST API spec
+      x-amazon-apigateway-integration:
+        httpMethod: get
+        type: aws
+
+        # URI of a particular object in s3. 
+        # Collection is name of S3 object key for the object storing the state
+        # arn:aws:apigateway:${AWS::Region}:s3:path is uri into the s3 service
+        # moralpain-resources/Collection is bucket name and object key
+        uri: arn:aws:apigateway:${AWS::Region}:s3:path/jackson-concepts-concepts/collection/Collection
+
+        
+        credentials: arn:aws:iam::${AWS::AccountId}:role/collection_get_agw_role
+        passthroughBehavior : "when_no_match"
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+              method.response.header.Access-Control-Allow-Methods: '''*'''
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+    options:
+      operationId: optionsGetCollection
+      summary: getCollection Cors
+      description: |
+        Enable CORS 
+      tags:
+      - Collection
+      responses:
+        200:
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+              method.response.header.Access-Control-Allow-Methods: '''*'''
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+            responseTemplates:
+              application/json: |
+                {}
+
+  /Collection/set:   # this "set" is from our concept
+    put:
+      operationId: set
+      summary: Set Collection
+      description: >
+        Set the collection
+      tags:
+        - Collection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Collection'
+      responses:
+        '200':
+          description: |-
+            200 response
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content:
+            text/plain:
+              schema:
+                type: string
+      x-amazon-apigateway-integration:
+        httpMethod: put
+        type: aws
+        uri: arn:aws:apigateway:${AWS::Region}:s3:path/jackson-concepts-concepts/collection/Collection
+        credentials: arn:aws:iam::${AWS::AccountId}:role/collection_set_agw_role
+        passthroughBehavior : "when_no_match"
+        responses:
+          4\\d{2}: 
+            statusCode: 400
+          5\\d{2}: 
+            statusCode: 500
+          default:
+            statusCode: 200
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+              method.response.header.Access-Control-Allow-Methods: '''*'''
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+
+    options:
+      operationId: optionsSetCollection
+      summary: CORS setCollection support
+      description: |
+        Enable CORS by returning correct headers
+      tags:
+      - Collection
+      responses:
+        200:
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+              method.response.header.Access-Control-Allow-Methods: '''*'''
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+            responseTemplates:
+              application/json: |
+                {}
+components:
+  schemas:
+    Collection:
+      type: object
+      properties:
+        value:
+          type: array
+          items:
+            type: object
