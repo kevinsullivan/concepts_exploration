@@ -1,17 +1,8 @@
+import '../int_editor.dart';
 import 'package:editorsite/editor/bloc/editor_event.dart';
-import 'package:editorsite/int/int_editor.dart';
-
-import '../../editor/editor_repository.dart';
-
+import 'package:editorsite/editor/editor_repository.dart';
 import 'package:intapi/src/model/int.dart' as int_state;
-
 import 'package:bloc/bloc.dart';
-
-// TODO: Come back and reconsider use of "part" and "part of"
-
-/*
-Take events in response to UI clicks and return states
-*/
 
 class IntEditorBloc extends IntBlocType {
   EditorRepository repository;

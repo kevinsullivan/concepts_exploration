@@ -1,8 +1,7 @@
+import 'package:editorsite/editor/editor_repository.dart';
 import 'package:intapi/intapi.dart';
 import 'package:intapi/src/api.dart';
 import 'package:intapi/src/model/int.dart' as int_state;
-
-import '../editor/editor_repository.dart';
 
 class IntEditorRepository extends EditorRepository<int_state.Int> {
   Intapi intApi = Intapi(

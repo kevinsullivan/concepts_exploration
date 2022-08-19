@@ -1,7 +1,7 @@
 import 'package:editorsite/editor/bloc/editor_event.dart';
+import 'package:editorsite/editor/editor.dart';
+import 'package:editorsite/editor/editor_repository.dart';
 
-import '../editor/editor_repository.dart';
-import '../editor/editor.dart';
 import 'bloc/int_bloc.dart';
 import 'int_repository.dart';
 import 'view/int_view.dart';

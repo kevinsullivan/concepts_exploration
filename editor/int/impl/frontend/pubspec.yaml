@@ -1,5 +1,5 @@
-name: editorsite
-description: editor api
+name: intsite
+description: int api
 version: 0.0.1+0
 publish_to: none
 
@@ -24,6 +24,10 @@ dependencies:
   logging: ^1.0.2
   mocktail: ^0.3.0
   bloc_test: ^9.0.3
+  intapi:
+    path: ./packages/int
+  editorsite:
+    path: ../../../editor/impl/frontend
 
 dev_dependencies:
   flutter_test:

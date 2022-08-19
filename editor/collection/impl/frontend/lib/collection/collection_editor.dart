@@ -15,7 +15,7 @@ typedef CollectionBlocType = Bloc<EditorEvent, cstate.Collection>;
 class CollectionEditor extends Editor<cstate.Collection> {
   @override
   String getTitle() {
-    return "IntEditor";
+    return "CollectionEditor";
   }
 
   @override
