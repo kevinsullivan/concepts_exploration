@@ -14,6 +14,6 @@ abstract class Editor<T> {
   }
 
   Widget getView();
-  EditorRepository getEditorRepository();
+  EditorRepository<T> getEditorRepository();
   Bloc<EditorEvent, T> getBloc();
 }

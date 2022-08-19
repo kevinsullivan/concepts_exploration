@@ -1,4 +1,5 @@
 import 'package:editorsite/editor/bloc/editor_event.dart';
+import 'package:editorsite/int/int_editor.dart';
 
 import '../../editor/editor_repository.dart';
 
@@ -12,10 +13,10 @@ import 'package:bloc/bloc.dart';
 Take events in response to UI clicks and return states
 */
 
-class IntBloc extends Bloc<EditorEvent, int_state.Int> {
+class IntEditorBloc extends IntBlocType {
   EditorRepository repository;
 
-  IntBloc({required this.repository})
+  IntEditorBloc({required this.repository})
       : super(int_state.Int((b) => b.value = 0)) {
     on<Get>(_get);
     on<Set>(_set);

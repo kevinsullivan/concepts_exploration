@@ -8,6 +8,8 @@ import 'package:intapi/src/model/int.dart' as int_state;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../int_editor.dart';
+
 class Get extends StatelessWidget {
   final EditorViewProxy val;
 
@@ -16,8 +18,7 @@ class Get extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      BlocBuilder<Bloc<EditorEvent, int_state.Int>, int_state.Int>(
-          builder: (context, state) {
+      BlocBuilder<IntBlocType, int_state.Int>(builder: (context, state) {
         val.state = state;
         return Text(val.state.value!.toString());
       }),
