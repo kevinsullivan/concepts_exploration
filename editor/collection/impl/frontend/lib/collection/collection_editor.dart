@@ -13,9 +13,27 @@ import 'package:collectionapi/src/model/collection.dart' as cstate;
 typedef CollectionBlocType = Bloc<EditorEvent, cstate.Collection>;
 
 class CollectionEditor extends Editor<cstate.Collection> {
+
+  /*
+  Crucial class providing required "typeclass" implementation to
+  make objects of some type, T, editable.
+
+  MAJOR TODO: What else goes in this list, even if provided only
+  statically (e.g., in files elsewhere in the project)? An example
+  would be required entries in an api.yaml file, of definitions
+  of classes instances of which are used to signal requests for
+  procedure invocations from UIs to blocs (as currently done in
+  this project).
+  */
+
   @override
   String getTitle() {
     return "CollectionEditor";
+  }
+
+  @override
+  Widget getView() {
+    return CollectionView();
   }
 
   @override
@@ -26,10 +44,5 @@ class CollectionEditor extends Editor<cstate.Collection> {
   @override
   EditorRepository<cstate.Collection> getEditorRepository() {
     return CollectionEditorRepository();
-  }
-
-  @override
-  Widget getView() {
-    return CollectionView();
   }
 }
