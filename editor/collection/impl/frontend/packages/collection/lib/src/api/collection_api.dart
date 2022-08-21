@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:built_value/serializer.dart';
 import 'package:dio/dio.dart';
 
+import 'package:collectionapi/src/api_util.dart';
 import 'package:collectionapi/src/model/collection.dart';
 
 class CollectionApi {
@@ -21,6 +22,7 @@ class CollectionApi {
   /// Get the collection 
   ///
   /// Parameters:
+  /// * [folder] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -31,6 +33,7 @@ class CollectionApi {
   /// Returns a [Future] containing a [Response] with a [Collection] as data
   /// Throws [DioError] if API call or serialization fails
   Future<Response<Collection>> callGet({ 
+    required String folder,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -51,9 +54,14 @@ class CollectionApi {
       validateStatus: validateStatus,
     );
 
+    final _queryParameters = <String, dynamic>{
+      r'folder': encodeQueryParameter(_serializers, folder, const FullType(String)),
+    };
+
     final _response = await _dio.request<Object>(
       _path,
       options: _options,
+      queryParameters: _queryParameters,
       cancelToken: cancelToken,
       onSendProgress: onSendProgress,
       onReceiveProgress: onReceiveProgress,
@@ -89,10 +97,13 @@ class CollectionApi {
     );
   }
 
-  /// Set Collection
-  /// Set the collection 
+  /// insert an object into the collection
+  /// insert an object into the collection 
   ///
   /// Parameters:
+  /// * [item] 
+  /// * [folder] 
+  /// * [contentType] 
   /// * [collection] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
@@ -103,7 +114,10 @@ class CollectionApi {
   ///
   /// Returns a [Future] containing a [Response] with a [String] as data
   /// Throws [DioError] if API call or serialization fails
-  Future<Response<String>> callSet({ 
+  Future<Response<String>> create({ 
+    required String item,
+    required String folder,
+    String? contentType,
     Collection? collection,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -112,10 +126,11 @@ class CollectionApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/Collection/set';
+    final _path = r'/Collection/create';
     final _options = Options(
       method: r'PUT',
       headers: <String, dynamic>{
+        if (contentType != null) r'Content-Type': contentType,
         ...?headers,
       },
       extra: <String, dynamic>{
@@ -125,6 +140,11 @@ class CollectionApi {
       contentType: 'application/json',
       validateStatus: validateStatus,
     );
+
+    final _queryParameters = <String, dynamic>{
+      r'item': encodeQueryParameter(_serializers, item, const FullType(String)),
+      r'folder': encodeQueryParameter(_serializers, folder, const FullType(String)),
+    };
 
     dynamic _bodyData;
 
@@ -137,6 +157,7 @@ class CollectionApi {
          requestOptions: _options.compose(
           _dio.options,
           _path,
+          queryParameters: _queryParameters,
         ),
         type: DioErrorType.other,
         error: error,
@@ -147,6 +168,7 @@ class CollectionApi {
       _path,
       data: _bodyData,
       options: _options,
+      queryParameters: _queryParameters,
       cancelToken: cancelToken,
       onSendProgress: onSendProgress,
       onReceiveProgress: onReceiveProgress,
@@ -244,7 +266,7 @@ class CollectionApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/Collection/set';
+    final _path = r'/Collection/create';
     final _options = Options(
       method: r'OPTIONS',
       headers: <String, dynamic>{

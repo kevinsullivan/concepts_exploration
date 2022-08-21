@@ -5,6 +5,6 @@
         "Action": [
             "s3:Put*"
         ],
-        "Resource": "arn:aws:s3:::jackson-concepts-concepts/collection/Collection"
+        "Resource": "arn:aws:s3:::jackson-concepts-concepts/collection/Collection/*"
     }]
 }

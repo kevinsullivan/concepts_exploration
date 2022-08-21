@@ -7,7 +7,7 @@ Description: >
 
 Globals:
   Function:
-    Timeout: 20
+    Timeout: 40
 
 Resources:
   ApiGatewayApi:
@@ -16,6 +16,28 @@ Resources:
       OpenApiVersion: 3.0.1
       StageName: v1
       DefinitionUri: api.yaml
+
+  GetCollectionFunction:
+      Type: AWS::Serverless::Function
+      Properties:
+        FunctionName: GetCollection
+        CodeUri: Functions
+        Handler: edu.uva.cs.concepts.s3.CollectionFetcher::handleRequest
+        Runtime: java8.al2
+        Architectures:
+          - x86_64
+        MemorySize: 512
+        Environment:
+          Variables:
+            bucket: jackson-concepts-concepts
+        Role: !Sub arn:aws:iam::${AWS::AccountId}:role/collection_get_lambda_role
+        Events:
+          Get:
+            Type: HttpApi
+            Properties:
+              Path: /Collection/get
+              Method: get
+              ApiId: !Ref ApiGatewayApi
 
 Outputs:
   APIUri:

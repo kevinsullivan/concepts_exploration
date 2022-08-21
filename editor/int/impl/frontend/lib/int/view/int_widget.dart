@@ -46,7 +46,7 @@ class Set extends StatelessWidget {
         onChanged: (String val) {
           final builder = int_state.IntBuilder();
           builder.value = int.parse(val);
-          this.val.set(builder.build());
+          this.val.create(builder.build());
         });
   }
 }

@@ -10,13 +10,13 @@ All URIs are relative to *http://localhost*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**callGet**](CollectionApi.md#callget) | **GET** /Collection/get | Get Collection
-[**callSet**](CollectionApi.md#callset) | **PUT** /Collection/set | Set Collection
+[**create**](CollectionApi.md#create) | **PUT** /Collection/create | insert an object into the collection
 [**optionsGetCollection**](CollectionApi.md#optionsgetcollection) | **OPTIONS** /Collection/get | getCollection Cors
-[**optionsSetCollection**](CollectionApi.md#optionssetcollection) | **OPTIONS** /Collection/set | CORS setCollection support
+[**optionsSetCollection**](CollectionApi.md#optionssetcollection) | **OPTIONS** /Collection/create | CORS setCollection support
 
 
 # **callGet**
-> Collection callGet()
+> Collection callGet(folder)
 
 Get Collection
 
@@ -27,9 +27,10 @@ Get the collection
 import 'package:collectionapi/api.dart';
 
 final api = Collectionapi().getCollectionApi();
+final String folder = folder_example; // String | 
 
 try {
-    final response = api.callGet();
+    final response = api.callGet(folder);
     print(response);
 } catch on DioError (e) {
     print('Exception when calling CollectionApi->callGet: $e\n');
@@ -37,7 +38,10 @@ try {
 ```
 
 ### Parameters
-This endpoint does not need any parameter.
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **folder** | **String**|  | 
 
 ### Return type
 
@@ -54,25 +58,28 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **callSet**
-> String callSet(collection)
+# **create**
+> String create(item, folder, contentType, collection)
 
-Set Collection
+insert an object into the collection
 
-Set the collection 
+insert an object into the collection 
 
 ### Example
 ```dart
 import 'package:collectionapi/api.dart';
 
 final api = Collectionapi().getCollectionApi();
+final String item = item_example; // String | 
+final String folder = folder_example; // String | 
+final String contentType = contentType_example; // String | 
 final Collection collection = ; // Collection | 
 
 try {
-    final response = api.callSet(collection);
+    final response = api.create(item, folder, contentType, collection);
     print(response);
 } catch on DioError (e) {
-    print('Exception when calling CollectionApi->callSet: $e\n');
+    print('Exception when calling CollectionApi->create: $e\n');
 }
 ```
 
@@ -80,6 +87,9 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **item** | **String**|  | 
+ **folder** | **String**|  | 
+ **contentType** | **String**|  | [optional] 
  **collection** | [**Collection**](Collection.md)|  | [optional] 
 
 ### Return type

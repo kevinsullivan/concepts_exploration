@@ -14,14 +14,14 @@ class CollectionEditorBloc extends CollectionBlocType {
   CollectionEditorBloc({required this.repository})
       : super(cstate.Collection((b) => b.value.add(JsonObject([])))) {
     on<Get>(_get);
-    on<Set>(_set);
+    on<Create>(_set);
   }
 
   void _get(Get event, Emitter<cstate.Collection> emit) async {
     emit(await repository.get());
   }
 
-  void _set(Set event, Emitter<cstate.Collection> emit) async {
-    repository.set(event.val);
+  void _set(Create event, Emitter<cstate.Collection> emit) async {
+    repository.create(event.val);
   }
 }

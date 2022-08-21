@@ -1,6 +1,7 @@
 import 'package:test/test.dart';
 import 'package:collectionapi/collectionapi.dart';
 
+
 /// tests for CollectionApi
 void main() {
   final instance = Collectionapi().getCollectionApi();
@@ -8,27 +9,25 @@ void main() {
   group(CollectionApi, () {
     // Get Collection
     //
-    // Get the collection
+    // Get the collection 
     //
-    //Future<Collection> callGet() async
+    //Future<Collection> callGet(String folder) async
     test('test callGet', () async {
-      final response = await instance.callGet();
-      print(response);
       // TODO
     });
 
-    // Set Collection
+    // insert an object into the collection
     //
-    // Set the collection
+    // insert an object into the collection 
     //
-    //Future<String> callSet({ Collection collection }) async
-    test('test callSet', () async {
+    //Future<String> create(String item, String folder, { String contentType, Collection collection }) async
+    test('test create', () async {
       // TODO
     });
 
     // getCollection Cors
     //
-    // Enable CORS
+    // Enable CORS  
     //
     //Future optionsGetCollection() async
     test('test optionsGetCollection', () async {
@@ -37,11 +36,12 @@ void main() {
 
     // CORS setCollection support
     //
-    // Enable CORS by returning correct headers
+    // Enable CORS by returning correct headers 
     //
     //Future optionsSetCollection() async
     test('test optionsSetCollection', () async {
       // TODO
     });
+
   });
 }

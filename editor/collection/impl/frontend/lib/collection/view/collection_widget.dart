@@ -33,10 +33,10 @@ class Get extends StatelessWidget {
   }
 }
 
-class Set extends StatelessWidget {
+class Create extends StatelessWidget {
   final EditorViewProxy val;
 
-  const Set({required this.val, Key? key}) : super(key: key);
+  const Create({required this.val, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +44,12 @@ class Set extends StatelessWidget {
         decoration: const InputDecoration(
             border: OutlineInputBorder(), hintText: 'Set'),
         onChanged: (String val) {
+          // TODO: We are passing the full collction state on every char change.
+          // there must be a better way!
+
           final cbuilder = cstate.CollectionBuilder();
-          cbuilder.value.addAll(val.split(',').map((e) => JsonObject(e)));
-          this.val.set(cbuilder.build());
+          cbuilder.value.add(JsonObject(int.parse(val)));
+          this.val.create(cbuilder.build());
         });
   }
 }

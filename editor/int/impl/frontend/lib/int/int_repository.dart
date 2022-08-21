@@ -16,7 +16,7 @@ class IntEditorRepository extends EditorRepository<int_state.Int> {
   }
 
   @override
-  Future<void> set(int_state.Int arg) async {
+  Future<void> create(int_state.Int arg) async {
     final response = await intApi.getIntApi().setInt(int_: arg);
   }
 }
