@@ -14,7 +14,7 @@ paths:
         - Collection
       parameters:
         - name: folder
-          in: path
+          in: query
           required: true
           schema:
             type: string
@@ -23,15 +23,6 @@ paths:
           description: |-
             200 response
           headers:    
-            Date:
-              schema:
-                type: string
-            Content-Type:
-              schema:
-                type: string
-            Content-Length:
-              schema:
-                type: string
             # CORS headers.
             Access-Control-Allow-Origin:
               schema:
@@ -58,9 +49,6 @@ paths:
           default:
             statusCode: "200"
             responseParameters:
-              method.response.header.Content-Type: '''integration.response.header.Content-Type'''
-              method.response.header.Date: '''integration.response.header.Date'''
-              method.response.header.Content-Length: '''integration.response.header.content-length'''
               method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
               method.response.header.Access-Control-Allow-Methods: '''*'''
               method.response.header.Access-Control-Allow-Origin: '''*'''
@@ -118,12 +106,12 @@ paths:
           schema:
             type: string
         - name: item
-          in: path
+          in: query
           required: true
           schema:
             type: string
         - name: folder
-          in: path
+          in: query
           required: true
           schema:
             type: string
@@ -163,8 +151,8 @@ paths:
         credentials: arn:aws:iam::${AWS::AccountId}:role/collection_set_agw_role
         passthroughBehavior : "when_no_match"
         requestParameters:
-          integration.request.path.object: method.request.path.item
-          integration.request.path.bucket: method.request.path.folder
+          integration.request.path.object: method.request.querystring.item
+          integration.request.path.bucket: method.request.querystring.folder
           integration.request.header.Content-Type: method.request.header.Content-Type
         uri: arn:aws:apigateway:${AWS::Region}:s3:path/jackson-concepts-concepts/collection/Collection/{object}
         responses:

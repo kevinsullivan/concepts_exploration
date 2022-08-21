@@ -47,9 +47,10 @@ import 'package:collectionapi/collectionapi.dart';
 
 
 final api = Collectionapi().getCollectionApi();
+final String folder = folder_example; // String | 
 
 try {
-    final response = await api.callGet();
+    final response = await api.callGet(folder);
     print(response);
 } catch on DioError (e) {
     print("Exception when calling CollectionApi->callGet: $e\n");

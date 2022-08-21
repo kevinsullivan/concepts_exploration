@@ -10,7 +10,9 @@ class CollectionEditorRepository extends EditorRepository<cstate.Collection> {
 
   @override
   Future<cstate.Collection> get() async {
-    final response = api.getCollectionApi().callGet();
+    final response = api.getCollectionApi().callGet(
+          folder: "jackson-concepts-concepts", // TODO: Move to config.
+        );
     final responseState = (await response).data;
     return responseState!;
   }
@@ -18,6 +20,11 @@ class CollectionEditorRepository extends EditorRepository<cstate.Collection> {
   @override
   Future<void> create(cstate.Collection arg) async {
     // NB: Still passing around the full collection state...
-    final response = await api.getCollectionApi().create(collection: arg);
+    final response = await api.getCollectionApi().create(
+        folder: "jackson-concepts-concepts", // TODO: Move to config.
+        item: DateTime.now().millisecondsSinceEpoch.toString(),
+        collection: arg);
+    print(DateTime.now().millisecondsSinceEpoch.toString());
+    print(response);
   }
 }

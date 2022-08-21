@@ -11,7 +11,7 @@ void main() {
     //
     // Get the collection 
     //
-    //Future<Collection> callGet() async
+    //Future<Collection> callGet(String folder) async
     test('test callGet', () async {
       // TODO
     });
@@ -20,7 +20,7 @@ void main() {
     //
     // insert an object into the collection 
     //
-    //Future<String> create({ Collection collection }) async
+    //Future<String> create(String item, String folder, { String contentType, Collection collection }) async
     test('test create', () async {
       // TODO
     });

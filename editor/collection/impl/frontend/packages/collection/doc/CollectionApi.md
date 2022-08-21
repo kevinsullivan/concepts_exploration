@@ -16,7 +16,7 @@ Method | HTTP request | Description
 
 
 # **callGet**
-> Collection callGet()
+> Collection callGet(folder)
 
 Get Collection
 
@@ -27,9 +27,10 @@ Get the collection
 import 'package:collectionapi/api.dart';
 
 final api = Collectionapi().getCollectionApi();
+final String folder = folder_example; // String | 
 
 try {
-    final response = api.callGet();
+    final response = api.callGet(folder);
     print(response);
 } catch on DioError (e) {
     print('Exception when calling CollectionApi->callGet: $e\n');
@@ -37,7 +38,10 @@ try {
 ```
 
 ### Parameters
-This endpoint does not need any parameter.
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **folder** | **String**|  | 
 
 ### Return type
 
@@ -55,7 +59,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **create**
-> String create(collection)
+> String create(item, folder, contentType, collection)
 
 insert an object into the collection
 
@@ -66,10 +70,13 @@ insert an object into the collection
 import 'package:collectionapi/api.dart';
 
 final api = Collectionapi().getCollectionApi();
+final String item = item_example; // String | 
+final String folder = folder_example; // String | 
+final String contentType = contentType_example; // String | 
 final Collection collection = ; // Collection | 
 
 try {
-    final response = api.create(collection);
+    final response = api.create(item, folder, contentType, collection);
     print(response);
 } catch on DioError (e) {
     print('Exception when calling CollectionApi->create: $e\n');
@@ -80,6 +87,9 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **item** | **String**|  | 
+ **folder** | **String**|  | 
+ **contentType** | **String**|  | [optional] 
  **collection** | [**Collection**](Collection.md)|  | [optional] 
 
 ### Return type
