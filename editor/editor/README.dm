@@ -1,4 +1,4 @@
-# RemoteEditor {T : Type} (r : Remote T)      -- (T :? Concept)
+# RemoteEditor {T : Type} (r : Remote T) [has_edit T]]
 
 Contribution:
 
