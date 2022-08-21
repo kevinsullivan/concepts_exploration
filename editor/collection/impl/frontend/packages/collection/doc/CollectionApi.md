@@ -10,9 +10,9 @@ All URIs are relative to *http://localhost*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**callGet**](CollectionApi.md#callget) | **GET** /Collection/get | Get Collection
-[**callSet**](CollectionApi.md#callset) | **PUT** /Collection/set | Set Collection
+[**create**](CollectionApi.md#create) | **PUT** /Collection/create | insert an object into the collection
 [**optionsGetCollection**](CollectionApi.md#optionsgetcollection) | **OPTIONS** /Collection/get | getCollection Cors
-[**optionsSetCollection**](CollectionApi.md#optionssetcollection) | **OPTIONS** /Collection/set | CORS setCollection support
+[**optionsSetCollection**](CollectionApi.md#optionssetcollection) | **OPTIONS** /Collection/create | CORS setCollection support
 
 
 # **callGet**
@@ -54,12 +54,12 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **callSet**
-> String callSet(collection)
+# **create**
+> String create(collection)
 
-Set Collection
+insert an object into the collection
 
-Set the collection 
+insert an object into the collection 
 
 ### Example
 ```dart
@@ -69,10 +69,10 @@ final api = Collectionapi().getCollectionApi();
 final Collection collection = ; // Collection | 
 
 try {
-    final response = api.callSet(collection);
+    final response = api.create(collection);
     print(response);
 } catch on DioError (e) {
-    print('Exception when calling CollectionApi->callSet: $e\n');
+    print('Exception when calling CollectionApi->create: $e\n');
 }
 ```
 

@@ -10,14 +10,14 @@ class IntEditorBloc extends IntBlocType {
   IntEditorBloc({required this.repository})
       : super(int_state.Int((b) => b.value = 0)) {
     on<Get>(_get);
-    on<Set>(_set);
+    on<Create>(_set);
   }
 
   void _get(Get event, Emitter<int_state.Int> emit) async {
     emit(await repository.get());
   }
 
-  void _set(Set event, Emitter<int_state.Int> emit) async {
-    repository.set(event.val);
+  void _set(Create event, Emitter<int_state.Int> emit) async {
+    repository.create(event.val);
   }
 }

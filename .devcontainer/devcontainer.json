@@ -1,6 +1,8 @@
 {
     "name": "moralpain",
-    "image": "ghcr.io/kevinsullivan/moralpain_config:sha-ad23dae",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
     "containerEnv": {
         "WORKSPACE_FOLDER": "${containerWorkspaceFolder}"
     },
@@ -28,7 +30,5 @@
 		"redhat.fabric8-analytics",
 		"ZainChen.json"
 	],
-    "forwardPorts": [],
-    "postCreateCommand": "/opt/bootstrap",
-    "postStartCommand": "adb connect host.docker.internal:5555"
+    "forwardPorts": []
 }

@@ -89,8 +89,8 @@ class CollectionApi {
     );
   }
 
-  /// Set Collection
-  /// Set the collection 
+  /// insert an object into the collection
+  /// insert an object into the collection 
   ///
   /// Parameters:
   /// * [collection] 
@@ -103,7 +103,7 @@ class CollectionApi {
   ///
   /// Returns a [Future] containing a [Response] with a [String] as data
   /// Throws [DioError] if API call or serialization fails
-  Future<Response<String>> callSet({ 
+  Future<Response<String>> create({ 
     Collection? collection,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -112,7 +112,7 @@ class CollectionApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/Collection/set';
+    final _path = r'/Collection/create';
     final _options = Options(
       method: r'PUT',
       headers: <String, dynamic>{
@@ -244,7 +244,7 @@ class CollectionApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/Collection/set';
+    final _path = r'/Collection/create';
     final _options = Options(
       method: r'OPTIONS',
       headers: <String, dynamic>{

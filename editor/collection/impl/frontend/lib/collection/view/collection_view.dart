@@ -16,7 +16,7 @@ class CollectionView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [Get(val: i), Set(val: i)],
+      children: [Get(val: i), Create(val: i)],
     );
   }
 }

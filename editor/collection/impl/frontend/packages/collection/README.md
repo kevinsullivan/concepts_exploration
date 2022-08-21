@@ -64,9 +64,9 @@ All URIs are relative to *http://localhost*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 [*CollectionApi*](doc/CollectionApi.md) | [**callGet**](doc/CollectionApi.md#callget) | **GET** /Collection/get | Get Collection
-[*CollectionApi*](doc/CollectionApi.md) | [**callSet**](doc/CollectionApi.md#callset) | **PUT** /Collection/set | Set Collection
+[*CollectionApi*](doc/CollectionApi.md) | [**create**](doc/CollectionApi.md#create) | **PUT** /Collection/create | insert an object into the collection
 [*CollectionApi*](doc/CollectionApi.md) | [**optionsGetCollection**](doc/CollectionApi.md#optionsgetcollection) | **OPTIONS** /Collection/get | getCollection Cors
-[*CollectionApi*](doc/CollectionApi.md) | [**optionsSetCollection**](doc/CollectionApi.md#optionssetcollection) | **OPTIONS** /Collection/set | CORS setCollection support
+[*CollectionApi*](doc/CollectionApi.md) | [**optionsSetCollection**](doc/CollectionApi.md#optionssetcollection) | **OPTIONS** /Collection/create | CORS setCollection support
 
 
 ## Documentation For Models

@@ -13,7 +13,7 @@ class EditorViewProxy<T> {
     bloc.add(Get<T>());
   }
 
-  void set(T val) {
-    bloc.add(Set<T>(val: val));
+  void create(T val) {
+    bloc.add(Create<T>(val: val));
   }
 }

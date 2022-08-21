@@ -1,4 +1,4 @@
 abstract class EditorRepository<T> {
   Future<T> get();
-  Future<void> set(T arg);
+  Future<void> create(T arg);
 }

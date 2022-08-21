@@ -3,6 +3,7 @@ import 'package:collectionapi/src/model/collection.dart' as cstate;
 import 'package:editorsite/editor/editor_repository.dart';
 
 class CollectionEditorRepository extends EditorRepository<cstate.Collection> {
+  // TODO: Move this into a config file.
   final api = Collectionapi(
       basePathOverride:
           'https://xlfof7zr7g.execute-api.us-east-1.amazonaws.com/v1');
@@ -15,7 +16,8 @@ class CollectionEditorRepository extends EditorRepository<cstate.Collection> {
   }
 
   @override
-  Future<void> set(cstate.Collection arg) async {
-    final response = await api.getCollectionApi().callSet(collection: arg);
+  Future<void> create(cstate.Collection arg) async {
+    // NB: Still passing around the full collection state...
+    final response = await api.getCollectionApi().create(collection: arg);
   }
 }
