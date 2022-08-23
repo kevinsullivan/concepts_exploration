@@ -1,4 +1,4 @@
-package edu.uva.cs.concepts.s3;
+package edu.uva.cs.concepts;
 
 import com.amazonaws.services.lambda.runtime.ClientContext;
 import com.amazonaws.services.lambda.runtime.CognitoIdentity;

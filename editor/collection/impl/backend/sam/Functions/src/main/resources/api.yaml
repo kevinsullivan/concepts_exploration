@@ -14,7 +14,7 @@ paths:
         - Collection
       parameters:
         - name: folder
-          in: path
+          in: query
           required: true
           schema:
             type: string
@@ -22,16 +22,7 @@ paths:
         '200':
           description: |-
             200 response
-          headers:
-            Date:
-              schema:
-                type: string
-            Content-Type:
-              schema:
-                type: string
-            Content-Length:
-              schema:
-                type: string
+          headers:    
             # CORS headers.
             Access-Control-Allow-Origin:
               schema:
@@ -58,9 +49,6 @@ paths:
           default:
             statusCode: "200"
             responseParameters:
-              method.response.header.Content-Type: '''integration.response.header.Content-Type'''
-              method.response.header.Date: '''integration.response.header.Date'''
-              method.response.header.Content-Length: '''integration.response.header.content-length'''
               method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
               method.response.header.Access-Control-Allow-Methods: '''*'''
               method.response.header.Access-Control-Allow-Origin: '''*'''
@@ -68,7 +56,7 @@ paths:
       operationId: optionsGetCollection
       summary: getCollection Cors
       description: |
-        Enable CORS
+        Enable CORS 
       tags:
       - Collection
       responses:
@@ -103,9 +91,9 @@ paths:
               application/json: |
                 {}
 
-  /Collection/create:   # this "set" is from our concept
+  /Collection/insert:   # this "set" is from our concept
     put:
-      operationId: create
+      operationId: insert
       summary: insert an object into the collection
       description: >
         insert an object into the collection
@@ -117,21 +105,23 @@ paths:
           required: false
           schema:
             type: string
-        - name: item
-          in: path
+        - name: prefix
+          in: query
           required: true
           schema:
             type: string
-        - name: folder
-          in: path
+            default: collection/Collection/
+        - name: bucket
+          in: query
           required: true
           schema:
             type: string
+            default: jackson-concepts-concepts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Collection'
+              $ref: '#/components/schemas/AnyValue'
       responses:
         '200':
           description: |-
@@ -143,7 +133,7 @@ paths:
             Content-Length:
               schema:
                 type: string
-            # Cors.
+            # Cors. 
             Access-Control-Allow-Origin:
               schema:
                 type: string
@@ -156,21 +146,17 @@ paths:
           content:
             text/plain:
               schema:
-                type: string
+                $ref: '#/components/schemas/Collection'
       x-amazon-apigateway-integration:
         httpMethod: put
         type: aws
         credentials: arn:aws:iam::${AWS::AccountId}:role/collection_set_agw_role
         passthroughBehavior : "when_no_match"
-        requestParameters:
-          integration.request.path.object: method.request.path.item
-          integration.request.path.bucket: method.request.path.folder
-          integration.request.header.Content-Type: method.request.header.Content-Type
-        uri: arn:aws:apigateway:${AWS::Region}:s3:path/jackson-concepts-concepts/collection/Collection/{object}
+        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:insert/invocations
         responses:
-          4\\d{2}:
+          4\\d{2}: 
             statusCode: 400
-          5\\d{2}:
+          5\\d{2}: 
             statusCode: 500
           default:
             statusCode: 200
@@ -227,4 +213,5 @@ components:
         value:
           type: array
           items:
-            type: object
+            $ref: '#/components/schemas/AnyValue'
+    AnyValue: {}

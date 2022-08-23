@@ -6,11 +6,6 @@
   <name>Concepts Exploration</name>
   <version>0.0.1</version>
   <build>
-    <resources>
-      <resource>
-        <directory>${project.basedir}/../</directory>
-      </resource>
-    </resources>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -43,7 +38,7 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <inputSpec>${project.basedir}/../api.yaml</inputSpec>
+              <inputSpec>${project.basedir}/src/main/resources/api.yaml</inputSpec>
               <generatorName>java</generatorName>
               <configOptions>
                 <sourceFolder>src/gen/java/main</sourceFolder>
@@ -58,6 +53,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.3.0</version>
         <executions>
           <execution>
             <id>add-source</id>

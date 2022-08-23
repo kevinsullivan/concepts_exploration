@@ -10,10 +10,9 @@ import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3ClientBuilder;
-import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.GetObjectResponse;
-import software.amazon.awssdk.services.s3.model.S3Exception;
+import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.utils.AttributeMap;
+import software.amazon.awssdk.utils.builder.SdkBuilder;
 
 import java.io.*;
 import java.net.URI;
@@ -21,7 +20,9 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static software.amazon.awssdk.http.SdkHttpConfigurationOption.TRUST_ALL_CERTIFICATES;
 
@@ -29,6 +30,7 @@ public class S3Helper {
 
     /**
      * An S3 Client parameterized by the environment.
+     *
      * @param variableManager
      * @return
      */
@@ -42,11 +44,11 @@ public class S3Helper {
                         .put(TRUST_ALL_CERTIFICATES, Boolean.TRUE)
                         .build()));
 
-        if(variableManager.containsKey("overrideEndpoint")) {
+        if (variableManager.containsKey("overrideEndpoint")) {
             builder.endpointOverride(URI.create(variableManager.get("overrideEndpoint")));
         }
 
-        if(variableManager.containsKey("accessKeyId") && variableManager.containsKey("secretAccessKey"))  {
+        if (variableManager.containsKey("accessKeyId") && variableManager.containsKey("secretAccessKey")) {
             String accessKeyId = variableManager.get("accessKeyId");
             String secretAccessKey = variableManager.get("secretAccessKey");
             AwsCredentials credentials = AwsBasicCredentials.create(accessKeyId, secretAccessKey);
@@ -58,6 +60,7 @@ public class S3Helper {
 
     /**
      * Create a key that is composed of the current time and a uuid.
+     *
      * @return the key
      */
     public static String createKey() {
@@ -67,6 +70,7 @@ public class S3Helper {
 
     /**
      * Create a prefix from an instant with the date format.
+     *
      * @param instant
      * @return
      */
@@ -79,12 +83,13 @@ public class S3Helper {
 
     /**
      * Fetches and parses a submission in S3.
+     *
      * @param s3
      * @param bucketName
      * @param keyName
      * @return
      */
-    public static Object getObjectAsObject(S3Client s3, String bucketName, String keyName) {
+    public static InputStream getAsInputStream(S3Client s3, String bucketName, String keyName) {
         try {
             GetObjectRequest objectRequest = GetObjectRequest
                     .builder()
@@ -93,14 +98,66 @@ public class S3Helper {
                     .build();
 
             ResponseBytes<GetObjectResponse> objectBytes = s3.getObjectAsBytes(objectRequest);
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(objectBytes.asInputStream(), Object.class);
+            return objectBytes.asInputStream();
         } catch (S3Exception e) {
             System.err.println(e.awsErrorDetails().errorMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return null;
+        return new ByteArrayInputStream(new byte[0]);
+    }
+
+    /**
+     * Remove all the objects from a bucket.
+     * @param s3
+     * @param bucket
+     */
+    public static void emptyBucket(S3Client s3, String bucket) {
+        s3.deleteObjects(d -> d.bucket(bucket)
+                .delete(Delete.builder().objects(s3.listObjectsV2(b -> b.bucket(bucket).build())
+                                .contents()
+                                .stream()
+                                .map(S3Object::key)
+                                .map(ObjectIdentifier.builder()::key)
+                                .map(SdkBuilder::build)
+                                .collect(Collectors.toList()))
+                        .build()));
+    }
+
+    /**
+     * Pull all the objects of the given prefix and return them as a collection.
+     * @param s3
+     * @param bucket
+     * @param prefix
+     * @return
+     */
+    public static Collection getCollection(S3Client s3, String bucket, String prefix) {
+        ListObjectsV2Request.Builder builder = ListObjectsV2Request.builder()
+                .bucket(bucket)
+                .prefix(prefix);
+        ListObjectsV2Request listObjectsV2Request = builder.build();
+
+        List<Object> data = s3.listObjectsV2(listObjectsV2Request).contents().stream()
+                .map(S3Object::key)
+                .map(key -> S3Helper.getAsInputStream(s3, bucket, key))
+                .map(stream -> JacksonHelper.fromJson(stream, Object.class))
+                .collect(Collectors.toList());
+        Collection collection = new Collection();
+        collection.setValue(data);
+        return collection;
+    }
+
+    /**
+     * True if object is in S3 bucket. Otherwise, False.
+     * @param s3
+     * @param bucket
+     * @param key
+     * @return
+     */
+    public static boolean exists(S3Client s3, String bucket, String key) {
+        try {
+            s3.headObject(HeadObjectRequest.builder().bucket(bucket).key(key).build());
+            return true;
+        } catch (NoSuchKeyException e) {
+            return false;
+        }
     }
 }
