@@ -9,6 +9,8 @@ import edu.uva.cs.concepts.utils.*;
 import software.amazon.awssdk.core.exception.SdkServiceException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.DeleteObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.util.HashMap;
@@ -17,10 +19,9 @@ import java.util.Map;
 import static edu.uva.cs.concepts.utils.S3Helper.createS3Client;
 
 /**
- * Member check of the collection.
- *
+ * Remove element from the collection.
  */
-public class Member implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV2HTTPResponse> {
+public class Remove implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV2HTTPResponse> {
 
     @Override
     public APIGatewayV2HTTPResponse handleRequest(APIGatewayV2HTTPEvent apiGatewayV2HTTPEvent, Context context) {
@@ -52,12 +53,31 @@ public class Member implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV
         String key = prefix.concat(hash);
 
         S3Client client = createS3Client(variableManager);
-        boolean isMember = S3Helper.exists(client, bucket, key);
+        try {
+            client.deleteObject(builder -> builder
+                    .bucket(bucket)
+                    .key(key)
+                    .build());
+        } catch(SdkServiceException exception) {
+            context.getLogger().log(exception.getMessage());
+            response.setStatusCode(500);
+            return response;
+        }
+
+        Collection collection = S3Helper.getCollection(client, bucket, prefix);
+        String responseBody = JacksonHelper.toJson(collection);
+        if(responseBody.isEmpty()) {
+            context.getLogger().log("failed to serialize the response body.");
+            response.setStatusCode(500);
+            return response;
+        }
 
         response.setStatusCode(200);
-        response.setBody(String.valueOf(isMember));
+        response.setBody(responseBody);
 
         Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "application/json");
+        headers.put("Content-Length", String.valueOf(responseBody.length()));
         headers.put("X-Custom-Header", "application/json");
         // Cors.
         headers.put("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key");
@@ -67,6 +87,8 @@ public class Member implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV
 
         return response;
     }
+
+
 
     private boolean isValidEnvironment(VariableManager variableManager) {
         return variableManager != null;

@@ -7,10 +7,7 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uva.cs.concepts.collection.gen.model.Collection;
-import edu.uva.cs.concepts.utils.HashHelper;
-import edu.uva.cs.concepts.utils.JacksonHelper;
-import edu.uva.cs.concepts.utils.S3Helper;
-import edu.uva.cs.concepts.utils.VariableManager;
+import edu.uva.cs.concepts.utils.*;
 import software.amazon.awssdk.core.exception.SdkServiceException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -30,15 +27,14 @@ import java.util.stream.Collectors;
 import static edu.uva.cs.concepts.utils.S3Helper.createS3Client;
 
 /**
- * Get submissions that match query
- *
+ * Insert element into the collection.
  */
 public class Insert implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV2HTTPResponse> {
 
     @Override
     public APIGatewayV2HTTPResponse handleRequest(APIGatewayV2HTTPEvent apiGatewayV2HTTPEvent, Context context) {
         APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse();
-        if(!isValidEvent(apiGatewayV2HTTPEvent)) {
+        if(!EventValidator.isValidEvent(apiGatewayV2HTTPEvent)) {
             context.getLogger().log("invalid event");
             response.setStatusCode(500);
             return response;
@@ -99,26 +95,6 @@ public class Insert implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV
 
         return response;
     }
-
-
-    private boolean isValidEvent(APIGatewayV2HTTPEvent event) {
-        if(event == null) {
-            return false;
-        }
-
-        String body = event.getBody();
-        if(body == null || body.isEmpty()) {
-            return false;
-        }
-
-        Map<String, String> qsp = event.getQueryStringParameters();
-        if(qsp == null) {
-            return false;
-        }
-
-        return qsp.containsKey("bucket") && qsp.containsKey("prefix");
-    }
-
     private boolean isValidEnvironment(VariableManager variableManager) {
         return variableManager != null;
     }
