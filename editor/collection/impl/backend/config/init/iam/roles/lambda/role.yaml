@@ -1,0 +1,10 @@
+template: 
+  type: file
+  path: managed_policy_attachable_role.template
+parameters:
+  Name: collection_init_lambda_role
+  ManagedPolicyArns:
+    - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    - !stack_output init/iam/policies/lambda/policy.yaml::PolicyArn
+  Services:
+    - lambda.amazonaws.com

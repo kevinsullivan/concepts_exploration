@@ -39,7 +39,7 @@ Resources:
   InsertFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: Insert
+      FunctionName: insert
       CodeUri: Functions
       Handler: edu.uva.cs.concepts.collection.Insert::handleRequest
       Runtime: java8.al2
@@ -61,7 +61,7 @@ Resources:
   MemberFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: Member
+      FunctionName: member
       CodeUri: Functions
       Handler: edu.uva.cs.concepts.collection.Member::handleRequest
       Runtime: java8.al2
@@ -83,7 +83,7 @@ Resources:
   RemoveFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: Remove
+      FunctionName: remove
       CodeUri: Functions
       Handler: edu.uva.cs.concepts.collection.Remove::handleRequest
       Runtime: java8.al2

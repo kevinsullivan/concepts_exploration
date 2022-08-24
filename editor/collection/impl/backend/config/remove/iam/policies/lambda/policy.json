@@ -1,0 +1,24 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:ListBucket", "s3:removeBucketLocation"],
+      "Resource": "arn:aws:s3:::jackson-concepts-concepts"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:remove*"
+      ],
+      "Resource": "arn:aws:s3:::jackson-concepts-concepts/collection/Collection/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:Put*"
+      ],
+      "Resource": "arn:aws:s3:::jackson-concepts-concepts/collection/Collection/*"
+    }
+  ]
+}

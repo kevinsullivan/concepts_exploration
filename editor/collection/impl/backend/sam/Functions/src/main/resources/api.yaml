@@ -262,7 +262,7 @@ paths:
       x-amazon-apigateway-integration:
         httpMethod: put
         type: aws
-        credentials: arn:aws:iam::${AWS::AccountId}:role/collection_set_agw_role
+        credentials: arn:aws:iam::${AWS::AccountId}:role/collection_member_agw_role
         passthroughBehavior : "when_no_match"
         uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:member/invocations
         responses:
