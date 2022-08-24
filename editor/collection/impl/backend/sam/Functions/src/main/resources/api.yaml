@@ -17,32 +17,10 @@ paths:
         - $ref: '#/components/parameters/bucket'
         - $ref: '#/components/parameters/prefix'
       requestBody:
-        $ref: '#/components/requestBodies/collectionRequestBody'
+        $ref: '#/components/requestBodies/collectionItemRequest'
       responses:
         '200':
-          description: |-
-            200 response
-          headers:
-            Content-Type:
-              schema:
-                type: string
-            Content-Length:
-              schema:
-                type: string
-            # Cors. 
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-            Access-Control-Allow-Methods:
-              schema:
-                type: string
-            Access-Control-Allow-Headers:
-              schema:
-                type: string
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Collection'
+          $ref: '#/components/responses/collectionResponse'
       x-amazon-apigateway-integration:
         httpMethod: put
         type: aws
@@ -64,8 +42,8 @@ paths:
               method.response.header.Access-Control-Allow-Origin: '''*'''
 
     options:
-      operationId: optionsSetCollection
-      summary: CORS setCollection support
+      operationId: optionsInsert
+      summary: CORS insert support
       description: |
         Enable CORS by returning correct headers
       tags:
@@ -101,8 +79,6 @@ paths:
             responseTemplates:
               application/json: |
                 {}
-
-
   /Collection/remove:   # this "set" is from our concept
     post:
       operationId: remove
@@ -116,32 +92,10 @@ paths:
         - $ref: '#/components/parameters/bucket'
         - $ref: '#/components/parameters/prefix'
       requestBody:
-        $ref: '#/components/requestBodies/collectionRequestBody'
+        $ref: '#/components/requestBodies/collectionItemRequest'
       responses:
         '200':
-          description: |-
-            200 response
-          headers:
-            Content-Type:
-              schema:
-                type: string
-            Content-Length:
-              schema:
-                type: string
-            # Cors.
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-            Access-Control-Allow-Methods:
-              schema:
-                type: string
-            Access-Control-Allow-Headers:
-              schema:
-                type: string
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Collection'
+          $ref: '#/components/responses/collectionResponse'
       x-amazon-apigateway-integration:
         httpMethod: put
         type: aws
@@ -163,8 +117,8 @@ paths:
               method.response.header.Access-Control-Allow-Origin: '''*'''
 
     options:
-      operationId: optionsSetCollection
-      summary: CORS setCollection support
+      operationId: optionsRemove
+      summary: CORS remove support
       description: |
         Enable CORS by returning correct headers
       tags:
@@ -216,23 +170,7 @@ paths:
         - $ref: '#/components/parameters/prefix'
       responses:
         '200':
-          description: |-
-            200 response
-          headers:
-            # Cors.
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-            Access-Control-Allow-Methods:
-              schema:
-                type: string
-            Access-Control-Allow-Headers:
-              schema:
-                type: string
-          content:
-            text/plain:
-              schema:
-                type: boolean
+          $ref: '#/components/responses/collectionResponse'
       x-amazon-apigateway-integration:
         httpMethod: put
         type: aws
@@ -251,8 +189,8 @@ paths:
               method.response.header.Access-Control-Allow-Methods: '''*'''
               method.response.header.Access-Control-Allow-Origin: '''*'''
     options:
-      operationId: optionsMemberCollection
-      summary: CORS member support
+      operationId: optionsInit
+      summary: CORS init support
       description: |
         Enable CORS by returning correct headers
       tags:
@@ -302,11 +240,10 @@ paths:
         - $ref: '#/components/parameters/bucket'
         - $ref: '#/components/parameters/prefix'
       requestBody:
-        $ref: '#/components/requestBodies/collectionRequestBody'
+        $ref: '#/components/requestBodies/collectionItemRequest'
       responses:
         '200':
-          description: |-
-            200 response
+          description: 200 response
           headers:
             # Cors.
             Access-Control-Allow-Origin:
@@ -327,7 +264,7 @@ paths:
         type: aws
         credentials: arn:aws:iam::${AWS::AccountId}:role/collection_set_agw_role
         passthroughBehavior : "when_no_match"
-        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:insert/invocations
+        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:member/invocations
         responses:
           4\\d{2}:
             statusCode: 400
@@ -340,7 +277,7 @@ paths:
               method.response.header.Access-Control-Allow-Methods: '''*'''
               method.response.header.Access-Control-Allow-Origin: '''*'''
     options:
-      operationId: optionsMemberCollection
+      operationId: optionsMember
       summary: CORS member support
       description: |
         Enable CORS by returning correct headers
@@ -416,9 +353,35 @@ components:
       schema:
         type: string
   requestBodies:
-    collectionRequestBody:
+    collectionItemRequest:
+      description: A request including a collection X item pair to modify.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/CollectionItemPair'
+  responses:
+    collectionResponse:
+      description: Updated collection representation response.
+      headers:
+        Content-Type:
+          schema:
+            type: string
+        Content-Length:
+          schema:
+            type: string
+        # Cors.
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
+        Access-Control-Allow-Methods:
+          schema:
+            type: string
+        Access-Control-Allow-Headers:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Collection'
+
 
