@@ -26,6 +26,8 @@ dependencies:
   bloc_test: ^9.0.3
   intapi:
     path: ./packages/int
+  editorsite:
+    path: ../../../editor/impl/frontend
 
 dev_dependencies:
   flutter_test:

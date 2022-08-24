@@ -1,0 +1,107 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS Collection Resources
+
+Globals:
+  Function:
+    Timeout: 40
+
+Resources:
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      OpenApiVersion: 3.0.1
+      StageName: v1
+      DefinitionUri: Functions/src/main/resources/api.yaml
+
+  InitFunction:
+      Type: AWS::Serverless::Function
+      Properties:
+        FunctionName: init
+        CodeUri: Functions
+        Handler: edu.uva.cs.concepts.collection.Init::handleRequest
+        Runtime: java8.al2
+        Architectures:
+          - x86_64
+        MemorySize: 512
+        Environment:
+          Variables:
+            bucket: jackson-concepts-concepts
+        Role: !Sub arn:aws:iam::${AWS::AccountId}:role/collection_init_lambda_role
+        Events:
+          Get:
+            Type: HttpApi
+            Properties:
+              Path: /Collection/init
+              Method: post
+              ApiId: !Ref ApiGatewayApi
+
+  InsertFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: insert
+      CodeUri: Functions
+      Handler: edu.uva.cs.concepts.collection.Insert::handleRequest
+      Runtime: java8.al2
+      Architectures:
+        - x86_64
+      MemorySize: 512
+      Environment:
+        Variables:
+          bucket: jackson-concepts-concepts
+      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/collection_insert_lambda_role
+      Events:
+        Get:
+          Type: HttpApi
+          Properties:
+            Path: /Collection/insert
+            Method: post
+            ApiId: !Ref ApiGatewayApi
+
+  MemberFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: member
+      CodeUri: Functions
+      Handler: edu.uva.cs.concepts.collection.Member::handleRequest
+      Runtime: java8.al2
+      Architectures:
+        - x86_64
+      MemorySize: 512
+      Environment:
+        Variables:
+          bucket: jackson-concepts-concepts
+      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/collection_member_lambda_role
+      Events:
+        Get:
+          Type: HttpApi
+          Properties:
+            Path: /Collection/member
+            Method: post
+            ApiId: !Ref ApiGatewayApi
+
+  RemoveFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: remove
+      CodeUri: Functions
+      Handler: edu.uva.cs.concepts.collection.Remove::handleRequest
+      Runtime: java8.al2
+      Architectures:
+        - x86_64
+      MemorySize: 512
+      Environment:
+        Variables:
+          bucket: jackson-concepts-concepts
+      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/collection_remove_lambda_role
+      Events:
+        Get:
+          Type: HttpApi
+          Properties:
+            Path: /Collection/remove
+            Method: post
+            ApiId: !Ref ApiGatewayApi
+
+Outputs:
+  APIUri:
+    Value: !Sub "https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com"
