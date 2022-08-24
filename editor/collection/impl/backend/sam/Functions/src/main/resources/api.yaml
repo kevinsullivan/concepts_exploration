@@ -4,124 +4,20 @@ info:
   description: TODO
   version: 1.0.0
 paths:
-  /Collection/get:   # this "get" is from our concept
-    get:      # this "get" is HTTP GET method
-      operationId: get
-      summary: Get Collection
-      description: >
-        Get the collection
-      tags:
-        - Collection
-      parameters:
-        - name: folder
-          in: query
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: |-
-            200 response
-          headers:    
-            # CORS headers.
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-            Access-Control-Allow-Methods:
-              schema:
-                type: string
-            Access-Control-Allow-Headers:
-              schema:
-                type: string
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Collection'
-
-      # AWS implementation of preceding REST API spec
-      x-amazon-apigateway-integration:
-        httpMethod: post
-        type: aws_proxy
-        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:GetCollection/invocations
-        credentials: arn:aws:iam::${AWS::AccountId}:role/collection_get_agw_role
-        passthroughBehavior : "when_no_match"
-        responses:
-          default:
-            statusCode: "200"
-            responseParameters:
-              method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
-              method.response.header.Access-Control-Allow-Methods: '''*'''
-              method.response.header.Access-Control-Allow-Origin: '''*'''
-    options:
-      operationId: optionsGetCollection
-      summary: getCollection Cors
-      description: |
-        Enable CORS 
-      tags:
-      - Collection
-      responses:
-        200:
-          description: Default response for CORS method
-          headers:
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-            Access-Control-Allow-Methods:
-              schema:
-                type: string
-            Access-Control-Allow-Headers:
-              schema:
-                type: string
-          content: {}
-      x-amazon-apigateway-integration:
-        type: mock
-        requestTemplates:
-          application/json: |
-            {
-              "statusCode" : 200
-            }
-        responses:
-          default:
-            statusCode: "200"
-            responseParameters:
-              method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
-              method.response.header.Access-Control-Allow-Methods: '''*'''
-              method.response.header.Access-Control-Allow-Origin: '''*'''
-            responseTemplates:
-              application/json: |
-                {}
-
-  /Collection/insert:   # this "set" is from our concept
-    put:
+  /Collection/insert:
+    post:
       operationId: insert
-      summary: insert an object into the collection
+      summary: insert an item into the collection
       description: >
-        insert an object into the collection
+        insert an item into the collection
       tags:
         - Collection
       parameters:
-        - name: Content-Type
-          in: header
-          required: false
-          schema:
-            type: string
-        - name: prefix
-          in: query
-          required: true
-          schema:
-            type: string
-            default: collection/Collection/
-        - name: bucket
-          in: query
-          required: true
-          schema:
-            type: string
-            default: jackson-concepts-concepts
+        - $ref: '#/components/parameters/contentType'
+        - $ref: '#/components/parameters/bucket'
+        - $ref: '#/components/parameters/prefix'
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CollectionItemPair'
+        $ref: '#/components/requestBodies/collectionRequestBody'
       responses:
         '200':
           description: |-
@@ -150,7 +46,7 @@ paths:
       x-amazon-apigateway-integration:
         httpMethod: put
         type: aws
-        credentials: arn:aws:iam::${AWS::AccountId}:role/collection_set_agw_role
+        credentials: arn:aws:iam::${AWS::AccountId}:role/collection_insert_agw_role
         passthroughBehavior : "when_no_match"
         uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:insert/invocations
         responses:
@@ -206,6 +102,193 @@ paths:
               application/json: |
                 {}
 
+
+  /Collection/remove:   # this "set" is from our concept
+    post:
+      operationId: remove
+      summary: remove an item from the collection
+      description: >
+        remove an item from the collection
+      tags:
+        - Collection
+      parameters:
+        - $ref: '#/components/parameters/contentType'
+        - $ref: '#/components/parameters/bucket'
+        - $ref: '#/components/parameters/prefix'
+      requestBody:
+        $ref: '#/components/requestBodies/collectionRequestBody'
+      responses:
+        '200':
+          description: |-
+            200 response
+          headers:
+            Content-Type:
+              schema:
+                type: string
+            Content-Length:
+              schema:
+                type: string
+            # Cors.
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collection'
+      x-amazon-apigateway-integration:
+        httpMethod: put
+        type: aws
+        credentials: arn:aws:iam::${AWS::AccountId}:role/collection_remove_agw_role
+        passthroughBehavior : "when_no_match"
+        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:remove/invocations
+        responses:
+          4\\d{2}:
+            statusCode: 400
+          5\\d{2}:
+            statusCode: 500
+          default:
+            statusCode: 200
+            responseParameters:
+              method.response.header.Content-Type: integration.response.header.Content-Type
+              method.response.header.Content-Length: integration.response.header.Content-Length
+              method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+              method.response.header.Access-Control-Allow-Methods: '''*'''
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+
+    options:
+      operationId: optionsSetCollection
+      summary: CORS setCollection support
+      description: |
+        Enable CORS by returning correct headers
+      tags:
+        - Collection
+      responses:
+        200:
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+              method.response.header.Access-Control-Allow-Methods: '''*'''
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+            responseTemplates:
+              application/json: |
+                {}
+
+
+
+  /Collection/init:   # this "set" is from our concept
+    post:
+      operationId: init
+      summary: initialize a collection
+      description: >
+        initialize a collection
+      tags:
+        - Collection
+      parameters:
+        - $ref: '#/components/parameters/bucket'
+        - $ref: '#/components/parameters/prefix'
+      responses:
+        '200':
+          description: |-
+            200 response
+          headers:
+            # Cors.
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content:
+            text/plain:
+              schema:
+                type: boolean
+      x-amazon-apigateway-integration:
+        httpMethod: put
+        type: aws
+        credentials: arn:aws:iam::${AWS::AccountId}:role/collection_init_agw_role
+        passthroughBehavior : "when_no_match"
+        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:init/invocations
+        responses:
+          4\\d{2}:
+            statusCode: 400
+          5\\d{2}:
+            statusCode: 500
+          default:
+            statusCode: 200
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+              method.response.header.Access-Control-Allow-Methods: '''*'''
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+    options:
+      operationId: optionsMemberCollection
+      summary: CORS member support
+      description: |
+        Enable CORS by returning correct headers
+      tags:
+        - Collection
+      responses:
+        200:
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+              method.response.header.Access-Control-Allow-Methods: '''*'''
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+            responseTemplates:
+              application/json: |
+                {}
+
   /Collection/member:   # this "set" is from our concept
     get:
       operationId: member
@@ -215,23 +298,11 @@ paths:
       tags:
         - Collection
       parameters:
-        - name: prefix
-          in: query
-          required: true
-          schema:
-            type: string
-            default: collection/Collection/
-        - name: bucket
-          in: query
-          required: true
-          schema:
-            type: string
-            default: jackson-concepts-concepts
+        - $ref: '#/components/parameters/contentType'
+        - $ref: '#/components/parameters/bucket'
+        - $ref: '#/components/parameters/prefix'
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CollectionItemPair'
+        $ref: '#/components/requestBodies/collectionRequestBody'
       responses:
         '200':
           description: |-
@@ -323,3 +394,31 @@ components:
           items:
             $ref: '#/components/schemas/AnyValue'
     AnyValue: {}
+  parameters:
+    prefix:
+      name: prefix
+      in: query
+      required: true
+      schema:
+        type: string
+        default: collection/Collection/
+    bucket:
+      name: bucket
+      in: query
+      required: true
+      schema:
+        type: string
+        default: jackson-concepts-concepts
+    contentType:
+      name: Content-Type
+      in: header
+      required: false
+      schema:
+        type: string
+  requestBodies:
+    collectionRequestBody:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CollectionItemPair'
+
