@@ -28,7 +28,8 @@
 		"vaticle.typeql",
 		"mechatroner.rainbow-csv",
 		"redhat.fabric8-analytics",
-		"ZainChen.json"
+		"ZainChen.json",
+		"42Crunch.vscode-openapi"
 	],
     "forwardPorts": []
 }
