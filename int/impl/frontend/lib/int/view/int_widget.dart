@@ -1,18 +1,24 @@
+import 'package:editorsite/editor/bloc/editor_event.dart';
+import 'package:editorsite/editor/editor_viewproxy.dart';
+
+import '../bloc/int_bloc.dart';
+
+import 'package:intapi/src/model/int.dart' as int_state;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intapi/src/model/int.dart' as int_state;
-import 'package:intsite/int/bloc/int_bloc.dart';
-import '../Int.dart';
+
+import '../int_editor.dart';
 
 class Get extends StatelessWidget {
-  final Int val;
+  final EditorViewProxy val;
 
   const Get({required this.val, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      BlocBuilder<IntBloc, int_state.Int>(builder: (context, state) {
+      BlocBuilder<IntBlocType, int_state.Int>(builder: (context, state) {
         val.state = state;
         return Text(val.state.value!.toString());
       }),
@@ -27,7 +33,7 @@ class Get extends StatelessWidget {
 }
 
 class Set extends StatelessWidget {
-  final Int val;
+  final EditorViewProxy val;
 
   const Set({required this.val, Key? key}) : super(key: key);
 
@@ -38,7 +44,9 @@ class Set extends StatelessWidget {
         decoration: const InputDecoration(
             border: OutlineInputBorder(), hintText: 'Set'),
         onChanged: (String val) {
-          this.val.set(int.parse(val));
+          final builder = int_state.IntBuilder();
+          builder.value = int.parse(val);
+          this.val.create(builder.build());
         });
   }
 }

@@ -1,15 +1,10 @@
+import 'package:editorsite/editor/editor.dart';
+import 'package:editorsite/editor/editor_app.dart';
 import 'package:flutter/material.dart';
-import 'package:intsite/int/view/view.dart';
+
+import 'int/int_editor.dart';
 
 void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(title: 'State Concept', home: IntRoute());
-  }
+  Editor editor = IntEditor();
+  runApp(EditorApp(editor: editor));
 }

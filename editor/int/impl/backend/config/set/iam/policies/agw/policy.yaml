@@ -1,9 +1,0 @@
-template:
-  path: iam_managed_policy.j2
-  type: file
-
-sceptre_user_data:
-  PolicyDocument: !file config/set/iam/policies/agw/policy.json
-
-parameters:
-  Name: int_set_agw_policy

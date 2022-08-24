@@ -1,9 +1,0 @@
-template: 
-  type: file
-  path: managed_policy_attachable_role.template
-parameters:
-  Name: int_set_agw_role
-  ManagedPolicyArns:
-    - !stack_output set/iam/policies/agw/policy.yaml::PolicyArn
-  Services:
-    - apigateway.amazonaws.com
