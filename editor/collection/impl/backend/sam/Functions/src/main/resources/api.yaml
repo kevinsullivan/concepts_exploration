@@ -121,7 +121,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AnyValue'
+              $ref: '#/components/schemas/CollectionItemPair'
       responses:
         '200':
           description: |-
@@ -144,7 +144,7 @@ paths:
               schema:
                 type: string
           content:
-            text/plain:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Collection'
       x-amazon-apigateway-integration:
@@ -205,8 +205,116 @@ paths:
             responseTemplates:
               application/json: |
                 {}
+
+  /Collection/member:   # this "set" is from our concept
+    get:
+      operationId: member
+      summary: Boolean-returning membership predicate function
+      description: >
+        Boolean-returning membership predicate function
+      tags:
+        - Collection
+      parameters:
+        - name: prefix
+          in: query
+          required: true
+          schema:
+            type: string
+            default: collection/Collection/
+        - name: bucket
+          in: query
+          required: true
+          schema:
+            type: string
+            default: jackson-concepts-concepts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionItemPair'
+      responses:
+        '200':
+          description: |-
+            200 response
+          headers:
+            # Cors.
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content:
+            text/plain:
+              schema:
+                type: boolean
+      x-amazon-apigateway-integration:
+        httpMethod: put
+        type: aws
+        credentials: arn:aws:iam::${AWS::AccountId}:role/collection_set_agw_role
+        passthroughBehavior : "when_no_match"
+        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:insert/invocations
+        responses:
+          4\\d{2}:
+            statusCode: 400
+          5\\d{2}:
+            statusCode: 500
+          default:
+            statusCode: 200
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+              method.response.header.Access-Control-Allow-Methods: '''*'''
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+    options:
+      operationId: optionsMemberCollection
+      summary: CORS member support
+      description: |
+        Enable CORS by returning correct headers
+      tags:
+        - Collection
+      responses:
+        200:
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content: {}
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key'''
+              method.response.header.Access-Control-Allow-Methods: '''*'''
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+            responseTemplates:
+              application/json: |
+                {}
 components:
   schemas:
+    CollectionItemPair:
+      type: object
+      properties:
+        collection:
+          $ref: '#/components/schemas/Collection'
+        item:
+          $ref: '#/components/schemas/AnyValue'
     Collection:
       type: object
       properties:

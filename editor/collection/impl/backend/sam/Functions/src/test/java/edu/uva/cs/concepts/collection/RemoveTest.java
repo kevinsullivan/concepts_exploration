@@ -5,6 +5,10 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import edu.uva.cs.concepts.MockContext;
+import edu.uva.cs.concepts.collection.gen.model.Collection;
+import edu.uva.cs.concepts.collection.gen.model.CollectionItemPair;
+import edu.uva.cs.concepts.utils.HashHelper;
+import edu.uva.cs.concepts.utils.JacksonHelper;
 import edu.uva.cs.concepts.utils.S3Helper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -15,13 +19,15 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.Bucket;
 import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 import software.amazon.awssdk.services.s3.model.DeleteBucketRequest;
+import software.amazon.awssdk.utils.StringInputStream;
 import software.amazon.awssdk.utils.builder.SdkBuilder;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RemoveTest {
 
@@ -67,21 +73,53 @@ public class RemoveTest {
         params.put("bucket", BUCKET_NAME);
         params.put("prefix", "foo/");
         event.setQueryStringParameters(params);
-        event.setBody("42");
+
+        // Initialize a collection to operate on.
+        Init init = new Init();
+        APIGatewayV2HTTPResponse response = init.handleRequest(event, new MockContext());
+        Collection returnedProxyCollection = JacksonHelper.fromJson(new StringInputStream(response.getBody()), Collection.class);
 
         // Seed the collection.
+        // Add 42.
+        CollectionItemPair collectionItemPair = new CollectionItemPair()
+                .collection(returnedProxyCollection)
+                .item("42");
+        String body = JacksonHelper.toJson(collectionItemPair);
+        event.setBody(body);
         Insert insert = new Insert();
-        insert.handleRequest(event, new MockContext());
-        event.setBody("43");
-        insert.handleRequest(event, new MockContext());
-        assertEquals(2, s3Client.listObjectsV2(b -> b.bucket(BUCKET_NAME).prefix("foo/").build()).contents().stream().count());
+        response = insert.handleRequest(event, new MockContext());
+        returnedProxyCollection = JacksonHelper.fromJson(new StringInputStream(response.getBody()), Collection.class);
 
-        // Remove 43.
+        // Add 99.
+        collectionItemPair = new CollectionItemPair()
+                .collection(returnedProxyCollection)
+                .item("99");
+        body = JacksonHelper.toJson(collectionItemPair);
+        event.setBody(body);
+        response = insert.handleRequest(event, new MockContext());
+        returnedProxyCollection = JacksonHelper.fromJson(new StringInputStream(response.getBody()), Collection.class);
+
+        // Remove 42.
+        collectionItemPair = new CollectionItemPair()
+                .collection(returnedProxyCollection)
+                .item("42");
+        body = JacksonHelper.toJson(collectionItemPair);
+        event.setBody(body);
+
         Remove remove = new Remove();
-        APIGatewayV2HTTPResponse response = remove.handleRequest(event, new MockContext());
-        assertEquals(200, response.getStatusCode());
-        System.out.println(response.getBody());
-        assertFalse(response.getBody().isEmpty());
-        assertEquals(1, s3Client.listObjectsV2(b -> b.bucket(BUCKET_NAME).prefix("foo/").build()).contents().stream().count());
+        APIGatewayV2HTTPResponse removeResponse = remove.handleRequest(event, new MockContext());
+        assertEquals(200, removeResponse.getStatusCode());
+
+        // Test returned representation.
+        Collection updated = JacksonHelper.fromJson(new StringInputStream(removeResponse.getBody()), Collection.class);
+        assertFalse(updated.getValue().contains("42"));
+        assertTrue(updated.getValue().contains("99"));
+
+        // Test S3 representation.
+        String hash = HashHelper.hashAndEncode(updated.toString());
+        InputStream stream = S3Helper.getAsInputStream(s3Client, BUCKET_NAME, "foo/".concat(hash));
+        Collection storedProxyCollection = JacksonHelper.fromJson(stream, Collection.class);
+        assertFalse(storedProxyCollection.getValue().contains("42"));
+        assertTrue(storedProxyCollection.getValue().contains("99"));
     }
 }

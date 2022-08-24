@@ -111,8 +111,32 @@ public class S3Helper {
      * @param bucket
      */
     public static void emptyBucket(S3Client s3, String bucket) {
+        java.util.Collection<ObjectIdentifier> objs = s3.listObjectsV2(b -> b.bucket(bucket).build())
+                .contents()
+                .stream()
+                .map(S3Object::key)
+                .map(ObjectIdentifier.builder()::key)
+                .map(SdkBuilder::build)
+                .collect(Collectors.toList());
+
+        if(objs.isEmpty())  {
+            return;
+        }
+
         s3.deleteObjects(d -> d.bucket(bucket)
-                .delete(Delete.builder().objects(s3.listObjectsV2(b -> b.bucket(bucket).build())
+                .delete(Delete.builder().objects(objs).build()).build());
+    }
+
+
+    /**
+     * Delete all objects under a given prefix.
+     * @param s3
+     * @param bucket
+     * @param prefix
+     */
+    public static void deletePrefix(S3Client s3, String bucket, String prefix) {
+        s3.deleteObjects(d -> d.bucket(bucket)
+                .delete(Delete.builder().objects(s3.listObjectsV2(b -> b.bucket(bucket).prefix(prefix).build())
                                 .contents()
                                 .stream()
                                 .map(S3Object::key)
@@ -121,6 +145,8 @@ public class S3Helper {
                                 .collect(Collectors.toList()))
                         .build()));
     }
+
+
 
     /**
      * Pull all the objects of the given prefix and return them as a collection.

@@ -5,6 +5,9 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import edu.uva.cs.concepts.MockContext;
+import edu.uva.cs.concepts.collection.gen.model.Collection;
+import edu.uva.cs.concepts.collection.gen.model.CollectionItemPair;
+import edu.uva.cs.concepts.utils.JacksonHelper;
 import edu.uva.cs.concepts.utils.S3Helper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,6 +19,7 @@ import software.amazon.awssdk.services.s3.model.Bucket;
 import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 import software.amazon.awssdk.services.s3.model.DeleteBucketRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.utils.StringInputStream;
 import software.amazon.awssdk.utils.builder.SdkBuilder;
 
 import java.util.HashMap;
@@ -59,7 +63,6 @@ public class MemberTest {
                 .forEach(s3Client::deleteBucket);
     }
 
-
     @Test
     public void test_member_true() {
         APIGatewayV2HTTPEvent event = new APIGatewayV2HTTPEvent();
@@ -67,13 +70,31 @@ public class MemberTest {
         params.put("bucket", BUCKET_NAME);
         params.put("prefix", "foo/");
         event.setQueryStringParameters(params);
-        event.setBody("42");
+
+        // Initialize a collection to operate on.
+        Init init = new Init();
+        APIGatewayV2HTTPResponse response = init.handleRequest(event, new MockContext());
+        Collection returnedProxyCollection = JacksonHelper.fromJson(new StringInputStream(response.getBody()), Collection.class);
 
         // Seed the collection.
-        new Insert().handleRequest(event, new MockContext());
+        CollectionItemPair collectionItemPair = new CollectionItemPair()
+                .collection(returnedProxyCollection)
+                .item("42");
+        String body = JacksonHelper.toJson(collectionItemPair);
+        event.setBody(body);
+        Insert insert = new Insert();
+        response = insert.handleRequest(event, new MockContext());
+        returnedProxyCollection = JacksonHelper.fromJson(new StringInputStream(response.getBody()), Collection.class);
 
+        // Assert 42 is in the collection.
+        collectionItemPair = new CollectionItemPair()
+                .collection(returnedProxyCollection)
+                .item("42");
+        body = JacksonHelper.toJson(collectionItemPair);
+        event.setBody(body);
         Member member = new Member();
-        APIGatewayV2HTTPResponse response = member.handleRequest(event, new MockContext());
+        response = member.handleRequest(event, new MockContext());
+
         assertEquals(200, response.getStatusCode());
         assertTrue(Boolean.parseBoolean(response.getBody()));
     }
@@ -85,16 +106,32 @@ public class MemberTest {
         params.put("bucket", BUCKET_NAME);
         params.put("prefix", "foo/");
         event.setQueryStringParameters(params);
-        event.setBody("42");
+
+        // Initialize a collection to operate on.
+        Init init = new Init();
+        APIGatewayV2HTTPResponse response = init.handleRequest(event, new MockContext());
+        Collection returnedProxyCollection = JacksonHelper.fromJson(new StringInputStream(response.getBody()), Collection.class);
 
         // Seed the collection.
-        new Insert().handleRequest(event, new MockContext());
+        CollectionItemPair collectionItemPair = new CollectionItemPair()
+                .collection(returnedProxyCollection)
+                .item("42");
+        String body = JacksonHelper.toJson(collectionItemPair);
+        event.setBody(body);
+        Insert insert = new Insert();
+        response = insert.handleRequest(event, new MockContext());
+        returnedProxyCollection = JacksonHelper.fromJson(new StringInputStream(response.getBody()), Collection.class);
 
-        event.setBody("99");
+        // Assert 99 not in collection.
+        collectionItemPair = new CollectionItemPair()
+                .collection(returnedProxyCollection)
+                .item("99");
+        body = JacksonHelper.toJson(collectionItemPair);
+        event.setBody(body);
         Member member = new Member();
-        APIGatewayV2HTTPResponse response = member.handleRequest(event, new MockContext());
+        response = member.handleRequest(event, new MockContext());
+
         assertEquals(200, response.getStatusCode());
-        System.out.println(response.getBody());
         assertFalse(Boolean.parseBoolean(response.getBody()));
     }
 }
