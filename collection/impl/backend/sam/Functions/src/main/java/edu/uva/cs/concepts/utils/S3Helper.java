@@ -147,30 +147,6 @@ public class S3Helper {
     }
 
 
-
-    /**
-     * Pull all the objects of the given prefix and return them as a collection.
-     * @param s3
-     * @param bucket
-     * @param prefix
-     * @return
-     */
-    public static Collection getCollection(S3Client s3, String bucket, String prefix) {
-        ListObjectsV2Request.Builder builder = ListObjectsV2Request.builder()
-                .bucket(bucket)
-                .prefix(prefix);
-        ListObjectsV2Request listObjectsV2Request = builder.build();
-
-        List<Object> data = s3.listObjectsV2(listObjectsV2Request).contents().stream()
-                .map(S3Object::key)
-                .map(key -> S3Helper.getAsInputStream(s3, bucket, key))
-                .map(stream -> JacksonHelper.fromJson(stream, Object.class))
-                .collect(Collectors.toList());
-        Collection collection = new Collection();
-        collection.setValue(data);
-        return collection;
-    }
-
     /**
      * True if object is in S3 bucket. Otherwise, False.
      * @param s3

@@ -1,6 +1,7 @@
 package edu.uva.cs.concepts.collection;
 
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
@@ -10,8 +11,6 @@ import edu.uva.cs.concepts.utils.*;
 import software.amazon.awssdk.core.exception.SdkServiceException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
-import software.amazon.awssdk.services.s3.model.DeleteObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.utils.StringInputStream;
 
@@ -28,27 +27,31 @@ public class Remove implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV
 
     @Override
     public APIGatewayV2HTTPResponse handleRequest(APIGatewayV2HTTPEvent apiGatewayV2HTTPEvent, Context context) {
+        LambdaLogger logger = context.getLogger();
+
         APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse();
         if(!EventValidator.isValidEvent(apiGatewayV2HTTPEvent)) {
-            context.getLogger().log("invalid event");
+            logger.log("Invalid event.");
             response.setStatusCode(500);
             return response;
         }
 
         VariableManager variableManager = new VariableManager();
         if(!isValidEnvironment(variableManager)) {
-            context.getLogger().log("invalid environment");
+            logger.log("Invalid environment.");
             response.setStatusCode(500);
             return response;
         }
+        logger.log("Environment and variable manager are valid.");
 
-        // Reconstruct our proxies from the serialized form.
+        logger.log("Reconstruct our proxies from the serialized form.");
         String body = apiGatewayV2HTTPEvent.getBody();
         CollectionItemPair pair = JacksonHelper.fromJson(new StringInputStream(body), CollectionItemPair.class);
         Collection reqCollectionProxy = pair.getCollection();
-        Object reqItemProxy = pair.getItem();
+        Integer reqItemProxy = pair.getItem();
+        logger.log("Reconstructing complete.");
 
-        // Use the request collection proxy to get the underlying S3 object.
+        logger.log("Use the request collection proxy to get the underlying S3 object.");
         String originalHash = HashHelper.hashAndEncode(reqCollectionProxy.toString());
         if(originalHash.isEmpty()) {
             context.getLogger().log("failed to hash the request body (original collection)");
@@ -61,16 +64,18 @@ public class Remove implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV
         String originalKey = prefix.concat(originalHash);
         S3Client client = createS3Client(variableManager);
         InputStream inputStream = S3Helper.getAsInputStream(client, bucket, originalKey);
+        logger.log("Underlying S3 object got.");
 
-        // Deserialize into a collection object.
+        logger.log("Deserialize into a collection object.");
         Collection storedCollectionProxy = JacksonHelper.fromJson(inputStream, Collection.class);
         if(storedCollectionProxy == null) {
             context.getLogger().log("could not determine underlying object from the provided proxy");
             response.setStatusCode(500);
             return response;
         }
+        logger.log("Deserializing complete.");
 
-        // Remove the underlying S3 object.
+        logger.log("Remove the underlying S3 object.");
         try {
             client.deleteObject(builder -> builder
                     .bucket(bucket)
@@ -81,8 +86,9 @@ public class Remove implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV
             response.setStatusCode(500);
             return response;
         }
+        logger.log("Removing complete.");
 
-        // Remove the item from the collection proxy.
+        logger.log("Remove the item from the collection proxy.");
         storedCollectionProxy.getValue().remove(reqItemProxy);
         String updatedHash = HashHelper.hashAndEncode(storedCollectionProxy.toString());
         String updatedKey = prefix.concat(updatedHash);
@@ -92,8 +98,9 @@ public class Remove implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV
             response.setStatusCode(500);
             return response;
         }
+        logger.log("Removing complete.");
 
-        // Write the collection proxy back to S3.
+        logger.log("Write the collection proxy back to S3.");
         try {
             client.putObject(PutObjectRequest.builder()
                     .bucket(bucket)
@@ -105,8 +112,9 @@ public class Remove implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV
             response.setStatusCode(500);
             return response;
         }
+        logger.log("Writing complete.");
 
-        // Return the updated, serialized collection.
+        logger.log("Return the updated, serialized collection.");
         response.setStatusCode(200);
         response.setBody(updatedSerializedProxy);
 

@@ -79,7 +79,7 @@ public class MemberTest {
         // Seed the collection.
         CollectionItemPair collectionItemPair = new CollectionItemPair()
                 .collection(returnedProxyCollection)
-                .item("42");
+                .item(42);
         String body = JacksonHelper.toJson(collectionItemPair);
         event.setBody(body);
         Insert insert = new Insert();
@@ -89,7 +89,7 @@ public class MemberTest {
         // Assert 42 is in the collection.
         collectionItemPair = new CollectionItemPair()
                 .collection(returnedProxyCollection)
-                .item("42");
+                .item(42);
         body = JacksonHelper.toJson(collectionItemPair);
         event.setBody(body);
         Member member = new Member();
@@ -115,7 +115,7 @@ public class MemberTest {
         // Seed the collection.
         CollectionItemPair collectionItemPair = new CollectionItemPair()
                 .collection(returnedProxyCollection)
-                .item("42");
+                .item(42);
         String body = JacksonHelper.toJson(collectionItemPair);
         event.setBody(body);
         Insert insert = new Insert();
@@ -125,7 +125,7 @@ public class MemberTest {
         // Assert 99 not in collection.
         collectionItemPair = new CollectionItemPair()
                 .collection(returnedProxyCollection)
-                .item("99");
+                .item(99);
         body = JacksonHelper.toJson(collectionItemPair);
         event.setBody(body);
         Member member = new Member();

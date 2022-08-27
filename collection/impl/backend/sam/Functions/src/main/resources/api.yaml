@@ -22,8 +22,8 @@ paths:
         '200':
           $ref: '#/components/responses/collectionResponse'
       x-amazon-apigateway-integration:
-        httpMethod: put
-        type: aws
+        httpMethod: post
+        type: aws_proxy
         credentials: arn:aws:iam::${AWS::AccountId}:role/collection_insert_agw_role
         passthroughBehavior : "when_no_match"
         uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:insert/invocations
@@ -97,8 +97,8 @@ paths:
         '200':
           $ref: '#/components/responses/collectionResponse'
       x-amazon-apigateway-integration:
-        httpMethod: put
-        type: aws
+        httpMethod: post
+        type: aws_proxy
         credentials: arn:aws:iam::${AWS::AccountId}:role/collection_remove_agw_role
         passthroughBehavior : "when_no_match"
         uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:remove/invocations
@@ -172,8 +172,8 @@ paths:
         '200':
           $ref: '#/components/responses/collectionResponse'
       x-amazon-apigateway-integration:
-        httpMethod: put
-        type: aws
+        httpMethod: post
+        type: aws_proxy
         credentials: arn:aws:iam::${AWS::AccountId}:role/collection_init_agw_role
         passthroughBehavior : "when_no_match"
         uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:init/invocations
@@ -260,8 +260,8 @@ paths:
               schema:
                 type: boolean
       x-amazon-apigateway-integration:
-        httpMethod: put
-        type: aws
+        httpMethod: post
+        type: aws_proxy
         credentials: arn:aws:iam::${AWS::AccountId}:role/collection_member_agw_role
         passthroughBehavior : "when_no_match"
         uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:member/invocations
@@ -322,15 +322,16 @@ components:
         collection:
           $ref: '#/components/schemas/Collection'
         item:
-          $ref: '#/components/schemas/AnyValue'
+          $ref: '#/components/schemas/IntType'
     Collection:
       type: object
       properties:
         value:
           type: array
           items:
-            $ref: '#/components/schemas/AnyValue'
-    AnyValue: {}
+            $ref: '#/components/schemas/IntType'
+    IntType: 
+      type: integer
   parameters:
     prefix:
       name: prefix

@@ -83,7 +83,7 @@ public class RemoveTest {
         // Add 42.
         CollectionItemPair collectionItemPair = new CollectionItemPair()
                 .collection(returnedProxyCollection)
-                .item("42");
+                .item(42);
         String body = JacksonHelper.toJson(collectionItemPair);
         event.setBody(body);
         Insert insert = new Insert();
@@ -93,7 +93,7 @@ public class RemoveTest {
         // Add 99.
         collectionItemPair = new CollectionItemPair()
                 .collection(returnedProxyCollection)
-                .item("99");
+                .item(99);
         body = JacksonHelper.toJson(collectionItemPair);
         event.setBody(body);
         response = insert.handleRequest(event, new MockContext());
@@ -102,7 +102,7 @@ public class RemoveTest {
         // Remove 42.
         collectionItemPair = new CollectionItemPair()
                 .collection(returnedProxyCollection)
-                .item("42");
+                .item(42);
         body = JacksonHelper.toJson(collectionItemPair);
         event.setBody(body);
 
@@ -112,14 +112,14 @@ public class RemoveTest {
 
         // Test returned representation.
         Collection updated = JacksonHelper.fromJson(new StringInputStream(removeResponse.getBody()), Collection.class);
-        assertFalse(updated.getValue().contains("42"));
-        assertTrue(updated.getValue().contains("99"));
+        assertFalse(updated.getValue().contains(42));
+        assertTrue(updated.getValue().contains(99));
 
         // Test S3 representation.
         String hash = HashHelper.hashAndEncode(updated.toString());
         InputStream stream = S3Helper.getAsInputStream(s3Client, BUCKET_NAME, "foo/".concat(hash));
         Collection storedProxyCollection = JacksonHelper.fromJson(stream, Collection.class);
-        assertFalse(storedProxyCollection.getValue().contains("42"));
-        assertTrue(storedProxyCollection.getValue().contains("99"));
+        assertFalse(storedProxyCollection.getValue().contains(42));
+        assertTrue(storedProxyCollection.getValue().contains(99));
     }
 }

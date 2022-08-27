@@ -1,6 +1,7 @@
 package edu.uva.cs.concepts.collection;
 
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
@@ -27,39 +28,44 @@ public class Init implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV2H
 
     @Override
     public APIGatewayV2HTTPResponse handleRequest(APIGatewayV2HTTPEvent apiGatewayV2HTTPEvent, Context context) {
+        LambdaLogger logger = context.getLogger();
+
         APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse();
         if(!EventValidator.isValidInitEvent(apiGatewayV2HTTPEvent)) {
-            context.getLogger().log("invalid init event");
+            logger.log("Invalid init event.");
             response.setStatusCode(500);
             return response;
         }
 
         VariableManager variableManager = new VariableManager();
         if(!isValidEnvironment(variableManager)) {
-            context.getLogger().log("invalid environment");
+            logger.log("Invalid environment");
             response.setStatusCode(500);
             return response;
         }
+        logger.log("Environment and variable manager are valid.");
 
-        // Initialize a proxy collection.
+        logger.log("Initialize a proxy collection.");
         Collection initCollection = new Collection();
         initCollection.setValue(new ArrayList<>());
         String initHash = HashHelper.hashAndEncode(initCollection.toString());
         if(initHash.isEmpty()) {
-            context.getLogger().log("failed to hash the request body (original collection)");
+            logger.log("Failed to hash the request body (original collection),");
             response.setStatusCode(500);
             return response;
         }
+        logger.log("Initialization complete.");
 
-        // Serialize the proxy.
+        logger.log("Serialize the proxy.");
         String initSerializedProxy = JacksonHelper.toJson(initCollection);
         if(initSerializedProxy.isEmpty()) {
-            context.getLogger().log("could not serialize the updated collection.");
+            logger.log("could not serialize the updated collection.");
             response.setStatusCode(500);
             return response;
         }
+        logger.log("Serialization complete.");
 
-        // Write the collection proxy back to S3.
+        logger.log("Write the collection proxy back to S3.");
         Map<String, String> qs = apiGatewayV2HTTPEvent.getQueryStringParameters();
         String bucket = qs.get("bucket");
         String prefix = qs.get("prefix");
@@ -72,12 +78,13 @@ public class Init implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV2H
                     .build(), RequestBody.fromString(initSerializedProxy));
             response.setStatusCode(200);
         } catch(SdkServiceException exception) {
-            context.getLogger().log(exception.getMessage());
+            logger.log(exception.getMessage());
             response.setStatusCode(500);
             return response;
         }
+        logger.log("Writing to S3 complete.");
 
-        // Return the updated, serialized collection.
+        logger.log("Returning the updated, serialized collection.");
         response.setStatusCode(200);
         response.setBody(initSerializedProxy);
 
