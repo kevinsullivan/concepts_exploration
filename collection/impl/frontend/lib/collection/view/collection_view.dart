@@ -3,10 +3,8 @@ import 'package:editorsite/editor/editor_viewproxy.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../collection_editor.dart';
 import 'collection_widget.dart';
 import 'package:collectiongen/collectiongen.dart' as gen;
-
 
 class CollectionView extends StatelessWidget {
   @override
