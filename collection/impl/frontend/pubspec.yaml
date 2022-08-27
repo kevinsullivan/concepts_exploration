@@ -24,8 +24,8 @@ dependencies:
   logging: ^1.0.2
   mocktail: ^0.3.0
   bloc_test: ^9.0.3
-  collectionapi:
-    path: ./packages/collection
+  collectiongen:
+    path: packages/collectiongen/generated/collection
   editorsite:
     path: ../../../editor/impl/frontend
 

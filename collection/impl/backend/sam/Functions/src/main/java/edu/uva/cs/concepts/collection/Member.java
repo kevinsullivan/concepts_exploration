@@ -63,6 +63,7 @@ public class Member implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV
         String bucket = qs.get("bucket");
         String prefix = qs.get("prefix");
         String originalKey = prefix.concat(originalHash);
+        logger.log(String.format("S3 key constructed from proxy is %s", originalKey));
         S3Client client = createS3Client(variableManager);
         InputStream inputStream = S3Helper.getAsInputStream(client, bucket, originalKey);
         logger.log("Underlying S3 object got.");

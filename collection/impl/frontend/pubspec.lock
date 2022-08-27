@@ -92,10 +92,10 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.16.0"
-  collectionapi:
+  collectiongen:
     dependency: "direct main"
     description:
-      path: "packages/collection"
+      path: "packages/collectiongen/generated/collection"
       relative: true
     source: path
     version: "1.0.0"

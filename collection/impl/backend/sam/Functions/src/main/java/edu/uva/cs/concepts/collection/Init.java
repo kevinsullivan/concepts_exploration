@@ -70,6 +70,7 @@ public class Init implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV2H
         String bucket = qs.get("bucket");
         String prefix = qs.get("prefix");
         String initKey = prefix.concat(initHash);
+        logger.log(String.format("S3 key constructed from proxy is %s", initKey));
         S3Client client = createS3Client(variableManager);
         try {
             client.putObject(PutObjectRequest.builder()

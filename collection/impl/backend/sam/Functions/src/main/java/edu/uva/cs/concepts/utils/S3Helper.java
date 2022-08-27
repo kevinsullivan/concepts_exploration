@@ -100,6 +100,7 @@ public class S3Helper {
             ResponseBytes<GetObjectResponse> objectBytes = s3.getObjectAsBytes(objectRequest);
             return objectBytes.asInputStream();
         } catch (S3Exception e) {
+            System.err.println("Error getting as input stream.");
             System.err.println(e.awsErrorDetails().errorMessage());
         }
         return new ByteArrayInputStream(new byte[0]);

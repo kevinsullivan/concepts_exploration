@@ -1,27 +1,79 @@
-import 'package:editorsite/editor/bloc/editor_event.dart';
-import 'package:editorsite/editor/editor_repository.dart';
-
-import 'package:collectionapi/src/model/collection.dart' as cstate;
-
+import 'package:built_collection/built_collection.dart';
+import 'package:collectiongen/collectiongen.dart' as gen;
 import 'package:bloc/bloc.dart';
+import 'package:collectionsite/collection/collection_repository.dart';
 
-import '../collection_editor.dart';
-import 'package:built_value/json_object.dart';
+part 'collection_state.dart';
+part 'collection_event.dart';
 
-class CollectionEditorBloc extends CollectionBlocType {
-  EditorRepository repository;
+class CollectionBloc extends Bloc<CollectionEvent, CollectionState> {
+  CollectionRepository repository;
 
-  CollectionEditorBloc({required this.repository})
-      : super(cstate.Collection((b) => b.value.add(JsonObject([])))) {
-    on<Get>(_get);
-    on<Create>(_set);
+  gen.Collection active = CollectionInitalState().initial;
+
+  CollectionBloc(this.repository) : super(CollectionInitalState()) {
+    on<Init>(_init);
+    on<Insert>(_insert);
+    on<Remove>(_remove);
+    on<Member>(_member);
   }
 
-  void _get(Get event, Emitter<cstate.Collection> emit) async {
-    emit(await repository.get());
+  void _init(Init event, Emitter<CollectionState> emit) async {
+    final repr = await repository.init();
+    active = repr;
+    emit(CollectionUpdateState(collectionRepresentation: repr));
   }
 
-  void _set(Create event, Emitter<cstate.Collection> emit) async {
-    repository.create(event.val);
+  void _insert(Insert event, Emitter<CollectionState> emit) async {
+    final cipBuilder = gen.CollectionItemPairBuilder();
+    cipBuilder.item = event.toInsert;
+
+    final cBuilder = gen.CollectionBuilder();
+    cBuilder.value = active.value!.toBuilder();
+
+    cipBuilder.collection = cBuilder;
+
+    final pair = cipBuilder.build();
+
+    final repr = await repository.insert(pair);
+    active = repr;
+    emit(CollectionUpdateState(collectionRepresentation: repr));
+  }
+
+  void _remove(Remove event, Emitter<CollectionState> emit) async {
+    final cipBuilder = gen.CollectionItemPairBuilder();
+    cipBuilder.item = event.toRemove;
+
+    final cBuilder = gen.CollectionBuilder();
+    cBuilder.value = active.value!.toBuilder();
+
+    cipBuilder.collection = cBuilder;
+
+    final pair = cipBuilder.build();
+
+    final repr = await repository.remove(pair);
+    active = repr;
+
+    emit(CollectionUpdateState(collectionRepresentation: repr));
+  }
+
+  void _member(Member event, Emitter<CollectionState> emit) async {
+    final cipBuilder = gen.CollectionItemPairBuilder();
+    cipBuilder.item = event.possibleMember;
+
+    final cBuilder = gen.CollectionBuilder();
+    cBuilder.value = active.value!.toBuilder();
+
+    cipBuilder.collection = cBuilder;
+
+    final pair = cipBuilder.build();
+
+    final isMember = await repository.member(pair);
+
+    if (isMember) {
+      emit(IsMemberState());
+    } else {
+      emit(IsNotMemberState());
+    }
   }
 }

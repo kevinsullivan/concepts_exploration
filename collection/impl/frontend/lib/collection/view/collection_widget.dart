@@ -1,55 +1,119 @@
-import 'package:built_collection/built_collection.dart';
-import 'package:editorsite/editor/bloc/editor_event.dart';
-import 'package:editorsite/editor/editor_viewproxy.dart';
-
 import '../bloc/collection_bloc.dart';
-import 'package:collectionapi/src/model/collection.dart' as cstate;
+import 'package:collectiongen/collectiongen.dart' as gen;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:built_value/json_object.dart';
+import '../bloc/collection_bloc.dart' as cbloc;
 
-import '../collection_editor.dart';
-
-class Get extends StatelessWidget {
-  final EditorViewProxy<cstate.Collection> val;
-
-  const Get({required this.val, Key? key}) : super(key: key);
-
+class Init extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      BlocBuilder<CollectionBlocType, cstate.Collection>(
-          builder: (context, state) {
-        val.state = state;
-        return Text(val.state.value!.toString());
-      }),
       ElevatedButton(
-        child: const Text('Get'),
+        child: const Text('Init'),
         onPressed: () {
-          val.get();
+          BlocProvider.of<CollectionBloc>(context).add(const cbloc.Init<int>());
         },
       )
     ]);
   }
 }
 
-class Create extends StatelessWidget {
-  final EditorViewProxy val;
-
-  const Create({required this.val, Key? key}) : super(key: key);
+// parameterize by T
+class Insert extends StatelessWidget {
+  final controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-        decoration: const InputDecoration(
-            border: OutlineInputBorder(), hintText: 'Set'),
-        onChanged: (String val) {
-          // TODO: We are passing the full collction state on every char change.
-          // there must be a better way!
+    String text = "";
 
-          final cbuilder = cstate.CollectionBuilder();
-          cbuilder.value.add(JsonObject(int.parse(val)));
-          this.val.create(cbuilder.build());
-        });
+    return Column(children: [
+      TextField(
+          controller: controller,
+          decoration: const InputDecoration(border: OutlineInputBorder()),
+          onChanged: (String val) {
+            text = val;
+          }),
+      ElevatedButton(
+        child: const Text('Insert'),
+        onPressed: () {
+          BlocProvider.of<CollectionBloc>(context)
+              .add(cbloc.Insert<int>(toInsert: int.parse(text)));
+          controller.clear();
+        },
+      )
+    ]);
+  }
+}
+
+class Remove extends StatelessWidget {
+  final controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    String text = "";
+
+    return Column(children: [
+      TextField(
+          controller: controller,
+          decoration: const InputDecoration(border: OutlineInputBorder()),
+          onChanged: (String val) {
+            text = val;
+          }),
+      ElevatedButton(
+        child: const Text('Remove'),
+        onPressed: () {
+          BlocProvider.of<CollectionBloc>(context)
+              .add(cbloc.Remove<int>(toRemove: int.parse(text)));
+          controller.clear();
+        },
+      )
+    ]);
+  }
+}
+
+class Member extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    String text = "";
+
+    return Column(children: [
+      TextField(
+          decoration: const InputDecoration(border: OutlineInputBorder()),
+          onChanged: (String val) {
+            text = val;
+          }),
+      ElevatedButton(
+        child: const Text('Remove'),
+        onPressed: () {
+          BlocProvider.of<CollectionBloc>(context)
+              .add(cbloc.Member<int>(possibleMember: int.parse(text)));
+        },
+      )
+    ]);
+  }
+}
+
+class CollectionViewer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CollectionBloc, CollectionState>(
+        builder: (context, state) {
+      if (state is IsMemberState || state is IsNotMemberState) {
+        return this;
+      } else if (state is CollectionUpdateState) {
+        gen.Collection collection = state.collectionRepresentation;
+        return ListView.builder(
+          shrinkWrap: true,
+          itemCount: collection.value!.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(collection.value!.elementAt(index).toString()),
+            );
+          },
+        );
+      } else {
+        return const Text("No Initialized Collection");
+      }
+    });
   }
 }

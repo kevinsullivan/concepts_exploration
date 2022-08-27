@@ -72,6 +72,7 @@ public class Insert implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV
         String bucket = qs.get("bucket");
         String prefix = qs.get("prefix");
         String originalKey = prefix.concat(originalHash);
+        logger.log(String.format("S3 key constructed from proxy is %s", originalKey));
         S3Client client = createS3Client(variableManager);
         InputStream inputStream = S3Helper.getAsInputStream(client, bucket, originalKey);
         logger.log("Underlying S3 object got.");
@@ -79,7 +80,7 @@ public class Insert implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV
         logger.log("Deserialize into a collection object.");
         Collection storedCollectionProxy = JacksonHelper.fromJson(inputStream, Collection.class);
         if(storedCollectionProxy == null) {
-            logger.log("could not determine underlying object from the provided proxy");
+            logger.log("Could not determine underlying object from the provided proxy");
             response.setStatusCode(500);
             return response;
         }
@@ -102,9 +103,10 @@ public class Insert implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV
         storedCollectionProxy.addValueItem(reqItemProxy);
         String updatedHash = HashHelper.hashAndEncode(storedCollectionProxy.toString());
         String updatedKey = prefix.concat(updatedHash);
+        logger.log(String.format("S3 key constructed from proxy is %s", updatedKey));
         String updatedSerializedProxy = JacksonHelper.toJson(storedCollectionProxy);
         if(updatedSerializedProxy.isEmpty()) {
-            logger.log("could not serialize the updated collection.");
+            logger.log("Could not serialize the updated collection.");
             response.setStatusCode(500);
             return response;
         }
