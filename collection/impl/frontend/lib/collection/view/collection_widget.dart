@@ -1,17 +1,20 @@
+import 'package:collectionsite/collection/view/collection_view.dart';
+
 import '../bloc/collection_bloc.dart';
 import 'package:collectiongen/collectiongen.dart' as gen;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/collection_bloc.dart' as cbloc;
+import 'uirepr/uirepresentation.dart';
 
-class Init extends StatelessWidget {
+class Init<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
       ElevatedButton(
         child: const Text('Init'),
         onPressed: () {
-          BlocProvider.of<CollectionBloc>(context).add(const cbloc.Init<int>());
+          BlocProvider.of<CollectionBloc>(context).add(cbloc.Init<T>());
         },
       )
     ]);
@@ -19,25 +22,20 @@ class Init extends StatelessWidget {
 }
 
 // parameterize by T
-class Insert extends StatelessWidget {
+class Insert<T> extends StatelessWidget {
   final controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    String text = "";
-
     return Column(children: [
-      TextField(
-          controller: controller,
-          decoration: const InputDecoration(border: OutlineInputBorder()),
-          onChanged: (String val) {
-            text = val;
-          }),
       ElevatedButton(
+        // We are making the decision to construct a new UIRep on insert.
         child: const Text('Insert'),
         onPressed: () {
-          BlocProvider.of<CollectionBloc>(context)
-              .add(cbloc.Insert<int>(toInsert: int.parse(text)));
+          // NB: This really needs to be a two step process where the visual
+          // representation is created from user input. Then removed.
+          BlocProvider.of<CollectionBloc>(context).add(
+              cbloc.Insert<T>(toInsert: UIRepresentation<T>().transform()));
           controller.clear();
         },
       )
@@ -45,25 +43,18 @@ class Insert extends StatelessWidget {
   }
 }
 
-class Remove extends StatelessWidget {
+class Remove<T> extends StatelessWidget {
   final controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    String text = "";
-
     return Column(children: [
-      TextField(
-          controller: controller,
-          decoration: const InputDecoration(border: OutlineInputBorder()),
-          onChanged: (String val) {
-            text = val;
-          }),
       ElevatedButton(
         child: const Text('Remove'),
         onPressed: () {
-          BlocProvider.of<CollectionBloc>(context)
-              .add(cbloc.Remove<int>(toRemove: int.parse(text)));
+          //
+          BlocProvider.of<CollectionBloc>(context).add(
+              cbloc.Remove<T>(toRemove: UIRepresentation<T>().transform()));
           controller.clear();
         },
       )
@@ -83,7 +74,7 @@ class Member extends StatelessWidget {
             text = val;
           }),
       ElevatedButton(
-        child: const Text('Remove'),
+        child: const Text('Member'),
         onPressed: () {
           BlocProvider.of<CollectionBloc>(context)
               .add(cbloc.Member<int>(possibleMember: int.parse(text)));
@@ -93,7 +84,7 @@ class Member extends StatelessWidget {
   }
 }
 
-class CollectionViewer extends StatelessWidget {
+class CollectionViewer<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CollectionBloc, CollectionState>(
@@ -107,8 +98,10 @@ class CollectionViewer extends StatelessWidget {
           itemCount: collection.value!.length,
           itemBuilder: (context, index) {
             return ListTile(
-              title: Text(collection.value!.elementAt(index).toString()),
-            );
+                // UI REPRESENTATION OF TILE
+                // This cast might not be necessary when collection is generic.
+                title: UIRepresentation<T>.fromT(
+                    collection.value!.elementAt(index) as T));
           },
         );
       } else {

@@ -5,5 +5,5 @@ import 'package:editorsite/editor/editor_app.dart';
 import 'collection/collection_app.dart';
 
 void main() {
-  runApp(const CollectionApp());
+  runApp(const CollectionApp<bool>());
 }

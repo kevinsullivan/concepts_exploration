@@ -6,24 +6,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'collection_widget.dart';
 import 'package:collectiongen/collectiongen.dart' as gen;
 
-class CollectionView extends StatelessWidget {
+class CollectionView<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [CollectionViewer(), ButtonRow()],
+      children: [CollectionViewer<T>(), ButtonRow<T>()],
     );
   }
 }
 
-class ButtonRow extends StatelessWidget {
+class ButtonRow<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [Init(), Insert(), Remove()],
+      children: [Init<T>(), Insert<T>(), Remove<T>()],
     );
   }
 }

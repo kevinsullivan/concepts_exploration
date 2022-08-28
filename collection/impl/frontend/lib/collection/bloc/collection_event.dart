@@ -5,7 +5,7 @@ abstract class CollectionEvent<T> {
 }
 
 class Init<T> extends CollectionEvent<T> {
-  const Init();
+  Init();
 }
 
 class Insert<T> extends CollectionEvent<T> {
