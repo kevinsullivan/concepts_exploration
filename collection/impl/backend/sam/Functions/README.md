@@ -16,3 +16,10 @@ To build the project you must remember to still call,
 ```bash
 mvn package
 ```
+
+## Adding Ts
+If we want to add support for a new collection item, we need 2 things.
+1. A model/pojo the jackson can serialize the data into.
+2. An entry in the StateMapper.
+
+This is how we reestablish strong types after the data is transmitted.

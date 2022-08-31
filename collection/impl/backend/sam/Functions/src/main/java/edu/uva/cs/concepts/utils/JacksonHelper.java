@@ -1,6 +1,7 @@
 package edu.uva.cs.concepts.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openapitools.jackson.nullable.JsonNullableModule;
 
@@ -14,6 +15,17 @@ public class JacksonHelper {
         objectMapper.registerModule(new JsonNullableModule());
         try {
             return objectMapper.readValue(value, clazz);
+        } catch (IOException e) {
+            System.err.println("failed to deserialize object");
+        }
+        return null;
+    }
+
+    public static <T> T fromJson(InputStream value, TypeReference<T> valueTypeRef) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JsonNullableModule());
+        try {
+            return objectMapper.readValue(value, valueTypeRef);
         } catch (IOException e) {
             System.err.println("failed to deserialize object");
         }

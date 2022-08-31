@@ -18,8 +18,8 @@ public class EventValidator {
             return false;
         }
 
-        CollectionItemPair pair = JacksonHelper.fromJson(new StringInputStream(event.getBody()), CollectionItemPair.class);
-        if(pair == null || pair.getCollection() == null || pair.getItem() == null) {
+        Map<String, String> headers = event.getHeaders();
+        if(headers == null || !headers.containsKey("Model")) {
             return false;
         }
 

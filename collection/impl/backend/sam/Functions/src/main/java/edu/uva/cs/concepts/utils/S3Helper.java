@@ -1,7 +1,5 @@
 package edu.uva.cs.concepts.utils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.uva.cs.concepts.collection.gen.model.Collection;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;

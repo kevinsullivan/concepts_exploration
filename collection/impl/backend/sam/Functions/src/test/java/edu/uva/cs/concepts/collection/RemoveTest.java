@@ -3,10 +3,10 @@ package edu.uva.cs.concepts.collection;
 import com.adobe.testing.s3mock.junit5.S3MockExtension;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import edu.uva.cs.concepts.MockContext;
-import edu.uva.cs.concepts.collection.gen.model.Collection;
-import edu.uva.cs.concepts.collection.gen.model.CollectionItemPair;
+import edu.uva.cs.concepts.collection.representation.Collection;
+import edu.uva.cs.concepts.collection.representation.CollectionItemPair;
+import edu.uva.cs.concepts.collection.representation.StateMapper;
 import edu.uva.cs.concepts.utils.HashHelper;
 import edu.uva.cs.concepts.utils.JacksonHelper;
 import edu.uva.cs.concepts.utils.S3Helper;
@@ -22,8 +22,8 @@ import software.amazon.awssdk.services.s3.model.DeleteBucketRequest;
 import software.amazon.awssdk.utils.StringInputStream;
 import software.amazon.awssdk.utils.builder.SdkBuilder;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,36 +73,49 @@ public class RemoveTest {
         params.put("bucket", BUCKET_NAME);
         params.put("prefix", "foo/");
         event.setQueryStringParameters(params);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Model", "CollectionItemPair<Integer>");
+        event.setHeaders(headers);
 
         // Initialize a collection to operate on.
         Init init = new Init();
-        APIGatewayV2HTTPResponse response = init.handleRequest(event, new MockContext());
-        Collection returnedProxyCollection = JacksonHelper.fromJson(new StringInputStream(response.getBody()), Collection.class);
+        init.handleRequest(event, new MockContext());
 
-        // Seed the collection.
+        Insert insert = new Insert();
+
         // Add 42.
-        CollectionItemPair collectionItemPair = new CollectionItemPair()
-                .collection(returnedProxyCollection)
-                .item(42);
+        CollectionItemPair<Integer> collectionItemPair = new CollectionItemPair<>(
+                new Collection<>(new ArrayList<>()),
+                42
+        );
         String body = JacksonHelper.toJson(collectionItemPair);
         event.setBody(body);
-        Insert insert = new Insert();
-        response = insert.handleRequest(event, new MockContext());
-        returnedProxyCollection = JacksonHelper.fromJson(new StringInputStream(response.getBody()), Collection.class);
+
+        APIGatewayV2HTTPResponse insertResponse = insert.handleRequest(event, new MockContext());
+        Collection returnedProxyCollection = (Collection) JacksonHelper.fromJson(
+                new StringInputStream(insertResponse.getBody()),
+                StateMapper.outputFromHeader(headers.get("Model"))
+        );
 
         // Add 99.
-        collectionItemPair = new CollectionItemPair()
-                .collection(returnedProxyCollection)
-                .item(99);
+        collectionItemPair = new CollectionItemPair<>(
+                returnedProxyCollection,
+                99
+        );
         body = JacksonHelper.toJson(collectionItemPair);
         event.setBody(body);
-        response = insert.handleRequest(event, new MockContext());
-        returnedProxyCollection = JacksonHelper.fromJson(new StringInputStream(response.getBody()), Collection.class);
+
+        insertResponse = insert.handleRequest(event, new MockContext());
+        returnedProxyCollection = (Collection) JacksonHelper.fromJson(
+                new StringInputStream(insertResponse.getBody()),
+                StateMapper.outputFromHeader(headers.get("Model"))
+        );
 
         // Remove 42.
-        collectionItemPair = new CollectionItemPair()
-                .collection(returnedProxyCollection)
-                .item(42);
+        collectionItemPair = new CollectionItemPair<>(
+                returnedProxyCollection,
+                42
+        );
         body = JacksonHelper.toJson(collectionItemPair);
         event.setBody(body);
 

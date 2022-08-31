@@ -5,8 +5,9 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import edu.uva.cs.concepts.MockContext;
-import edu.uva.cs.concepts.collection.gen.model.Collection;
-import edu.uva.cs.concepts.collection.gen.model.CollectionItemPair;
+import edu.uva.cs.concepts.collection.representation.Collection;
+import edu.uva.cs.concepts.collection.representation.CollectionItemPair;
+import edu.uva.cs.concepts.collection.representation.StateMapper;
 import edu.uva.cs.concepts.utils.HashHelper;
 import edu.uva.cs.concepts.utils.JacksonHelper;
 import edu.uva.cs.concepts.utils.S3Helper;
@@ -21,6 +22,7 @@ import software.amazon.awssdk.utils.StringInputStream;
 import software.amazon.awssdk.utils.builder.SdkBuilder;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,25 +66,27 @@ public class InsertTest {
 
 
     @Test
-    public void test_insert() throws JsonProcessingException {
+    public void test_insert_int() {
         APIGatewayV2HTTPEvent event = new APIGatewayV2HTTPEvent();
         Map<String, String> params = new HashMap<>();
         params.put("bucket", BUCKET_NAME);
         params.put("prefix", "foo/");
         event.setQueryStringParameters(params);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Model", "CollectionItemPair<Integer>");
+        event.setHeaders(headers);
 
         // Initialize a collection to operate on.
         Init init = new Init();
-        APIGatewayV2HTTPResponse response = init.handleRequest(event, new MockContext());
-        Collection returnedProxyCollection = JacksonHelper.fromJson(new StringInputStream(response.getBody()), Collection.class);
+        init.handleRequest(event, new MockContext());
 
         // Build an insert request.
-        CollectionItemPair collectionItemPair = new CollectionItemPair()
-                .collection(returnedProxyCollection)
-                .item(42);
+        CollectionItemPair<Integer> collectionItemPair = new CollectionItemPair<>(
+                new Collection<>(new ArrayList<>()),
+                42
+        );
         String body = JacksonHelper.toJson(collectionItemPair);
         event.setBody(body);
-        System.out.println(body);
 
         // Invoke the insert handler.
         Insert insert = new Insert();
@@ -90,7 +94,10 @@ public class InsertTest {
         assertEquals(200, insertResponse.getStatusCode());
 
         // Test returned representation.
-        Collection updated = JacksonHelper.fromJson(new StringInputStream(insertResponse.getBody()), Collection.class);
+        Collection updated = (Collection) JacksonHelper.fromJson(
+                new StringInputStream(insertResponse.getBody()),
+                StateMapper.outputFromHeader(headers.get("Model"))
+        );
         assertTrue(updated.getValue().contains(42));
 
         // Test S3 representation.
@@ -99,17 +106,65 @@ public class InsertTest {
         Collection storedProxyCollection = JacksonHelper.fromJson(stream, Collection.class);
         assertTrue(storedProxyCollection.getValue().contains(42));
     }
+
     @Test
-    public void test_insert_int_unknown_collection() throws JsonProcessingException {
+    public void test_insert_bool() {
+        APIGatewayV2HTTPEvent event = new APIGatewayV2HTTPEvent();
+        Map<String, String> params = new HashMap<>();
+        params.put("bucket", BUCKET_NAME);
+        params.put("prefix", "foo/");
+        event.setQueryStringParameters(params);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Model", "CollectionItemPair<Boolean>");
+        event.setHeaders(headers);
+
+        // Initialize a collection to operate on.
+        Init init = new Init();
+        APIGatewayV2HTTPResponse initResponse = init.handleRequest(event, new MockContext());
+        Collection initCollection = (Collection) JacksonHelper.fromJson(
+                new StringInputStream(initResponse.getBody()),
+                StateMapper.outputFromHeader(headers.get("Model"))
+        );
+
+        // Build an insert request.
+        CollectionItemPair<Boolean> collectionItemPair = new CollectionItemPair<>(
+                initCollection,
+                true
+        );
+        String body = JacksonHelper.toJson(collectionItemPair);
+        event.setBody(body);
+
+        // Invoke the insert handler.
+        Insert insert = new Insert();
+        APIGatewayV2HTTPResponse insertResponse = insert.handleRequest(event, new MockContext());
+        assertEquals(200, insertResponse.getStatusCode());
+
+        // Test returned representation.
+        Collection updated = (Collection) JacksonHelper.fromJson(
+                new StringInputStream(insertResponse.getBody()),
+                StateMapper.outputFromHeader(headers.get("Model"))
+        );
+        assertTrue(updated.getValue().contains(true));
+
+        // Test S3 representation.
+        String hash = HashHelper.hashAndEncode(updated.toString());
+        InputStream stream = S3Helper.getAsInputStream(s3Client, BUCKET_NAME, "foo/".concat(hash));
+        Collection storedProxyCollection = JacksonHelper.fromJson(stream, Collection.class);
+        assertTrue(storedProxyCollection.getValue().contains(true));
+    }
+
+    @Test
+    public void test_insert_into_unknown_collection() throws JsonProcessingException {
         APIGatewayV2HTTPEvent event = new APIGatewayV2HTTPEvent();
         Map<String, String> params = new HashMap<>();
         params.put("bucket", BUCKET_NAME);
         params.put("prefix", "foo/");
         event.setQueryStringParameters(params);
 
-        CollectionItemPair collectionItemPair = new CollectionItemPair()
-                .collection(new Collection())
-                .item(42);
+        CollectionItemPair<Integer> collectionItemPair = new CollectionItemPair<>(
+                new Collection<>(new ArrayList<>()),
+                5
+        );
         String body = JacksonHelper.toJson(collectionItemPair);
         event.setBody(body);
 

@@ -5,28 +5,19 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.uva.cs.concepts.collection.gen.model.Collection;
-import edu.uva.cs.concepts.collection.gen.model.CollectionItemPair;
+import edu.uva.cs.concepts.collection.representation.Collection;
+import edu.uva.cs.concepts.collection.representation.CollectionItemPair;
+import edu.uva.cs.concepts.collection.representation.StateMapper;
 import edu.uva.cs.concepts.utils.*;
 import software.amazon.awssdk.core.exception.SdkServiceException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.S3Object;
 import software.amazon.awssdk.utils.StringInputStream;
 
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static edu.uva.cs.concepts.utils.S3Helper.createS3Client;
 
@@ -38,6 +29,7 @@ public class Insert implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV
     @Override
     public APIGatewayV2HTTPResponse handleRequest(APIGatewayV2HTTPEvent apiGatewayV2HTTPEvent, Context context) {
         LambdaLogger logger = context.getLogger();
+        logger.log("Start Insert...");
 
         APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse();
         if(!EventValidator.isValidEvent(apiGatewayV2HTTPEvent)) {
@@ -56,9 +48,14 @@ public class Insert implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV
 
         logger.log("Reconstruct our proxies from the serialized form.");
         String body = apiGatewayV2HTTPEvent.getBody();
-        CollectionItemPair pair = JacksonHelper.fromJson(new StringInputStream(body), CollectionItemPair.class);
+        String model = apiGatewayV2HTTPEvent.getHeaders().get("Model");
+
+        CollectionItemPair pair = (CollectionItemPair) JacksonHelper.fromJson(
+                new StringInputStream(body),
+                StateMapper.inputFromHeader(model)
+        );
         Collection reqCollectionProxy = pair.getCollection();
-        Integer reqItemProxy = pair.getItem();
+        Object reqItemProxy = pair.getItem();
         logger.log("Reconstructing complete.");
 
         logger.log("Use the request collection proxy to get the underlying S3 object.");
@@ -78,7 +75,10 @@ public class Insert implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV
         logger.log("Underlying S3 object got.");
 
         logger.log("Deserialize into a collection object.");
-        Collection storedCollectionProxy = JacksonHelper.fromJson(inputStream, Collection.class);
+        Collection storedCollectionProxy = (Collection) JacksonHelper.fromJson(
+                inputStream,
+                StateMapper.outputFromHeader(model)
+        );
         if(storedCollectionProxy == null) {
             logger.log("Could not determine underlying object from the provided proxy");
             response.setStatusCode(500);
@@ -100,7 +100,7 @@ public class Insert implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV
         logger.log("Removing complete.");
 
         logger.log("Insert the item into the collection proxy.");
-        storedCollectionProxy.addValueItem(reqItemProxy);
+        storedCollectionProxy.getValue().add(reqItemProxy);
         String updatedHash = HashHelper.hashAndEncode(storedCollectionProxy.toString());
         String updatedKey = prefix.concat(updatedHash);
         logger.log(String.format("S3 key constructed from proxy is %s", updatedKey));
@@ -140,6 +140,7 @@ public class Insert implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV
         headers.put("Access-Control-Allow-Methods", "*");
         response.setHeaders(headers);
 
+        logger.log("End Insert...");
         return response;
     }
     private boolean isValidEnvironment(VariableManager variableManager) {

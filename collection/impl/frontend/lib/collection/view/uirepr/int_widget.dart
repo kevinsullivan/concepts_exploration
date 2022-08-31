@@ -8,6 +8,9 @@ part of 'uirepresentation.dart';
 
 // Extend the StatefulWidget to adhere to the interface restrictions put on
 // us by UIRepresentation.
+
+
+// oh i think i need a notifier. because I cannot modify val
 class IntUIRepresentation extends StatefulWidget
     implements UIRepresentation<int> {
   // Any pieces needed for transform.

@@ -3,10 +3,8 @@ package edu.uva.cs.concepts.collection;
 import com.adobe.testing.s3mock.junit5.S3MockExtension;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import edu.uva.cs.concepts.MockContext;
-import edu.uva.cs.concepts.collection.gen.model.Collection;
-import edu.uva.cs.concepts.collection.gen.model.CollectionItemPair;
+import edu.uva.cs.concepts.collection.representation.Collection;
 import edu.uva.cs.concepts.utils.HashHelper;
 import edu.uva.cs.concepts.utils.JacksonHelper;
 import edu.uva.cs.concepts.utils.S3Helper;
@@ -71,6 +69,7 @@ public class InitTest {
         Map<String, String> params = new HashMap<>();
         params.put("bucket", BUCKET_NAME);
         params.put("prefix", "foo/");
+        params.put("model", "Int");
         event.setQueryStringParameters(params);
 
         Init init = new Init();
@@ -82,14 +81,17 @@ public class InitTest {
         assertTrue(returnedProxyCollection.getValue().isEmpty());
 
         // Test we have an S3 representation.
-        InputStream stream = S3Helper.getAsInputStream(s3Client, BUCKET_NAME, "foo/".concat(initKey()));
+        String key = "foo/".concat(initKey());
+        InputStream stream = S3Helper.getAsInputStream(s3Client, BUCKET_NAME, key);
         Collection storedProxyCollection = JacksonHelper.fromJson(stream, Collection.class);
         assertTrue(storedProxyCollection.getValue().isEmpty());
     }
 
     private String initKey() {
-        Collection initCollection = new Collection();
-        initCollection.setValue(new ArrayList<>());
+        Collection initCollection = new Collection(new ArrayList());
+        System.out.println("init key");
+        System.out.println(initCollection.toString());
+        System.out.println("---");
         return HashHelper.hashAndEncode(initCollection.toString());
     }
 }

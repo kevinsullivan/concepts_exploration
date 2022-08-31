@@ -5,16 +5,13 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
-import edu.uva.cs.concepts.collection.gen.model.Collection;
-import edu.uva.cs.concepts.collection.gen.model.CollectionItemPair;
+import edu.uva.cs.concepts.collection.representation.Collection;
 import edu.uva.cs.concepts.utils.*;
 import software.amazon.awssdk.core.exception.SdkServiceException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.utils.StringInputStream;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +26,7 @@ public class Init implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV2H
     @Override
     public APIGatewayV2HTTPResponse handleRequest(APIGatewayV2HTTPEvent apiGatewayV2HTTPEvent, Context context) {
         LambdaLogger logger = context.getLogger();
+        logger.log("Start Init...");
 
         APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse();
         if(!EventValidator.isValidInitEvent(apiGatewayV2HTTPEvent)) {
@@ -46,8 +44,10 @@ public class Init implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV2H
         logger.log("Environment and variable manager are valid.");
 
         logger.log("Initialize a proxy collection.");
-        Collection initCollection = new Collection();
-        initCollection.setValue(new ArrayList<>());
+        Collection initCollection = new Collection(new ArrayList());
+        System.out.println("in lambda");
+        System.out.println(initCollection.toString());
+        System.out.println("----");
         String initHash = HashHelper.hashAndEncode(initCollection.toString());
         if(initHash.isEmpty()) {
             logger.log("Failed to hash the request body (original collection),");
@@ -99,6 +99,7 @@ public class Init implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV2H
         headers.put("Access-Control-Allow-Methods", "*");
         response.setHeaders(headers);
 
+        logger.log("End Init...");
         return response;
     }
     private boolean isValidEnvironment(VariableManager variableManager) {

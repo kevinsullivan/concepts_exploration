@@ -7,6 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/collection_bloc.dart' as cbloc;
 import 'uirepr/uirepresentation.dart';
 
+// TODO: Collection should be a UI repr too.
+
 class Init<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
