@@ -1,25 +1,23 @@
-package edu.uva.cs.concepts.collection.representation;
+package edu.uva.cs.concepts.collection;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-// openapi cant generate this..
-public class CollectionItemPair<T> {
-
-    private Collection<T> collection;
-    private T item;
+public class CollectionItemPair<E, T extends Collection<E>> {
+    private T collection;
+    private E item;
 
     @JsonCreator
-    public CollectionItemPair(@JsonProperty("result") Collection<T> collection, @JsonProperty("item") T item) {
+    public CollectionItemPair(@JsonProperty("result") T collection, @JsonProperty("item") E item) {
         this.collection = collection;
         this.item = item;
     }
 
-    public Collection<T> getCollection() {
+    public T getCollection() {
         return collection;
     }
 
-    public T getItem() {
+    public E getItem() {
         return item;
     }
 

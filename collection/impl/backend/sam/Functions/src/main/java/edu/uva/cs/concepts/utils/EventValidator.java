@@ -19,7 +19,7 @@ public class EventValidator {
         }
 
         Map<String, String> headers = event.getHeaders();
-        if(headers == null || !headers.containsKey("Model")) {
+        if(headers == null || !headers.containsKey("T")) {
             return false;
         }
 
