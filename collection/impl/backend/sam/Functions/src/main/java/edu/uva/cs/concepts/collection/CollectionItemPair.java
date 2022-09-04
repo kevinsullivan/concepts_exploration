@@ -2,8 +2,9 @@ package edu.uva.cs.concepts.collection;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import edu.uva.cs.concepts.Concept;
 
-public class CollectionItemPair<E, T extends Collection<E>> {
+public class CollectionItemPair<E, T extends Collection<E>> extends Concept {
     private T collection;
     private E item;
 

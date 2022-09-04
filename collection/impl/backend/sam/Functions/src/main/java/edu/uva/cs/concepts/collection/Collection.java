@@ -1,6 +1,10 @@
 package edu.uva.cs.concepts.collection;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.uva.cs.concepts.Concept;
+
+import java.util.List;
 
 /**
  * The AWS Lambda Representation of a Collection's state.
@@ -11,10 +15,25 @@ import edu.uva.cs.concepts.Concept;
  * were not, we would have way more work to do.
  * @param <T>
  */
-public abstract class Collection<T> extends Concept<T> {
+public class Collection<T> extends Concept {
 
-    public abstract Collection<T> init();
-    public abstract Collection<T> insert(Collection<T> collection, T item);
-    public abstract Collection<T> delete(Collection<T> collection, T item);
-    public abstract boolean member(Collection<T> collection, T item);
+    @JsonProperty("value")
+    List<T> value;
+
+    @JsonCreator
+    public Collection(@JsonProperty("value") List<T> value) {
+        this.value = value;
+    }
+
+    public List<T> getValue() {
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Collection{");
+        sb.append("value=").append(value);
+        sb.append('}');
+        return sb.toString();
+    }
 }
