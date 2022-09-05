@@ -30,15 +30,15 @@ public class S3Actions<T> extends CollectionActions<T> {
     @Override
     public Collection<T> init() {
         logger.info("Initialize a proxy collection.");
-        String initHash = HashHelper.hashAndEncode(toString());
+        Collection<T> collection = new Collection<>(new ArrayList<>());
+        logger.info("Initialization complete.");
+
+        logger.info("Serialize the proxy.");
+        String initHash = HashHelper.hashAndEncode(collection.toString());
         if(initHash.isEmpty()) {
             logger.error("Failed to hash the request body (original collection),");
             throw new RuntimeException();
         }
-        logger.info("Initialization complete.");
-
-        logger.info("Serialize the proxy.");
-        Collection<T> collection = new Collection<>(new ArrayList<>());
         String initSerializedProxy = JacksonHelper.toJson(collection);
         if(initSerializedProxy.isEmpty()) {
             logger.info("could not serialize the updated collection.");

@@ -2,9 +2,11 @@ package edu.uva.cs.concepts.collection;
 import com.adobe.testing.s3mock.junit5.S3MockExtension;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
+import com.fasterxml.jackson.core.type.TypeReference;
 import edu.uva.cs.concepts.MockContext;
 import edu.uva.cs.concepts.lambda.concrete.S3CollectionHandler;
 import edu.uva.cs.concepts.utils.HashHelper;
+import edu.uva.cs.concepts.utils.JacksonHelper;
 import edu.uva.cs.concepts.utils.S3Helper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,6 +19,7 @@ import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 import software.amazon.awssdk.services.s3.model.DeleteBucketRequest;
 import software.amazon.awssdk.utils.builder.SdkBuilder;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -70,21 +73,338 @@ public class S3CollectionHandlerTest {
         event.setRawPath("init");
 
         S3CollectionHandler s3CollectionHandler = new S3CollectionHandler();
-        s3CollectionHandler.handleRequest(event, new MockContext());
-
         APIGatewayV2HTTPResponse response = s3CollectionHandler.handleRequest(event, new MockContext());
         assertEquals(200, response.getStatusCode());
 
         // Test the returned representation.
-        CollectionSerDer<Integer> serDer = new CollectionSerDer<>();
-        Collection<Integer> returnedProxyCollection = serDer.deserialize(response.getBody());
+        Collection<Integer> returnedProxyCollection = JacksonHelper.fromJson(response.getBody(), new TypeReference<Collection<Integer>>() { });
         assertTrue(returnedProxyCollection.getValue().isEmpty());
 
         // Test we have an S3 representation.
-        //String key = "foo/".concat(initKey());
-        //InputStream stream = S3Helper.getAsInputStream(s3Client, BUCKET_NAME, key);
-        //Collection<Integer> storedProxyCollection = serDer.deserialize(stream);
-        //assertTrue(storedProxyCollection.getValue().isEmpty());
+        String key = "foo/".concat(initKey());
+        InputStream stream = S3Helper.getAsInputStream(s3Client, BUCKET_NAME, key);
+        Collection<Integer> storedProxyCollection = JacksonHelper.fromJson(stream, new TypeReference<Collection<Integer>>() { });
+        assertTrue(storedProxyCollection.getValue().isEmpty());
+    }
+
+    @Test
+    public void test_insert_int() {
+        APIGatewayV2HTTPEvent event = new APIGatewayV2HTTPEvent();
+        Map<String, String> params = new HashMap<>();
+        params.put("bucket", BUCKET_NAME);
+        params.put("prefix", "foo/");
+        event.setQueryStringParameters(params);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("type", "integer");
+        event.setHeaders(headers);
+        event.setRawPath("init");
+
+        // Initialize a collection to operate on.
+        S3CollectionHandler s3CollectionHandler = new S3CollectionHandler();
+        APIGatewayV2HTTPResponse response = s3CollectionHandler.handleRequest(event, new MockContext());
+        Collection<Integer> initCollection = JacksonHelper.fromJson(
+                response.getBody(),
+                new TypeReference<Collection<Integer>>(){}
+        );
+
+        // Build an insert request.
+        CollectionItemPair<Integer, Collection<Integer>> collectionItemPair = new CollectionItemPair<>(
+                initCollection,
+                42
+        );
+        String body = JacksonHelper.toJson(collectionItemPair);
+        event.setRawPath("insert");
+        event.setBody(body);
+
+        // Invoke the insert handler.
+        APIGatewayV2HTTPResponse insertResponse = s3CollectionHandler.handleRequest(event, new MockContext());
+        assertEquals(200, insertResponse.getStatusCode());
+
+        // Test returned representation.
+        Collection<Integer> updated = JacksonHelper.fromJson(
+                insertResponse.getBody(),
+                new TypeReference<Collection<Integer>>(){}
+        );
+        assertTrue(updated.getValue().contains(42));
+
+        // Test S3 representation.
+        String hash = HashHelper.hashAndEncode(updated.toString());
+        InputStream stream = S3Helper.getAsInputStream(s3Client, BUCKET_NAME, "foo/".concat(hash));
+        Collection<Integer> storedProxyCollection = JacksonHelper.fromJson(
+                stream,
+                new TypeReference<Collection<Integer>>(){}
+        );
+        assertTrue(storedProxyCollection.getValue().contains(42));
+    }
+
+    @Test
+    public void test_insert_bool() {
+        APIGatewayV2HTTPEvent event = new APIGatewayV2HTTPEvent();
+        Map<String, String> params = new HashMap<>();
+        params.put("bucket", BUCKET_NAME);
+        params.put("prefix", "foo/");
+        event.setQueryStringParameters(params);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("type", "boolean");
+        event.setHeaders(headers);
+        event.setRawPath("init");
+
+        // Initialize a collection to operate on.
+        S3CollectionHandler s3CollectionHandler = new S3CollectionHandler();
+        APIGatewayV2HTTPResponse response = s3CollectionHandler.handleRequest(event, new MockContext());
+        Collection<Boolean> initCollection = JacksonHelper.fromJson(
+                response.getBody(),
+                new TypeReference<Collection<Boolean>>(){}
+        );
+
+        // Build an insert request.
+        CollectionItemPair<Boolean, Collection<Boolean>> collectionItemPair = new CollectionItemPair<>(
+                initCollection,
+                true
+        );
+        String body = JacksonHelper.toJson(collectionItemPair);
+        event.setRawPath("insert");
+        event.setBody(body);
+
+        // Invoke the insert handler.
+        APIGatewayV2HTTPResponse insertResponse = s3CollectionHandler.handleRequest(event, new MockContext());
+        assertEquals(200, insertResponse.getStatusCode());
+
+        // Test returned representation.
+        Collection<Boolean> updated = JacksonHelper.fromJson(
+                insertResponse.getBody(),
+                new TypeReference<Collection<Boolean>>(){}
+        );
+        assertTrue(updated.getValue().contains(true));
+
+        // Test S3 representation.
+        String hash = HashHelper.hashAndEncode(updated.toString());
+        InputStream stream = S3Helper.getAsInputStream(s3Client, BUCKET_NAME, "foo/".concat(hash));
+        Collection<Boolean> storedProxyCollection = JacksonHelper.fromJson(
+                stream,
+                new TypeReference<Collection<Boolean>>(){}
+        );
+        assertTrue(storedProxyCollection.getValue().contains(true));
+    }
+
+    @Test
+    public void test_insert_into_unknown_collection() {
+        APIGatewayV2HTTPEvent event = new APIGatewayV2HTTPEvent();
+        Map<String, String> params = new HashMap<>();
+        params.put("bucket", BUCKET_NAME);
+        params.put("prefix", "foo/");
+        event.setQueryStringParameters(params);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("type", "integer");
+        event.setHeaders(headers);
+        event.setRawPath("insert");
+
+        // Initialize a collection to operate on.
+        CollectionItemPair<Integer, Collection<Integer>> collectionItemPair = new CollectionItemPair<>(
+                new Collection<>(new ArrayList<>()),
+                5
+        );
+        String body = JacksonHelper.toJson(collectionItemPair);
+        event.setBody(body);
+
+        // Invoke the insert handler.
+        S3CollectionHandler s3CollectionHandler = new S3CollectionHandler();
+        APIGatewayV2HTTPResponse insertResponse = s3CollectionHandler.handleRequest(event, new MockContext());
+        assertEquals(500, insertResponse.getStatusCode());
+    }
+
+    @Test
+    public void test_remove() {
+        APIGatewayV2HTTPEvent event = new APIGatewayV2HTTPEvent();
+        Map<String, String> params = new HashMap<>();
+        params.put("bucket", BUCKET_NAME);
+        params.put("prefix", "foo/");
+        event.setQueryStringParameters(params);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("type", "integer");
+        event.setHeaders(headers);
+        event.setRawPath("init");
+
+        // Initialize a collection to operate on.
+        S3CollectionHandler s3CollectionHandler = new S3CollectionHandler();
+        APIGatewayV2HTTPResponse response = s3CollectionHandler.handleRequest(event, new MockContext());
+        Collection<Integer> initCollection = JacksonHelper.fromJson(
+                response.getBody(),
+                new TypeReference<Collection<Integer>>(){}
+        );
+
+        // Build an insert request.
+        CollectionItemPair<Integer, Collection<Integer>> collectionItemPair = new CollectionItemPair<>(
+                initCollection,
+                42
+        );
+        String body = JacksonHelper.toJson(collectionItemPair);
+        event.setRawPath("insert");
+        event.setBody(body);
+
+        // Invoke the insert handler.
+        APIGatewayV2HTTPResponse insertResponse = s3CollectionHandler.handleRequest(event, new MockContext());
+        assertEquals(200, insertResponse.getStatusCode());
+        Collection<Integer> returnedProxyCollection = JacksonHelper.fromJson(
+                insertResponse.getBody(),
+                new TypeReference<Collection<Integer>>(){}
+        );
+
+        // Add 99.
+        collectionItemPair = new CollectionItemPair<>(
+                returnedProxyCollection,
+                99
+        );
+        body = JacksonHelper.toJson(collectionItemPair);
+        event.setBody(body);
+        insertResponse = s3CollectionHandler.handleRequest(event, new MockContext());
+        returnedProxyCollection = JacksonHelper.fromJson(
+                insertResponse.getBody(),
+                new TypeReference<Collection<Integer>>(){}
+        );
+
+        // Remove 42.
+        collectionItemPair = new CollectionItemPair<>(
+                returnedProxyCollection,
+                42
+        );
+        body = JacksonHelper.toJson(collectionItemPair);
+        event.setRawPath("delete");
+        event.setBody(body);
+        APIGatewayV2HTTPResponse removeResponse = s3CollectionHandler.handleRequest(event, new MockContext());
+        assertEquals(200, removeResponse.getStatusCode());
+
+        // Test returned representation.
+        returnedProxyCollection = JacksonHelper.fromJson(
+                removeResponse.getBody(),
+                new TypeReference<Collection<Integer>>(){}
+        );
+        assertFalse(returnedProxyCollection.getValue().contains(42));
+        assertTrue(returnedProxyCollection.getValue().contains(99));
+
+        // Test S3 representation.
+        String hash = HashHelper.hashAndEncode(returnedProxyCollection.toString());
+        InputStream stream = S3Helper.getAsInputStream(s3Client, BUCKET_NAME, "foo/".concat(hash));
+        Collection<Integer> storedProxyCollection = JacksonHelper.fromJson(
+                stream,
+                new TypeReference<Collection<Integer>>(){}
+        );
+        assertFalse(storedProxyCollection.getValue().contains(42));
+        assertTrue(storedProxyCollection.getValue().contains(99));
+    }
+
+    @Test
+    public void test_member_true() {
+        APIGatewayV2HTTPEvent event = new APIGatewayV2HTTPEvent();
+        Map<String, String> params = new HashMap<>();
+        params.put("bucket", BUCKET_NAME);
+        params.put("prefix", "foo/");
+        event.setQueryStringParameters(params);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("type", "integer");
+        event.setHeaders(headers);
+        event.setRawPath("init");
+
+        // Initialize a collection to operate on.
+        S3CollectionHandler s3CollectionHandler = new S3CollectionHandler();
+        APIGatewayV2HTTPResponse response = s3CollectionHandler.handleRequest(event, new MockContext());
+        Collection<Integer> initCollection = JacksonHelper.fromJson(
+                response.getBody(),
+                new TypeReference<Collection<Integer>>(){}
+        );
+
+        // Build an insert request.
+        CollectionItemPair<Integer, Collection<Integer>> collectionItemPair = new CollectionItemPair<>(
+                initCollection,
+                42
+        );
+        String body = JacksonHelper.toJson(collectionItemPair);
+        event.setRawPath("insert");
+        event.setBody(body);
+
+        // Invoke the insert handler.
+        APIGatewayV2HTTPResponse insertResponse = s3CollectionHandler.handleRequest(event, new MockContext());
+        assertEquals(200, insertResponse.getStatusCode());
+        Collection<Integer> returnedProxyCollection = JacksonHelper.fromJson(
+                insertResponse.getBody(),
+                new TypeReference<Collection<Integer>>(){}
+        );
+
+
+        // Assert 42 is in the collection.
+        collectionItemPair = new CollectionItemPair(
+                returnedProxyCollection,
+                42
+        );
+        body = JacksonHelper.toJson(collectionItemPair);
+        event.setRawPath("member");
+        event.setBody(body);
+        APIGatewayV2HTTPResponse memberResponse = s3CollectionHandler.handleRequest(event, new MockContext());
+        assertEquals(200, memberResponse.getStatusCode());
+
+        // Test returned representation.
+        Boolean isMember = JacksonHelper.fromJson(
+                memberResponse.getBody(),
+                Boolean.class
+        );
+        assertTrue(isMember);
+    }
+
+    @Test
+    public void test_member_false() {
+        APIGatewayV2HTTPEvent event = new APIGatewayV2HTTPEvent();
+        Map<String, String> params = new HashMap<>();
+        params.put("bucket", BUCKET_NAME);
+        params.put("prefix", "foo/");
+        event.setQueryStringParameters(params);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("type", "integer");
+        event.setHeaders(headers);
+        event.setRawPath("init");
+
+        // Initialize a collection to operate on.
+        S3CollectionHandler s3CollectionHandler = new S3CollectionHandler();
+        APIGatewayV2HTTPResponse response = s3CollectionHandler.handleRequest(event, new MockContext());
+        Collection<Integer> initCollection = JacksonHelper.fromJson(
+                response.getBody(),
+                new TypeReference<Collection<Integer>>(){}
+        );
+
+        // Build an insert request.
+        CollectionItemPair<Integer, Collection<Integer>> collectionItemPair = new CollectionItemPair<>(
+                initCollection,
+                42
+        );
+        String body = JacksonHelper.toJson(collectionItemPair);
+        event.setRawPath("insert");
+        event.setBody(body);
+
+        // Invoke the insert handler.
+        APIGatewayV2HTTPResponse insertResponse = s3CollectionHandler.handleRequest(event, new MockContext());
+        assertEquals(200, insertResponse.getStatusCode());
+        Collection<Integer> returnedProxyCollection = JacksonHelper.fromJson(
+                insertResponse.getBody(),
+                new TypeReference<Collection<Integer>>(){}
+        );
+
+
+        // Assert 99 is not in the collection.
+        collectionItemPair = new CollectionItemPair(
+                returnedProxyCollection,
+                99
+        );
+        body = JacksonHelper.toJson(collectionItemPair);
+        event.setRawPath("member");
+        event.setBody(body);
+        APIGatewayV2HTTPResponse memberResponse = s3CollectionHandler.handleRequest(event, new MockContext());
+        assertEquals(200, memberResponse.getStatusCode());
+
+        // Test returned representation.
+        Boolean isMember = JacksonHelper.fromJson(
+                memberResponse.getBody(),
+                Boolean.class
+        );
+        assertFalse(isMember);
     }
 
     private String initKey() {
