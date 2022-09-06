@@ -11,7 +11,6 @@ import edu.uva.cs.concepts.lambda.LambdaActionFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-// appropriat factory creatd ar runtime
 public class LambdaS3ActionFactory<T> extends LambdaCollectionActionFactory<T> {
 
     @Override

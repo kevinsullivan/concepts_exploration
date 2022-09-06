@@ -9,7 +9,9 @@ import edu.uva.cs.concepts.utils.VariableManager;
 import java.util.Map;
 
 /**
- * Abstract Factory to create the pieces needed to implement concepts in AWS lambda
+ * Abstract Factory to create the pieces needed to implement concepts in AWS lambda.
+ *
+ * The appropriate factory will be created at runtime.
  */
 public abstract class LambdaActionFactory<T extends Concept> {
 

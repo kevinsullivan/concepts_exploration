@@ -118,6 +118,12 @@ public abstract class CollectionHandler implements RequestHandler<APIGatewayV2HT
         return response;
     }
 
+    /**
+     * NB: Ideally I wouldn't need two lookups, but I have not quite worked through
+     * the type erasure problems.
+     * @param type
+     * @return
+     */
     private LambdaCollectionActionFactory createFactory(String type) {
         if(type.equalsIgnoreCase("string")) {
             LambdaCollectionActionFactory<String> factory = createFactory();
