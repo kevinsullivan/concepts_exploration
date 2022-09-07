@@ -7,7 +7,7 @@ class CollectionInitalState extends CollectionState {
 
   CollectionInitalState() {
     final builder = gen.CollectionBuilder();
-    builder.value = ListBuilder<int>([]);
+    builder.value = ListBuilder([]);
     initial = builder.build();
   }
 }

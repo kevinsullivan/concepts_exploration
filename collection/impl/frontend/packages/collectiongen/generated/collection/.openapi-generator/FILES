@@ -4,6 +4,8 @@ README.md
 analysis_options.yaml
 doc/Collection.md
 doc/CollectionApi.md
+doc/CollectionBool.md
+doc/CollectionInt.md
 doc/CollectionItemPair.md
 lib/collectiongen.dart
 lib/src/api.dart
@@ -16,10 +18,14 @@ lib/src/auth/bearer_auth.dart
 lib/src/auth/oauth.dart
 lib/src/date_serializer.dart
 lib/src/model/collection.dart
+lib/src/model/collection_bool.dart
+lib/src/model/collection_int.dart
 lib/src/model/collection_item_pair.dart
 lib/src/model/date.dart
 lib/src/serializers.dart
 pubspec.yaml
 test/collection_api_test.dart
+test/collection_bool_test.dart
+test/collection_int_test.dart
 test/collection_item_pair_test.dart
 test/collection_test.dart

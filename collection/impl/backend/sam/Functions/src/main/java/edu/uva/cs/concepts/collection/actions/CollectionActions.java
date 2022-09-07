@@ -13,6 +13,6 @@ public abstract class CollectionActions<T> extends Actions<Collection<T>> {
 
     public abstract Collection<T> init();
     public abstract Collection<T> insert(Collection<T> collection, T item);
-    public abstract Collection<T> delete(Collection<T> collection, T item);
+    public abstract Collection<T> remove(Collection<T> collection, T item);
     public abstract boolean member(Collection<T> collection, T item);
 }

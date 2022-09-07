@@ -1,4 +1,12 @@
 {
     "editor.wordWrapColumn": 120,
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "maven.view": "flat",
+    "java.configuration.runtimes": [
+    {
+        "name": "JavaSE-11",
+        "path": "/root/.sdkman/candidates/java/11.0.16-amzn",
+        "default": true
+      },
+    ]
 }

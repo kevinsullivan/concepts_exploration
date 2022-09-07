@@ -103,7 +103,7 @@ class CollectionViewer<T> extends StatelessWidget {
                 // UI REPRESENTATION OF TILE
                 // This cast might not be necessary when collection is generic.
                 title: UIRepresentation<T>.fromT(
-                    collection.value!.elementAt(index) as T));
+                    collection.value!.elementAt(index)!.asBool as T));
           },
         );
       } else {

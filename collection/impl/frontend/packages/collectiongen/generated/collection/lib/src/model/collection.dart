@@ -3,6 +3,7 @@
 //
 
 import 'package:built_collection/built_collection.dart';
+import 'package:built_value/json_object.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
@@ -14,7 +15,7 @@ part 'collection.g.dart';
 /// * [value] 
 abstract class Collection implements Built<Collection, CollectionBuilder> {
     @BuiltValueField(wireName: r'value')
-    BuiltList<int>? get value;
+    BuiltList<JsonObject?>? get value;
 
     Collection._();
 
@@ -42,7 +43,7 @@ class _$CollectionSerializer implements StructuredSerializer<Collection> {
             result
                 ..add(r'value')
                 ..add(serializers.serialize(object.value,
-                    specifiedType: const FullType(BuiltList, [FullType(int)])));
+                    specifiedType: const FullType(BuiltList, [FullType.nullable(JsonObject)])));
         }
         return result;
     }
@@ -61,7 +62,7 @@ class _$CollectionSerializer implements StructuredSerializer<Collection> {
             switch (key) {
                 case r'value':
                     final valueDes = serializers.deserialize(value,
-                        specifiedType: const FullType(BuiltList, [FullType(int)])) as BuiltList<int>;
+                        specifiedType: const FullType(BuiltList, [FullType.nullable(JsonObject)])) as BuiltList<JsonObject?>;
                     result.value.replace(valueDes);
                     break;
             }

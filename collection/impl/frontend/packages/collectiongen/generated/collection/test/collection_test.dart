@@ -7,7 +7,7 @@ void main() {
   // TODO add properties to the builder and call build()
 
   group(Collection, () {
-    // BuiltList<int> value
+    // BuiltList<JsonObject> value
     test('to test the property `value`', () async {
       // TODO
     });

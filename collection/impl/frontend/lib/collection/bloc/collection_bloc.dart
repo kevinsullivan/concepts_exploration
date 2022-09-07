@@ -2,6 +2,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:collectiongen/collectiongen.dart' as gen;
 import 'package:bloc/bloc.dart';
 import 'package:collectionsite/collection/collection_repository.dart';
+import 'package:built_value/json_object.dart';
 
 part 'collection_state.dart';
 part 'collection_event.dart';
@@ -26,8 +27,7 @@ class CollectionBloc extends Bloc<CollectionEvent, CollectionState> {
 
   void _insert(Insert event, Emitter<CollectionState> emit) async {
     final cipBuilder = gen.CollectionItemPairBuilder();
-    cipBuilder.item = event.toInsert;
-
+    cipBuilder.item = JsonObject(event.toInsert);
     final cBuilder = gen.CollectionBuilder();
     cBuilder.value = active.value!.toBuilder();
 
@@ -42,8 +42,7 @@ class CollectionBloc extends Bloc<CollectionEvent, CollectionState> {
 
   void _remove(Remove event, Emitter<CollectionState> emit) async {
     final cipBuilder = gen.CollectionItemPairBuilder();
-    cipBuilder.item = event.toRemove;
-
+    cipBuilder.item = JsonObject(event.toRemove);
     final cBuilder = gen.CollectionBuilder();
     cBuilder.value = active.value!.toBuilder();
 
@@ -59,7 +58,7 @@ class CollectionBloc extends Bloc<CollectionEvent, CollectionState> {
 
   void _member(Member event, Emitter<CollectionState> emit) async {
     final cipBuilder = gen.CollectionItemPairBuilder();
-    cipBuilder.item = event.possibleMember;
+    cipBuilder.item = JsonObject(event.possibleMember);
 
     final cBuilder = gen.CollectionBuilder();
     cBuilder.value = active.value!.toBuilder();

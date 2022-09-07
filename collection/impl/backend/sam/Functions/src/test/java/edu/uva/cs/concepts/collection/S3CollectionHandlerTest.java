@@ -269,7 +269,7 @@ public class S3CollectionHandlerTest {
                 42
         );
         body = JacksonHelper.toJson(collectionItemPair);
-        event.setPath("delete");
+        event.setPath("remove");
         event.setBody(body);
         APIGatewayProxyResponseEvent removeResponse = s3CollectionHandler.handleRequest(event, new MockContext());
         assertEquals(200, removeResponse.getStatusCode());

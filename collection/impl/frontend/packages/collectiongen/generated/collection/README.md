@@ -78,6 +78,8 @@ Class | Method | HTTP request | Description
 ## Documentation For Models
 
  - [Collection](doc/Collection.md)
+ - [CollectionBool](doc/CollectionBool.md)
+ - [CollectionInt](doc/CollectionInt.md)
  - [CollectionItemPair](doc/CollectionItemPair.md)
 
 

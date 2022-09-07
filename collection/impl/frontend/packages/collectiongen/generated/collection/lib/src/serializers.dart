@@ -13,12 +13,16 @@ import 'package:collectiongen/src/date_serializer.dart';
 import 'package:collectiongen/src/model/date.dart';
 
 import 'package:collectiongen/src/model/collection.dart';
+import 'package:collectiongen/src/model/collection_bool.dart';
+import 'package:collectiongen/src/model/collection_int.dart';
 import 'package:collectiongen/src/model/collection_item_pair.dart';
 
 part 'serializers.g.dart';
 
 @SerializersFor([
   Collection,
+  CollectionBool,
+  CollectionInt,
   CollectionItemPair,
 ])
 Serializers serializers = (_$serializers.toBuilder()

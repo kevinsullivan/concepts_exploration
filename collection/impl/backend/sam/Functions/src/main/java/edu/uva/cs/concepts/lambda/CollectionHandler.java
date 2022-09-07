@@ -57,11 +57,11 @@ public abstract class CollectionHandler implements RequestHandler<APIGatewayProx
                 Object inputItem = inputCollectionItemPair.getItem();
                 Collection outputCollection = collectionActions.insert(inputCollection, inputItem);
                 serializedOutput = JacksonHelper.toJson(outputCollection);
-            } else if (path.toLowerCase().endsWith("delete")) {
+            } else if (path.toLowerCase().endsWith("remove")) {
                 CollectionItemPair inputCollectionItemPair = (CollectionItemPair) JacksonHelper.fromJson(body, cipTypeMap.get(type));
                 Collection inputCollection = inputCollectionItemPair.getCollection();
                 Object inputItem = inputCollectionItemPair.getItem();
-                Collection outputCollection = collectionActions.delete(inputCollection, inputItem);
+                Collection outputCollection = collectionActions.remove(inputCollection, inputItem);
                 serializedOutput = JacksonHelper.toJson(outputCollection);
             } else if (path.toLowerCase().endsWith("member")) {
                 CollectionItemPair inputCollectionItemPair = (CollectionItemPair) JacksonHelper.fromJson(body, cipTypeMap.get(type));

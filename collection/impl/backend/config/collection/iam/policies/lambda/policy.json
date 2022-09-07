@@ -1,0 +1,36 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowListingObjectsFromS3Bucket",
+      "Effect": "Allow",
+      "Action": ["s3:ListBucket", "s3:GetBucketLocation"],
+      "Resource": "arn:aws:s3:::jackson-concepts-concepts"
+    },
+    {
+      "Sid": "AllowGettingObjectsFromS3Bucket",
+      "Effect": "Allow",
+      "Action": [
+        "s3:Get*"
+      ],
+      "Resource": "arn:aws:s3:::jackson-concepts-concepts/collection/Collection/*"
+    },
+    {
+      "Sid": "AllowPuttingObjectsToS3Bucket",
+      "Effect": "Allow",
+      "Action": [
+        "s3:Put*"
+      ],
+      "Resource": "arn:aws:s3:::jackson-concepts-concepts/collection/Collection/*"
+    },
+    {
+      "Sid": "AllowDeletingObjectsFromS3Bucket",
+      "Effect": "Allow",
+      "Action": [
+        "s3:DeleteObject",
+        "s3:DeleteObjectVersion"
+      ],
+      "Resource": "arn:aws:s3:::jackson-concepts-concepts/collection/Collection/*"
+    }
+  ]
+}

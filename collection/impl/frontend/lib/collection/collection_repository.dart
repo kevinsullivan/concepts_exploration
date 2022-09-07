@@ -1,6 +1,6 @@
 import 'package:collectiongen/collectiongen.dart' as gen;
 
-const basePath = 'https://uakblzxgqj.execute-api.us-east-1.amazonaws.com/v1';
+const basePath = 'https://dry7fr8g0h.execute-api.us-east-1.amazonaws.com/v1';
 
 class CollectionRepository {
   final generator = gen.Collectiongen(basePathOverride: basePath);
@@ -12,28 +12,35 @@ class CollectionRepository {
   }
 
   Future<gen.Collection> init() async {
-    final response = generator.getCollectionApi().init();
+    Map<String, String> headers = {'t': 'boolean'};
+    final response = generator.getCollectionApi().init(headers: headers);
     final responseState = (await response).data;
     return responseState!;
   }
 
   Future<gen.Collection> insert(gen.CollectionItemPair arg) async {
-    final response =
-        generator.getCollectionApi().insert(collectionItemPair: arg);
+    Map<String, String> headers = {'t': 'boolean'};
+    final response = generator
+        .getCollectionApi()
+        .insert(collectionItemPair: arg, headers: headers);
     final responseState = (await response).data;
     return responseState!;
   }
 
   Future<gen.Collection> remove(gen.CollectionItemPair arg) async {
-    final response =
-        generator.getCollectionApi().remove(collectionItemPair: arg);
+    Map<String, String> headers = {'t': 'boolean'};
+    final response = generator
+        .getCollectionApi()
+        .remove(collectionItemPair: arg, headers: headers);
     final responseState = (await response).data;
     return responseState!;
   }
 
   Future<bool> member(gen.CollectionItemPair arg) async {
-    final response =
-        generator.getCollectionApi().member(collectionItemPair: arg);
+    Map<String, String> headers = {'t': 'boolean'};
+    final response = generator
+        .getCollectionApi()
+        .member(collectionItemPair: arg, headers: headers);
     final responseState = (await response).data;
     return responseState!;
   }

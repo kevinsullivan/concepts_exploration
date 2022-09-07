@@ -12,4 +12,6 @@ export 'package:collectiongen/src/model/date.dart';
 export 'package:collectiongen/src/api/collection_api.dart';
 
 export 'package:collectiongen/src/model/collection.dart';
+export 'package:collectiongen/src/model/collection_bool.dart';
+export 'package:collectiongen/src/model/collection_int.dart';
 export 'package:collectiongen/src/model/collection_item_pair.dart';

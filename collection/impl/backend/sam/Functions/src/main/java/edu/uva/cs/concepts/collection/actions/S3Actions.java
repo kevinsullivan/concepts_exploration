@@ -169,7 +169,7 @@ public class S3Actions<T> extends CollectionActions<T> {
     }
 
     @Override
-    public Collection<T> delete(Collection<T> collection, T item) {
+    public Collection<T> remove(Collection<T> collection, T item) {
         logger.info("Remove Start...");
 
         logger.info("Use the request collection proxy to get the underlying S3 object.");

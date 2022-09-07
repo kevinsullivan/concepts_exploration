@@ -3,6 +3,7 @@
 //
 
 import 'package:collectiongen/src/model/collection.dart';
+import 'package:built_value/json_object.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
@@ -12,13 +13,14 @@ part 'collection_item_pair.g.dart';
 ///
 /// Properties:
 /// * [collection] 
-/// * [item] 
+/// * [item] - Can be any value - string, number, boolean, array or object.
 abstract class CollectionItemPair implements Built<CollectionItemPair, CollectionItemPairBuilder> {
     @BuiltValueField(wireName: r'collection')
     Collection? get collection;
 
+    /// Can be any value - string, number, boolean, array or object.
     @BuiltValueField(wireName: r'item')
-    int? get item;
+    JsonObject? get item;
 
     CollectionItemPair._();
 
@@ -52,7 +54,7 @@ class _$CollectionItemPairSerializer implements StructuredSerializer<CollectionI
             result
                 ..add(r'item')
                 ..add(serializers.serialize(object.item,
-                    specifiedType: const FullType(int)));
+                    specifiedType: const FullType.nullable(JsonObject)));
         }
         return result;
     }
@@ -76,7 +78,8 @@ class _$CollectionItemPairSerializer implements StructuredSerializer<CollectionI
                     break;
                 case r'item':
                     final valueDes = serializers.deserialize(value,
-                        specifiedType: const FullType(int)) as int;
+                        specifiedType: const FullType.nullable(JsonObject)) as JsonObject?;
+                    if (valueDes == null) continue;
                     result.item = valueDes;
                     break;
             }

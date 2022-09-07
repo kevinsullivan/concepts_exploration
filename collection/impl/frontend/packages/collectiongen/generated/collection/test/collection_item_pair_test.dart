@@ -12,7 +12,8 @@ void main() {
       // TODO
     });
 
-    // int item
+    // Can be any value - string, number, boolean, array or object.
+    // JsonObject item
     test('to test the property `item`', () async {
       // TODO
     });
