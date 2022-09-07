@@ -24,9 +24,9 @@ paths:
       x-amazon-apigateway-integration:
         httpMethod: post
         type: aws_proxy
-        credentials: arn:aws:iam::${AWS::AccountId}:role/collection_collection_agw_role
-        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:collection/invocations
+        credentials: arn:aws:iam::${AWS::AccountId}:role/collection_insert_agw_role
         passthroughBehavior : "when_no_match"
+        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:insert/invocations
         responses:
           4\\d{2}: 
             statusCode: 400
@@ -99,8 +99,9 @@ paths:
       x-amazon-apigateway-integration:
         httpMethod: post
         type: aws_proxy
-        credentials: arn:aws:iam::${AWS::AccountId}:role/collection_collection_agw_role
-        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:collection/invocations
+        credentials: arn:aws:iam::${AWS::AccountId}:role/collection_remove_agw_role
+        passthroughBehavior : "when_no_match"
+        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:remove/invocations
         responses:
           4\\d{2}:
             statusCode: 400
@@ -173,8 +174,9 @@ paths:
       x-amazon-apigateway-integration:
         httpMethod: post
         type: aws_proxy
-        credentials: arn:aws:iam::${AWS::AccountId}:role/collection_collection_agw_role
-        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:collection/invocations
+        credentials: arn:aws:iam::${AWS::AccountId}:role/collection_init_agw_role
+        passthroughBehavior : "when_no_match"
+        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:init/invocations
         responses:
           4\\d{2}:
             statusCode: 400
@@ -260,9 +262,9 @@ paths:
       x-amazon-apigateway-integration:
         httpMethod: post
         type: aws_proxy
+        credentials: arn:aws:iam::${AWS::AccountId}:role/collection_member_agw_role
         passthroughBehavior : "when_no_match"
-        credentials: arn:aws:iam::${AWS::AccountId}:role/collection_collection_agw_role
-        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:collection/invocations
+        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:member/invocations
         responses:
           4\\d{2}:
             statusCode: 400

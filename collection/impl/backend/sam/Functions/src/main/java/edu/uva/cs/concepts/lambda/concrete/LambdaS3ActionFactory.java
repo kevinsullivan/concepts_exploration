@@ -1,12 +1,10 @@
 package edu.uva.cs.concepts.lambda.concrete;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.InjectableValues;
 import edu.uva.cs.concepts.*;
 import edu.uva.cs.concepts.collection.Collection;
 import edu.uva.cs.concepts.collection.CollectionItemPair;
 import edu.uva.cs.concepts.collection.actions.S3Actions;
-import edu.uva.cs.concepts.lambda.LambdaActionFactory;
 
 import java.util.HashMap;
 import java.util.Map;

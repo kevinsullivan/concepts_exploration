@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+URL=https://dry7fr8g0h.execute-api.us-east-1.amazonaws.com/v1/Collection/init
+
+curl \
+ --request POST \
+ --header "T: boolean" \
+ "${URL}?bucket=jackson-concepts-concepts&prefix=collection/Collection/"
+ 
+
+

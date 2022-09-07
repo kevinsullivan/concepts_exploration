@@ -1,8 +1,6 @@
 package edu.uva.cs.concepts.utils;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
-import edu.uva.cs.concepts.collection.gen.model.CollectionItemPair;
-import software.amazon.awssdk.utils.StringInputStream;
 
 import java.util.Map;
 
@@ -33,6 +31,11 @@ public class EventValidator {
 
     public static boolean isValidInitEvent(APIGatewayV2HTTPEvent event) {
         if(event == null) {
+            return false;
+        }
+
+        Map<String, String> headers = event.getHeaders();
+        if(headers == null || !headers.containsKey("T")) {
             return false;
         }
 

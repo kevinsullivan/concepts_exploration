@@ -1,7 +1,7 @@
 package edu.uva.cs.concepts.collection;
 import com.adobe.testing.s3mock.junit5.S3MockExtension;
-import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
-import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.fasterxml.jackson.core.type.TypeReference;
 import edu.uva.cs.concepts.MockContext;
 import edu.uva.cs.concepts.lambda.concrete.S3CollectionHandler;
@@ -62,18 +62,18 @@ public class S3CollectionHandlerTest {
 
     @Test
     public void test_init() {
-        APIGatewayV2HTTPEvent event = new APIGatewayV2HTTPEvent();
+        APIGatewayProxyRequestEvent event = new APIGatewayProxyRequestEvent();
         Map<String, String> params = new HashMap<>();
         params.put("bucket", BUCKET_NAME);
         params.put("prefix", "foo/");
         event.setQueryStringParameters(params);
         Map<String, String> headers = new HashMap<>();
-        headers.put("type", "Integer");
+        headers.put("t", "Integer");
         event.setHeaders(headers);
-        event.setRawPath("init");
+        event.setPath("init");
 
         S3CollectionHandler s3CollectionHandler = new S3CollectionHandler();
-        APIGatewayV2HTTPResponse response = s3CollectionHandler.handleRequest(event, new MockContext());
+        APIGatewayProxyResponseEvent response = s3CollectionHandler.handleRequest(event, new MockContext());
         assertEquals(200, response.getStatusCode());
 
         // Test the returned representation.
@@ -89,19 +89,19 @@ public class S3CollectionHandlerTest {
 
     @Test
     public void test_insert_int() {
-        APIGatewayV2HTTPEvent event = new APIGatewayV2HTTPEvent();
+        APIGatewayProxyRequestEvent event = new APIGatewayProxyRequestEvent();
         Map<String, String> params = new HashMap<>();
         params.put("bucket", BUCKET_NAME);
         params.put("prefix", "foo/");
         event.setQueryStringParameters(params);
         Map<String, String> headers = new HashMap<>();
-        headers.put("type", "integer");
+        headers.put("t", "integer");
         event.setHeaders(headers);
-        event.setRawPath("init");
+        event.setPath("init");
 
         // Initialize a collection to operate on.
         S3CollectionHandler s3CollectionHandler = new S3CollectionHandler();
-        APIGatewayV2HTTPResponse response = s3CollectionHandler.handleRequest(event, new MockContext());
+        APIGatewayProxyResponseEvent response = s3CollectionHandler.handleRequest(event, new MockContext());
         Collection<Integer> initCollection = JacksonHelper.fromJson(
                 response.getBody(),
                 new TypeReference<Collection<Integer>>(){}
@@ -113,11 +113,11 @@ public class S3CollectionHandlerTest {
                 42
         );
         String body = JacksonHelper.toJson(collectionItemPair);
-        event.setRawPath("insert");
+        event.setPath("insert");
         event.setBody(body);
 
         // Invoke the insert handler.
-        APIGatewayV2HTTPResponse insertResponse = s3CollectionHandler.handleRequest(event, new MockContext());
+        APIGatewayProxyResponseEvent insertResponse = s3CollectionHandler.handleRequest(event, new MockContext());
         assertEquals(200, insertResponse.getStatusCode());
 
         // Test returned representation.
@@ -139,19 +139,19 @@ public class S3CollectionHandlerTest {
 
     @Test
     public void test_insert_bool() {
-        APIGatewayV2HTTPEvent event = new APIGatewayV2HTTPEvent();
+        APIGatewayProxyRequestEvent event = new APIGatewayProxyRequestEvent();
         Map<String, String> params = new HashMap<>();
         params.put("bucket", BUCKET_NAME);
         params.put("prefix", "foo/");
         event.setQueryStringParameters(params);
         Map<String, String> headers = new HashMap<>();
-        headers.put("type", "boolean");
+        headers.put("t", "boolean");
         event.setHeaders(headers);
-        event.setRawPath("init");
+        event.setPath("init");
 
         // Initialize a collection to operate on.
         S3CollectionHandler s3CollectionHandler = new S3CollectionHandler();
-        APIGatewayV2HTTPResponse response = s3CollectionHandler.handleRequest(event, new MockContext());
+        APIGatewayProxyResponseEvent response = s3CollectionHandler.handleRequest(event, new MockContext());
         Collection<Boolean> initCollection = JacksonHelper.fromJson(
                 response.getBody(),
                 new TypeReference<Collection<Boolean>>(){}
@@ -163,11 +163,11 @@ public class S3CollectionHandlerTest {
                 true
         );
         String body = JacksonHelper.toJson(collectionItemPair);
-        event.setRawPath("insert");
+        event.setPath("insert");
         event.setBody(body);
 
         // Invoke the insert handler.
-        APIGatewayV2HTTPResponse insertResponse = s3CollectionHandler.handleRequest(event, new MockContext());
+        APIGatewayProxyResponseEvent insertResponse = s3CollectionHandler.handleRequest(event, new MockContext());
         assertEquals(200, insertResponse.getStatusCode());
 
         // Test returned representation.
@@ -189,15 +189,15 @@ public class S3CollectionHandlerTest {
 
     @Test
     public void test_insert_into_unknown_collection() {
-        APIGatewayV2HTTPEvent event = new APIGatewayV2HTTPEvent();
+        APIGatewayProxyRequestEvent event = new APIGatewayProxyRequestEvent();
         Map<String, String> params = new HashMap<>();
         params.put("bucket", BUCKET_NAME);
         params.put("prefix", "foo/");
         event.setQueryStringParameters(params);
         Map<String, String> headers = new HashMap<>();
-        headers.put("type", "integer");
+        headers.put("t", "integer");
         event.setHeaders(headers);
-        event.setRawPath("insert");
+        event.setPath("insert");
 
         // Initialize a collection to operate on.
         CollectionItemPair<Integer, Collection<Integer>> collectionItemPair = new CollectionItemPair<>(
@@ -209,25 +209,25 @@ public class S3CollectionHandlerTest {
 
         // Invoke the insert handler.
         S3CollectionHandler s3CollectionHandler = new S3CollectionHandler();
-        APIGatewayV2HTTPResponse insertResponse = s3CollectionHandler.handleRequest(event, new MockContext());
+        APIGatewayProxyResponseEvent insertResponse = s3CollectionHandler.handleRequest(event, new MockContext());
         assertEquals(500, insertResponse.getStatusCode());
     }
 
     @Test
     public void test_remove() {
-        APIGatewayV2HTTPEvent event = new APIGatewayV2HTTPEvent();
+        APIGatewayProxyRequestEvent event = new APIGatewayProxyRequestEvent();
         Map<String, String> params = new HashMap<>();
         params.put("bucket", BUCKET_NAME);
         params.put("prefix", "foo/");
         event.setQueryStringParameters(params);
         Map<String, String> headers = new HashMap<>();
-        headers.put("type", "integer");
+        headers.put("t", "integer");
         event.setHeaders(headers);
-        event.setRawPath("init");
+        event.setPath("init");
 
         // Initialize a collection to operate on.
         S3CollectionHandler s3CollectionHandler = new S3CollectionHandler();
-        APIGatewayV2HTTPResponse response = s3CollectionHandler.handleRequest(event, new MockContext());
+        APIGatewayProxyResponseEvent response = s3CollectionHandler.handleRequest(event, new MockContext());
         Collection<Integer> initCollection = JacksonHelper.fromJson(
                 response.getBody(),
                 new TypeReference<Collection<Integer>>(){}
@@ -239,11 +239,11 @@ public class S3CollectionHandlerTest {
                 42
         );
         String body = JacksonHelper.toJson(collectionItemPair);
-        event.setRawPath("insert");
+        event.setPath("insert");
         event.setBody(body);
 
         // Invoke the insert handler.
-        APIGatewayV2HTTPResponse insertResponse = s3CollectionHandler.handleRequest(event, new MockContext());
+        APIGatewayProxyResponseEvent insertResponse = s3CollectionHandler.handleRequest(event, new MockContext());
         assertEquals(200, insertResponse.getStatusCode());
         Collection<Integer> returnedProxyCollection = JacksonHelper.fromJson(
                 insertResponse.getBody(),
@@ -269,9 +269,9 @@ public class S3CollectionHandlerTest {
                 42
         );
         body = JacksonHelper.toJson(collectionItemPair);
-        event.setRawPath("delete");
+        event.setPath("delete");
         event.setBody(body);
-        APIGatewayV2HTTPResponse removeResponse = s3CollectionHandler.handleRequest(event, new MockContext());
+        APIGatewayProxyResponseEvent removeResponse = s3CollectionHandler.handleRequest(event, new MockContext());
         assertEquals(200, removeResponse.getStatusCode());
 
         // Test returned representation.
@@ -295,19 +295,19 @@ public class S3CollectionHandlerTest {
 
     @Test
     public void test_member_true() {
-        APIGatewayV2HTTPEvent event = new APIGatewayV2HTTPEvent();
+        APIGatewayProxyRequestEvent event = new APIGatewayProxyRequestEvent();
         Map<String, String> params = new HashMap<>();
         params.put("bucket", BUCKET_NAME);
         params.put("prefix", "foo/");
         event.setQueryStringParameters(params);
         Map<String, String> headers = new HashMap<>();
-        headers.put("type", "integer");
+        headers.put("t", "integer");
         event.setHeaders(headers);
-        event.setRawPath("init");
+        event.setPath("init");
 
         // Initialize a collection to operate on.
         S3CollectionHandler s3CollectionHandler = new S3CollectionHandler();
-        APIGatewayV2HTTPResponse response = s3CollectionHandler.handleRequest(event, new MockContext());
+        APIGatewayProxyResponseEvent response = s3CollectionHandler.handleRequest(event, new MockContext());
         Collection<Integer> initCollection = JacksonHelper.fromJson(
                 response.getBody(),
                 new TypeReference<Collection<Integer>>(){}
@@ -319,11 +319,11 @@ public class S3CollectionHandlerTest {
                 42
         );
         String body = JacksonHelper.toJson(collectionItemPair);
-        event.setRawPath("insert");
+        event.setPath("insert");
         event.setBody(body);
 
         // Invoke the insert handler.
-        APIGatewayV2HTTPResponse insertResponse = s3CollectionHandler.handleRequest(event, new MockContext());
+        APIGatewayProxyResponseEvent insertResponse = s3CollectionHandler.handleRequest(event, new MockContext());
         assertEquals(200, insertResponse.getStatusCode());
         Collection<Integer> returnedProxyCollection = JacksonHelper.fromJson(
                 insertResponse.getBody(),
@@ -337,9 +337,9 @@ public class S3CollectionHandlerTest {
                 42
         );
         body = JacksonHelper.toJson(collectionItemPair);
-        event.setRawPath("member");
+        event.setPath("member");
         event.setBody(body);
-        APIGatewayV2HTTPResponse memberResponse = s3CollectionHandler.handleRequest(event, new MockContext());
+        APIGatewayProxyResponseEvent memberResponse = s3CollectionHandler.handleRequest(event, new MockContext());
         assertEquals(200, memberResponse.getStatusCode());
 
         // Test returned representation.
@@ -352,19 +352,19 @@ public class S3CollectionHandlerTest {
 
     @Test
     public void test_member_false() {
-        APIGatewayV2HTTPEvent event = new APIGatewayV2HTTPEvent();
+        APIGatewayProxyRequestEvent event = new APIGatewayProxyRequestEvent();
         Map<String, String> params = new HashMap<>();
         params.put("bucket", BUCKET_NAME);
         params.put("prefix", "foo/");
         event.setQueryStringParameters(params);
         Map<String, String> headers = new HashMap<>();
-        headers.put("type", "integer");
+        headers.put("t", "integer");
         event.setHeaders(headers);
-        event.setRawPath("init");
+        event.setPath("init");
 
         // Initialize a collection to operate on.
         S3CollectionHandler s3CollectionHandler = new S3CollectionHandler();
-        APIGatewayV2HTTPResponse response = s3CollectionHandler.handleRequest(event, new MockContext());
+        APIGatewayProxyResponseEvent response = s3CollectionHandler.handleRequest(event, new MockContext());
         Collection<Integer> initCollection = JacksonHelper.fromJson(
                 response.getBody(),
                 new TypeReference<Collection<Integer>>(){}
@@ -376,11 +376,11 @@ public class S3CollectionHandlerTest {
                 42
         );
         String body = JacksonHelper.toJson(collectionItemPair);
-        event.setRawPath("insert");
+        event.setPath("insert");
         event.setBody(body);
 
         // Invoke the insert handler.
-        APIGatewayV2HTTPResponse insertResponse = s3CollectionHandler.handleRequest(event, new MockContext());
+        APIGatewayProxyResponseEvent insertResponse = s3CollectionHandler.handleRequest(event, new MockContext());
         assertEquals(200, insertResponse.getStatusCode());
         Collection<Integer> returnedProxyCollection = JacksonHelper.fromJson(
                 insertResponse.getBody(),
@@ -394,9 +394,9 @@ public class S3CollectionHandlerTest {
                 99
         );
         body = JacksonHelper.toJson(collectionItemPair);
-        event.setRawPath("member");
+        event.setPath("member");
         event.setBody(body);
-        APIGatewayV2HTTPResponse memberResponse = s3CollectionHandler.handleRequest(event, new MockContext());
+        APIGatewayProxyResponseEvent memberResponse = s3CollectionHandler.handleRequest(event, new MockContext());
         assertEquals(200, memberResponse.getStatusCode());
 
         // Test returned representation.

@@ -2,17 +2,15 @@ package edu.uva.cs.concepts.lambda;
 
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
-import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.fasterxml.jackson.core.type.TypeReference;
 import edu.uva.cs.concepts.*;
 import edu.uva.cs.concepts.collection.Collection;
 import edu.uva.cs.concepts.collection.CollectionItemPair;
 import edu.uva.cs.concepts.collection.actions.CollectionActions;
 import edu.uva.cs.concepts.lambda.concrete.LambdaCollectionActionFactory;
-import edu.uva.cs.concepts.utils.EventValidator;
 import edu.uva.cs.concepts.utils.JacksonHelper;
-import edu.uva.cs.concepts.utils.VariableManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,25 +18,21 @@ import java.util.Map;
 /**
  * Insert element into the collection.
  */
-public abstract class CollectionHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV2HTTPResponse> {
+public abstract class CollectionHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
     @Override
-    public APIGatewayV2HTTPResponse handleRequest(APIGatewayV2HTTPEvent apiGatewayV2HTTPEvent, com.amazonaws.services.lambda.runtime.Context context) {
+    public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent apiGatewayProxyRequestEvent, com.amazonaws.services.lambda.runtime.Context context) {
         LambdaLogger logger = context.getLogger();
         logger.log("Starting CollectionHandler...");
 
-        APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse();
-        if(!EventValidator.isValidInitEvent(apiGatewayV2HTTPEvent) && !EventValidator.isValidEvent(apiGatewayV2HTTPEvent)) {
-            logger.log("Invalid init event.");
-            response.setStatusCode(500);
-            return response;
-        }
+        // TODO: Add back event validation logic.
+        APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
         logger.log("Environment and variable manager are valid.");
 
-        String type = apiGatewayV2HTTPEvent.getHeaders().get("type");
+        String type = apiGatewayProxyRequestEvent.getHeaders().get("t");
         LambdaCollectionActionFactory<?> actionFactory = createFactory(type);
-        Context collectionContext = actionFactory.createContext(apiGatewayV2HTTPEvent);
-        Configuration configuration = actionFactory.createConfiguration(apiGatewayV2HTTPEvent);
+        Context collectionContext = actionFactory.createContext(apiGatewayProxyRequestEvent);
+        Configuration configuration = actionFactory.createConfiguration(apiGatewayProxyRequestEvent);
         CollectionActions collectionActions = (CollectionActions) actionFactory.createActions(configuration, collectionContext);
         Map<String, Map<String, TypeReference>> typeMap = actionFactory.createTypeMaps();
         Map<String, TypeReference> cipTypeMap = typeMap.getOrDefault("collectionitempair", java.util.Collections.emptyMap());
@@ -50,52 +44,38 @@ public abstract class CollectionHandler implements RequestHandler<APIGatewayV2HT
         }
 
         String serializedOutput;
-        String body = apiGatewayV2HTTPEvent.getBody();
-        String path = apiGatewayV2HTTPEvent.getRawPath();
-        if(path.equalsIgnoreCase("init")) {
-            Collection<?> outputCollection = collectionActions.init();
-            serializedOutput = JacksonHelper.toJson(outputCollection);
-        } else if(path.equalsIgnoreCase("insert")) {
-            CollectionItemPair inputCollectionItemPair = (CollectionItemPair) JacksonHelper.fromJson(body, cipTypeMap.get(type));
-            Collection inputCollection = inputCollectionItemPair.getCollection();
-            Object inputItem = inputCollectionItemPair.getItem();
-            Collection outputCollection = null;
-            try {
-                outputCollection = collectionActions.insert(inputCollection, inputItem);
-            } catch(RuntimeException e) {
-                logger.log("failed to run action");
+        String body = apiGatewayProxyRequestEvent.getBody();
+        String path = apiGatewayProxyRequestEvent.getPath();
+        // TODO: Be smarter about this...
+        try {
+            if (path.toLowerCase().endsWith("init")) {
+                Collection<?> outputCollection = collectionActions.init();
+                serializedOutput = JacksonHelper.toJson(outputCollection);
+            } else if (path.toLowerCase().endsWith("insert")) {
+                CollectionItemPair inputCollectionItemPair = (CollectionItemPair) JacksonHelper.fromJson(body, cipTypeMap.get(type));
+                Collection inputCollection = inputCollectionItemPair.getCollection();
+                Object inputItem = inputCollectionItemPair.getItem();
+                Collection outputCollection = collectionActions.insert(inputCollection, inputItem);
+                serializedOutput = JacksonHelper.toJson(outputCollection);
+            } else if (path.toLowerCase().endsWith("delete")) {
+                CollectionItemPair inputCollectionItemPair = (CollectionItemPair) JacksonHelper.fromJson(body, cipTypeMap.get(type));
+                Collection inputCollection = inputCollectionItemPair.getCollection();
+                Object inputItem = inputCollectionItemPair.getItem();
+                Collection outputCollection = collectionActions.delete(inputCollection, inputItem);
+                serializedOutput = JacksonHelper.toJson(outputCollection);
+            } else if (path.toLowerCase().endsWith("member")) {
+                CollectionItemPair inputCollectionItemPair = (CollectionItemPair) JacksonHelper.fromJson(body, cipTypeMap.get(type));
+                Collection inputCollection = inputCollectionItemPair.getCollection();
+                Object inputItem = inputCollectionItemPair.getItem();
+                Boolean isMember = collectionActions.member(inputCollection, inputItem);
+                serializedOutput = JacksonHelper.toJson(isMember);
+            } else {
+                logger.log(String.format("Unknown action from path: %s", path));
                 response.setStatusCode(500);
                 return response;
             }
-            serializedOutput = JacksonHelper.toJson(outputCollection);
-        } else if(path.equalsIgnoreCase("delete")) {
-            CollectionItemPair inputCollectionItemPair = (CollectionItemPair) JacksonHelper.fromJson(body, cipTypeMap.get(type));
-            Collection inputCollection = inputCollectionItemPair.getCollection();
-            Object inputItem = inputCollectionItemPair.getItem();
-            Collection outputCollection = null;
-            try {
-                outputCollection = collectionActions.delete(inputCollection, inputItem);
-            } catch(RuntimeException e) {
-                logger.log("failed to run action");
-                response.setStatusCode(500);
-                return response;
-            }
-            serializedOutput = JacksonHelper.toJson(outputCollection);
-        } else if(path.equalsIgnoreCase("member")) {
-            CollectionItemPair inputCollectionItemPair = (CollectionItemPair) JacksonHelper.fromJson(body, cipTypeMap.get(type));
-            Collection inputCollection = inputCollectionItemPair.getCollection();
-            Object inputItem = inputCollectionItemPair.getItem();
-            Boolean isMember = null;
-            try {
-                isMember = collectionActions.member(inputCollection, inputItem);
-            } catch(RuntimeException e) {
-                logger.log("failed to run action");
-                response.setStatusCode(500);
-                return response;
-            }
-            serializedOutput = JacksonHelper.toJson(isMember);
-        } else {
-            logger.log(String.format("Unknown action from path: %s", path));
+        } catch(Exception e) {
+            e.printStackTrace();
             response.setStatusCode(500);
             return response;
         }
