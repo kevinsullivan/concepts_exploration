@@ -108,10 +108,10 @@ public abstract class CollectionHandler implements RequestHandler<APIGatewayProx
         if(type.equalsIgnoreCase("string")) {
             LambdaCollectionActionFactory<String> factory = createFactory();
             return factory;
-        } else if(type.equalsIgnoreCase("integer")) {
+        } else if(type.equalsIgnoreCase("int")) {
             LambdaCollectionActionFactory<Integer> factory = createFactory();
             return factory;
-        } else if(type.equalsIgnoreCase("boolean")) {
+        } else if(type.equalsIgnoreCase("bool")) {
             LambdaCollectionActionFactory<Boolean> factory = createFactory();
             return factory;
         }

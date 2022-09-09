@@ -7,25 +7,26 @@ import 'package:built_value/json_object.dart';
 part 'collection_state.dart';
 part 'collection_event.dart';
 
-class CollectionBloc extends Bloc<CollectionEvent, CollectionState> {
-  CollectionRepository repository;
+class CollectionBloc<T> extends Bloc<CollectionEvent<T>, CollectionState> {
+  CollectionRepository<T> repository;
 
   gen.Collection active = CollectionInitalState().initial;
 
   CollectionBloc(this.repository) : super(CollectionInitalState()) {
-    on<Init>(_init);
-    on<Insert>(_insert);
-    on<Remove>(_remove);
-    on<Member>(_member);
+    on<Init<T>>(_init);
+    on<Insert<T>>(_insert);
+    on<Remove<T>>(_remove);
+    on<Member<T>>(_member);
   }
 
-  void _init(Init event, Emitter<CollectionState> emit) async {
+  void _init(Init<T> event, Emitter<CollectionState> emit) async {
     final repr = await repository.init();
     active = repr;
     emit(CollectionUpdateState(collectionRepresentation: repr));
   }
 
-  void _insert(Insert event, Emitter<CollectionState> emit) async {
+  void _insert(Insert<T> event, Emitter<CollectionState> emit) async {
+    // Convert the Bloc repr, T (e.g., int) into a apiClient repr, cipair
     final cipBuilder = gen.CollectionItemPairBuilder();
     cipBuilder.item = JsonObject(event.toInsert);
     final cBuilder = gen.CollectionBuilder();
@@ -35,12 +36,13 @@ class CollectionBloc extends Bloc<CollectionEvent, CollectionState> {
 
     final pair = cipBuilder.build();
 
+    // Should I be converting the client prepr back into T? or to a UIRepr?
     final repr = await repository.insert(pair);
     active = repr;
     emit(CollectionUpdateState(collectionRepresentation: repr));
   }
 
-  void _remove(Remove event, Emitter<CollectionState> emit) async {
+  void _remove(Remove<T> event, Emitter<CollectionState> emit) async {
     final cipBuilder = gen.CollectionItemPairBuilder();
     cipBuilder.item = JsonObject(event.toRemove);
     final cBuilder = gen.CollectionBuilder();
@@ -56,7 +58,7 @@ class CollectionBloc extends Bloc<CollectionEvent, CollectionState> {
     emit(CollectionUpdateState(collectionRepresentation: repr));
   }
 
-  void _member(Member event, Emitter<CollectionState> emit) async {
+  void _member(Member<T> event, Emitter<CollectionState> emit) async {
     final cipBuilder = gen.CollectionItemPairBuilder();
     cipBuilder.item = JsonObject(event.possibleMember);
 

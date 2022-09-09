@@ -27,8 +27,8 @@ public class LambdaS3ActionFactory<T> extends LambdaCollectionActionFactory<T> {
     private Map<String, TypeReference> collectionItemPairTypeMap() {
         Map<String, TypeReference> typeReferenceMap = new HashMap<>();
         typeReferenceMap.put("string", new TypeReference<CollectionItemPair<String, Collection<String>>>(){});
-        typeReferenceMap.put("integer", new TypeReference<CollectionItemPair<Integer, Collection<Integer>>>(){});
-        typeReferenceMap.put("boolean", new TypeReference<CollectionItemPair<Boolean, Collection<Boolean>>>(){});
+        typeReferenceMap.put("int", new TypeReference<CollectionItemPair<Integer, Collection<Integer>>>(){});
+        typeReferenceMap.put("bool", new TypeReference<CollectionItemPair<Boolean, Collection<Boolean>>>(){});
 
         return typeReferenceMap;
     }
@@ -36,8 +36,8 @@ public class LambdaS3ActionFactory<T> extends LambdaCollectionActionFactory<T> {
     private Map<String, TypeReference> collectionTypeMap() {
         Map<String, TypeReference> typeReferenceMap = new HashMap<>();
         typeReferenceMap.put("string", new TypeReference<Collection<String>>(){});
-        typeReferenceMap.put("integer", new TypeReference<Collection<Integer>>(){});
-        typeReferenceMap.put("boolean", new TypeReference<Collection<Boolean>>(){});
+        typeReferenceMap.put("int", new TypeReference<Collection<Integer>>(){});
+        typeReferenceMap.put("bool", new TypeReference<Collection<Boolean>>(){});
 
         return typeReferenceMap;
     }

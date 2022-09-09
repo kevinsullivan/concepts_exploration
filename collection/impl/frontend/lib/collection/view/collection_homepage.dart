@@ -11,7 +11,7 @@ class CollectionHomepage<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (_) => CollectionBloc(CollectionRepository()),
+        create: (_) => CollectionBloc<T>(CollectionRepository<T>()),
         child: Scaffold(body: Center(child: CollectionView<T>())));
   }
 }

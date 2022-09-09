@@ -16,7 +16,7 @@ class Init<T> extends StatelessWidget {
       ElevatedButton(
         child: const Text('Init'),
         onPressed: () {
-          BlocProvider.of<CollectionBloc>(context).add(cbloc.Init<T>());
+          BlocProvider.of<CollectionBloc<T>>(context).add(cbloc.Init<T>());
         },
       )
     ]);
@@ -36,7 +36,7 @@ class Insert<T> extends StatelessWidget {
         onPressed: () {
           // NB: This really needs to be a two step process where the visual
           // representation is created from user input. Then removed.
-          BlocProvider.of<CollectionBloc>(context).add(
+          BlocProvider.of<CollectionBloc<T>>(context).add(
               cbloc.Insert<T>(toInsert: UIRepresentation<T>().transform()));
           controller.clear();
         },
@@ -55,7 +55,7 @@ class Remove<T> extends StatelessWidget {
         child: const Text('Remove'),
         onPressed: () {
           //
-          BlocProvider.of<CollectionBloc>(context).add(
+          BlocProvider.of<CollectionBloc<T>>(context).add(
               cbloc.Remove<T>(toRemove: UIRepresentation<T>().transform()));
           controller.clear();
         },
@@ -64,7 +64,7 @@ class Remove<T> extends StatelessWidget {
   }
 }
 
-class Member extends StatelessWidget {
+class Member<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String text = "";
@@ -78,8 +78,8 @@ class Member extends StatelessWidget {
       ElevatedButton(
         child: const Text('Member'),
         onPressed: () {
-          BlocProvider.of<CollectionBloc>(context)
-              .add(cbloc.Member<int>(possibleMember: int.parse(text)));
+          //BlocProvider.of<CollectionBloc<T>>(context)
+          //    .add(cbloc.Member<int>(possibleMember: int.parse(text)));
         },
       )
     ]);
@@ -89,7 +89,8 @@ class Member extends StatelessWidget {
 class CollectionViewer<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CollectionBloc, CollectionState>(
+    print(T.toString());
+    return BlocBuilder<CollectionBloc<T>, CollectionState>(
         builder: (context, state) {
       if (state is IsMemberState || state is IsNotMemberState) {
         return this;
@@ -100,10 +101,8 @@ class CollectionViewer<T> extends StatelessWidget {
           itemCount: collection.value!.length,
           itemBuilder: (context, index) {
             return ListTile(
-                // UI REPRESENTATION OF TILE
-                // This cast might not be necessary when collection is generic.
                 title: UIRepresentation<T>.fromT(
-                    collection.value!.elementAt(index)!.asBool as T));
+                    collection.value!.elementAt(index)!.value as T));
           },
         );
       } else {

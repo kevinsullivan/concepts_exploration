@@ -68,7 +68,7 @@ public class S3CollectionHandlerTest {
         params.put("prefix", "foo/");
         event.setQueryStringParameters(params);
         Map<String, String> headers = new HashMap<>();
-        headers.put("t", "Integer");
+        headers.put("t", "int");
         event.setHeaders(headers);
         event.setPath("init");
 
@@ -95,7 +95,7 @@ public class S3CollectionHandlerTest {
         params.put("prefix", "foo/");
         event.setQueryStringParameters(params);
         Map<String, String> headers = new HashMap<>();
-        headers.put("t", "integer");
+        headers.put("t", "int");
         event.setHeaders(headers);
         event.setPath("init");
 
@@ -145,7 +145,7 @@ public class S3CollectionHandlerTest {
         params.put("prefix", "foo/");
         event.setQueryStringParameters(params);
         Map<String, String> headers = new HashMap<>();
-        headers.put("t", "boolean");
+        headers.put("t", "bool");
         event.setHeaders(headers);
         event.setPath("init");
 
@@ -195,7 +195,7 @@ public class S3CollectionHandlerTest {
         params.put("prefix", "foo/");
         event.setQueryStringParameters(params);
         Map<String, String> headers = new HashMap<>();
-        headers.put("t", "integer");
+        headers.put("t", "int");
         event.setHeaders(headers);
         event.setPath("insert");
 
@@ -221,7 +221,7 @@ public class S3CollectionHandlerTest {
         params.put("prefix", "foo/");
         event.setQueryStringParameters(params);
         Map<String, String> headers = new HashMap<>();
-        headers.put("t", "integer");
+        headers.put("t", "int");
         event.setHeaders(headers);
         event.setPath("init");
 
@@ -301,7 +301,7 @@ public class S3CollectionHandlerTest {
         params.put("prefix", "foo/");
         event.setQueryStringParameters(params);
         Map<String, String> headers = new HashMap<>();
-        headers.put("t", "integer");
+        headers.put("t", "int");
         event.setHeaders(headers);
         event.setPath("init");
 
@@ -358,7 +358,7 @@ public class S3CollectionHandlerTest {
         params.put("prefix", "foo/");
         event.setQueryStringParameters(params);
         Map<String, String> headers = new HashMap<>();
-        headers.put("t", "integer");
+        headers.put("t", "int");
         event.setHeaders(headers);
         event.setPath("init");
 
