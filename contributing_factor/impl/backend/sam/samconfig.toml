@@ -1,0 +1,11 @@
+version=0.1
+[default.global.parameters]
+stack_name = "contributing-factor-api"
+
+[default.deploy.parameters]
+s3_bucket = "jackson-concepts-templates"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+s3_prefix = "contributing-factor-api"
+image_repositories = []

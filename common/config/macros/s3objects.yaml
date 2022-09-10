@@ -1,0 +1,4 @@
+template:
+  type: sam
+  path: cfn-macros/S3Objects/macro.yaml
+  artifact_bucket_name: !stack_attr template_bucket_name

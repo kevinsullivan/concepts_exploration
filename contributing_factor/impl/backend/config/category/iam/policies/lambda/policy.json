@@ -1,0 +1,13 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowGettingObjectsFromS3Bucket",
+      "Effect": "Allow",
+      "Action": [
+        "s3:Get*"
+      ],
+      "Resource": "arn:aws:s3:::jackson-concepts-concepts/contributing-factor/category.json"
+    }
+  ]
+}

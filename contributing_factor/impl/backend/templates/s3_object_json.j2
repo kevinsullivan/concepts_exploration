@@ -1,0 +1,17 @@
+Transform: S3Objects
+Parameters:
+  BucketName:
+    Type: String
+  Key:
+    Type: String
+
+Resources:
+  Object:
+    Type: AWS::S3::Object
+    Properties:
+      Target:
+        Bucket: !Ref BucketName
+        Key: !Ref Key
+        ContentType: application/json
+      Body: |
+        {{ sceptre_user_data.Content }}

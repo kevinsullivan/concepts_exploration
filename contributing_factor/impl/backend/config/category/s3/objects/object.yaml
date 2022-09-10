@@ -1,0 +1,10 @@
+template:
+  path: s3_object_json.j2
+  type: file
+
+sceptre_user_data:
+  Content: !file config/category/s3/objects/category.json
+
+parameters:
+  BucketName: jackson-concepts-concepts
+  Key: contributing-factor/category.json

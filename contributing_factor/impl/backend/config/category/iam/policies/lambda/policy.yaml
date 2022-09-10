@@ -1,0 +1,9 @@
+template:
+  path: iam_managed_policy.j2
+  type: file
+
+sceptre_user_data:
+  PolicyDocument: !file config/category/iam/policies/lambda/policy.json
+
+parameters:
+  Name: contributing_factor_category_lambda_policy
