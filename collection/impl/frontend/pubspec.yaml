@@ -28,6 +28,8 @@ dependencies:
     path: packages/collectiongen/generated/collection
   editorsite:
     path: ../../../editor/impl/frontend
+  concept:
+    path: ../../../concept/impl/frontend
 
 dev_dependencies:
   flutter_test:

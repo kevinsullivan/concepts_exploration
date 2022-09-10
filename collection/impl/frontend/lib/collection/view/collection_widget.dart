@@ -1,11 +1,12 @@
 import 'package:collectionsite/collection/view/collection_view.dart';
+import 'package:collectionsite/collection/view/uirepr/ui_representation_factory.dart';
 
 import '../bloc/collection_bloc.dart';
 import 'package:collectiongen/collectiongen.dart' as gen;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/collection_bloc.dart' as cbloc;
-import 'uirepr/uirepresentation.dart';
+import 'package:concept/concept/view/uirepr/uirepresentation.dart';
 
 // TODO: Collection should be a UI repr too.
 
@@ -36,8 +37,8 @@ class Insert<T> extends StatelessWidget {
         onPressed: () {
           // NB: This really needs to be a two step process where the visual
           // representation is created from user input. Then removed.
-          BlocProvider.of<CollectionBloc<T>>(context).add(
-              cbloc.Insert<T>(toInsert: UIRepresentation<T>().transform()));
+          BlocProvider.of<CollectionBloc<T>>(context).add(cbloc.Insert<T>(
+              toInsert: UIRepresentationFactory.construct<T>().transform()));
           controller.clear();
         },
       )
@@ -55,8 +56,8 @@ class Remove<T> extends StatelessWidget {
         child: const Text('Remove'),
         onPressed: () {
           //
-          BlocProvider.of<CollectionBloc<T>>(context).add(
-              cbloc.Remove<T>(toRemove: UIRepresentation<T>().transform()));
+          BlocProvider.of<CollectionBloc<T>>(context).add(cbloc.Remove<T>(
+              toRemove: UIRepresentationFactory.construct<T>().transform()));
           controller.clear();
         },
       )
@@ -101,7 +102,7 @@ class CollectionViewer<T> extends StatelessWidget {
           itemCount: collection.value!.length,
           itemBuilder: (context, index) {
             return ListTile(
-                title: UIRepresentation<T>.fromT(
+                title: UIRepresentationFactory.constructFromT<T>(
                     collection.value!.elementAt(index)!.value as T));
           },
         );

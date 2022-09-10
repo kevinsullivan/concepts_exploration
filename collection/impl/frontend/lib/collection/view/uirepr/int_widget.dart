@@ -1,4 +1,6 @@
-part of 'uirepresentation.dart';
+import 'package:concept/concept/view/uirepr/uirepresentation.dart';
+import 'package:flutter/material.dart';
+
 // widgets have to parametrized by other widgets / ui reprs.
 // parametric polymorhpism has to happen at each layers representation.
 // ui reprs can be serialized

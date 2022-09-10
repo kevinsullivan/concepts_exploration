@@ -1,5 +1,4 @@
 .gitignore
-.openapi-generator-ignore
 README.md
 analysis_options.yaml
 doc/Collection.md
@@ -24,8 +23,3 @@ lib/src/model/collection_item_pair.dart
 lib/src/model/date.dart
 lib/src/serializers.dart
 pubspec.yaml
-test/collection_api_test.dart
-test/collection_bool_test.dart
-test/collection_int_test.dart
-test/collection_item_pair_test.dart
-test/collection_test.dart

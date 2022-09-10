@@ -1,4 +1,6 @@
-part of 'uirepresentation.dart';
+import 'package:concept/concept/view/uirepr/uirepresentation.dart';
+import 'package:flutter/material.dart';
+
 
 class BoolUIRepresentation extends StatefulWidget
     implements UIRepresentation<bool> {
