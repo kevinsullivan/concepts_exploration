@@ -1,5 +1,6 @@
 package edu.uva.cs.concepts.contributingfactor.actions;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import edu.uva.cs.concepts.Configuration;
 import edu.uva.cs.concepts.Context;
 import edu.uva.cs.concepts.contributingfactor.Category;
@@ -15,6 +16,7 @@ import software.amazon.awssdk.core.exception.SdkServiceException;
 import software.amazon.awssdk.services.s3.S3Client;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 import static edu.uva.cs.concepts.utils.S3Helper.createS3Client;
@@ -35,7 +37,8 @@ public class S3Actions extends ContributingFactorActions {
         Map<String, String> categoryMap;
         try {
             InputStream stream = S3Helper.getAsInputStream(client, variables.get("bucket"), variables.get("key"));
-            categoryMap = JacksonHelper.fromJson(stream, Map.class);
+            TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {};
+            categoryMap = JacksonHelper.fromJson(stream, typeRef);
         } catch(SdkServiceException exception) {
             logger.info(exception.getMessage());
             throw new RuntimeException();
@@ -64,7 +67,8 @@ public class S3Actions extends ContributingFactorActions {
         Map<String, String> descriptionMap;
         try {
             InputStream stream = S3Helper.getAsInputStream(client, variables.get("bucket"), variables.get("key"));
-            descriptionMap = JacksonHelper.fromJson(stream, Map.class);
+            TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {};
+            descriptionMap = JacksonHelper.fromJson(stream, typeRef);
         } catch(SdkServiceException exception) {
             logger.info(exception.getMessage());
             throw new RuntimeException();

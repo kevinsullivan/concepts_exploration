@@ -29,6 +29,22 @@ Resources:
             bucket: jackson-concepts-concepts
             key: contributing-factor/category.json
         Role: !Sub arn:aws:iam::${AWS::AccountId}:role/contributing_factor_category_lambda_role
+
+  ContributingFactorDescription:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: contributing_factor_description
+      CodeUri: Functions
+      Handler: edu.uva.cs.concepts.lambda.concrete.S3DescriptionHandler::handleRequest
+      Runtime: java8.al2
+      Architectures:
+        - x86_64
+      MemorySize: 512
+      Environment:
+        Variables:
+          bucket: jackson-concepts-concepts
+          key: contributing-factor/description.json
+      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/contributing_factor_description_lambda_role
 Outputs:
   APIUri:
     Value: !Sub "https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com"

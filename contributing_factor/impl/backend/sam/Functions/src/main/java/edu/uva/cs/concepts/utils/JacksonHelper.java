@@ -6,8 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openapitools.jackson.nullable.JsonNullableModule;
 import software.amazon.awssdk.utils.StringInputStream;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 public class JacksonHelper {
 
@@ -34,8 +33,17 @@ public class JacksonHelper {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JsonNullableModule());
         try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(value));
+            String line;
+            System.out.println("---");
+            while((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+            value.reset();
+            System.out.println("---");
             return objectMapper.readValue(value, valueTypeRef);
         } catch (IOException e) {
+            e.printStackTrace();
             System.err.println("failed to deserialize object");
         }
         return null;

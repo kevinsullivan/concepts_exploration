@@ -32,8 +32,15 @@ public abstract class CategoryHandler implements RequestHandler<APIGatewayProxyR
         logger.log("Environment and variable manager are valid.");
 
         String contributingFactorStr = apiGatewayProxyRequestEvent.getQueryStringParameters().get("contributing-factor");
+        logger.log("received: " + contributingFactorStr);
         contributingFactorStr = String.format("%c%s%c", '"', contributingFactorStr, '"');
+        logger.log("looking up: " + contributingFactorStr);
         ContributingFactorEnum cfe = JacksonHelper.fromJson(contributingFactorStr, ContributingFactorEnum.class);
+        if(cfe == null) {
+            response.setStatusCode(500);
+            return response;
+        }
+        logger.log("cfe: " + cfe.toString());
         ContributingFactor contributingFactor = new ContributingFactor(cfe);
 
         LambdaContributingFactorActionFactory factory = createFactory();
