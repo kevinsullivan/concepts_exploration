@@ -21,6 +21,8 @@ dependencies:
   bloc_test: ^9.0.3
   contributingfactorgen:
     path: packages/contributingfactorgen/generated/contributingfactorgen
+  concept:
+    path: ../../../concept/impl/frontend
 
 dev_dependencies:
   flutter_test:
