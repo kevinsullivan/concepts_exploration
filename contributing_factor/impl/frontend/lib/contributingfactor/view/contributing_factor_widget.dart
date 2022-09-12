@@ -11,6 +11,7 @@ class ContributingFactorRepresentation extends StatefulWidget
     implements UIRepresentation<gen.ContributingFactor> {
   // Any pieces needed for transform.
   final String cf;
+  final String foo = "";
 
   const ContributingFactorRepresentation({Key? key, this.cf = ""})
       : super(key: key);
@@ -29,22 +30,23 @@ class ContributingFactorRepresentation extends StatefulWidget
 // NB: Not sure I am being smart about statemanagement here...
 class ContributingFactorRepresentationState
     extends State<ContributingFactorRepresentation> {
-  String _cf = gen.ContributingFactor.patientAggressiveTreatment.toString();
+  String _cf = gen.ContributingFactor.values.first.name;
 
-  void _handleDescriptionClick() {
+  void _handleCFChange(String val) {
     setState(() {
-      BlocProvider.of<cfbloc.ContributingFactorBloc>(context).add(
-          cfbloc.Description(
-              constributingFactor: gen.ContributingFactor.valueOf(_cf)));
+      _cf = val;
     });
   }
 
+  void _handleDescriptionClick() {
+    BlocProvider.of<cfbloc.ContributingFactorBloc>(context).add(
+        cfbloc.Description(
+            constributingFactor: gen.ContributingFactor.valueOf(_cf)));
+  }
+
   void _handleCategoryClick() {
-    setState(() {
-      BlocProvider.of<cfbloc.ContributingFactorBloc>(context).add(
-          cfbloc.Category(
-              constributingFactor: gen.ContributingFactor.valueOf(_cf)));
-    });
+    BlocProvider.of<cfbloc.ContributingFactorBloc>(context).add(cfbloc.Category(
+        constributingFactor: gen.ContributingFactor.valueOf(_cf)));
   }
 
   @override
@@ -52,25 +54,13 @@ class ContributingFactorRepresentationState
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        ContributingFactorNameView(name: _cf),
+        ContributingFactorNameView(onChanged: _handleCFChange),
         const CategoryView(),
         const DescriptionView(),
         GetCategory(onClick: _handleCategoryClick),
         GetDescription(onClick: _handleDescriptionClick),
       ],
     );
-  }
-}
-
-class ContributingFactorNameView extends StatelessWidget {
-  final String name;
-
-  const ContributingFactorNameView({super.key, required this.name});
-
-  @override
-  Widget build(BuildContext context) {
-    // dropdown of all the names?
-    return Text(name);
   }
 }
 
@@ -147,5 +137,49 @@ class GetDescription extends StatelessWidget {
     return ElevatedButton(
         child: const Text('Get Description'),
         onPressed: () => _handlePressed());
+  }
+}
+
+class ContributingFactorNameView extends StatefulWidget {
+  final ValueChanged<String> onChanged;
+
+  const ContributingFactorNameView({super.key, required this.onChanged});
+
+  @override
+  State<ContributingFactorNameView> createState() =>
+      _ContributingFactorNameViewState();
+}
+
+class _ContributingFactorNameViewState
+    extends State<ContributingFactorNameView> {
+  String dropdownValue = gen.ContributingFactor.values.first.name;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton<String>(
+      value: dropdownValue,
+      icon: const Icon(Icons.arrow_downward),
+      elevation: 16,
+      style: const TextStyle(color: Colors.deepPurple),
+      underline: Container(
+        height: 2,
+        color: Colors.deepPurpleAccent,
+      ),
+      onChanged: (String? value) {
+        // This is called when the user selects an item.
+        setState(() {
+          dropdownValue = value!;
+          widget.onChanged(value);
+        });
+      },
+      items: gen.ContributingFactor.values
+          .map((p0) => p0.name)
+          .map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    );
   }
 }

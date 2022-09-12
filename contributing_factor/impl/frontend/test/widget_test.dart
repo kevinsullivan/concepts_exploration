@@ -17,7 +17,8 @@ void main() {
     // print(ContributingFactor.patientAggressiveTreatment.name);
     // print(ContributingFactor.valueOf(
     //     ContributingFactor.patientAggressiveTreatment.name));
-    print(serializers.serializeWith(ContributingFactor.serializer, ContributingFactor.patientAggressiveTreatment));
+    print(ContributingFactor.values);
+    //print(serializers.serializeWith(ContributingFactor.serializer, ContributingFactor.patientAggressiveTreatment));
     //print(x.wireName);
   });
 
