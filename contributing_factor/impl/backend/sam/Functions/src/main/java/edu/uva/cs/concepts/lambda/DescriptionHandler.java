@@ -30,9 +30,7 @@ public abstract class DescriptionHandler implements RequestHandler<APIGatewayPro
         logger.log("Environment and variable manager are valid.");
 
         String contributingFactorStr = apiGatewayProxyRequestEvent.getQueryStringParameters().get("contributing-factor");
-        contributingFactorStr = String.format("%c%s%c", '"', contributingFactorStr, '"');
-        ContributingFactorEnum cfe = JacksonHelper.fromJson(contributingFactorStr, ContributingFactorEnum.class);
-        ContributingFactor contributingFactor = new ContributingFactor(cfe);
+        ContributingFactor contributingFactor = JacksonHelper.fromJson(contributingFactorStr, ContributingFactor.class);
 
         LambdaContributingFactorActionFactory factory = createFactory();
         Configuration configuration = factory.createConfiguration(apiGatewayProxyRequestEvent);

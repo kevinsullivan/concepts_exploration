@@ -43,18 +43,19 @@ public class S3Actions extends ContributingFactorActions {
             throw new RuntimeException();
         }
 
-        String cfs = S3Actions.quoteUnwrap(JacksonHelper.toJson(contributingFactor.contributingFactor));
+        String cfs = JacksonHelper.fromJson(JacksonHelper.toJson(contributingFactor.contributingFactor), String.class);
         if(cfs.isEmpty()) {
             throw new RuntimeException();
         }
-        String categoryString = S3Actions.quoteWrap(categoryMap.getOrDefault(cfs, ""));
-        if(categoryString.equals("\"\"")) {
+        String categoryString = categoryMap.getOrDefault(cfs, "");
+        if(categoryString.isEmpty()) {
             logger.info("Unknown category.");
             throw new RuntimeException();
         }
+        categoryString = JacksonHelper.toJson(categoryString);
 
-        CategoryEnum categoryEnum = JacksonHelper.fromJson(categoryString, CategoryEnum.class);
-        return new Category(categoryEnum);
+        Category category = JacksonHelper.fromJson(categoryString, Category.class);
+        return category;
     }
 
     @Override
@@ -73,29 +74,17 @@ public class S3Actions extends ContributingFactorActions {
             throw new RuntimeException();
         }
 
-        String cfs = S3Actions.quoteUnwrap(JacksonHelper.toJson(contributingFactor.contributingFactor));
+        String cfs = JacksonHelper.fromJson(JacksonHelper.toJson(contributingFactor.contributingFactor), String.class);
         if(cfs.isEmpty()) {
             throw new RuntimeException();
         }
-        String description = S3Actions.quoteWrap(descriptionMap.getOrDefault(cfs, ""));
-        if(description.equals("\"\"")) {
+        String description = descriptionMap.getOrDefault(cfs, "");
+        if(description.isEmpty()) {
             logger.info("Unknown description.");
             throw new RuntimeException();
         }
+        description = JacksonHelper.toJson(description);
 
         return description;
     }
-
-    private static String quoteWrap(String str) {
-        return String.valueOf('"').concat(str).concat(String.valueOf('"'));
-    }
-
-    private static String quoteUnwrap(String str) {
-        if(str.startsWith(String.valueOf('"')) && str.endsWith(String.valueOf('"'))) {
-            return str.substring(1, str.length()-1);
-        }
-
-        return "";
-    }
-
 }

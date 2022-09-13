@@ -72,7 +72,7 @@ public class S3DescriptionHandlerTest {
     public void test_description() {
         APIGatewayProxyRequestEvent event = new APIGatewayProxyRequestEvent();
         Map<String, String> params = new HashMap<>();
-        params.put("contributing-factor", "patient_unnecessary_treatments");
+        params.put("contributing-factor", "\"patient_unnecessary_treatments\"");
         event.setQueryStringParameters(params);
 
         System.setProperty("key", DESCRIPTION_KEY);
