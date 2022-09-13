@@ -10,7 +10,7 @@ import edu.uva.cs.concepts.collection.Collection;
 import edu.uva.cs.concepts.collection.CollectionItemPair;
 import edu.uva.cs.concepts.collection.actions.CollectionActions;
 import edu.uva.cs.concepts.lambda.concrete.LambdaCollectionActionFactory;
-import edu.uva.cs.concepts.utils.JacksonHelper;
+import edu.uva.cs.utils.JacksonHelper;
 
 import java.util.HashMap;
 import java.util.Map;

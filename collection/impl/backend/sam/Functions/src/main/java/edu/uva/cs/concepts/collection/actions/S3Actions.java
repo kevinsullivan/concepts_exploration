@@ -5,9 +5,11 @@ import edu.uva.cs.concepts.Configuration;
 import edu.uva.cs.concepts.Context;
 import edu.uva.cs.concepts.collection.Collection;
 import edu.uva.cs.concepts.lambda.LambdaContext;
-import edu.uva.cs.concepts.utils.HashHelper;
-import edu.uva.cs.concepts.utils.JacksonHelper;
-import edu.uva.cs.concepts.utils.S3Helper;
+import edu.uva.cs.utils.HashHelper;
+import edu.uva.cs.utils.JacksonHelper;
+import edu.uva.cs.utils.S3Helper;
+import edu.uva.cs.utils.HashHelper;
+import edu.uva.cs.utils.JacksonHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.core.exception.SdkServiceException;
@@ -18,7 +20,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import static edu.uva.cs.concepts.utils.S3Helper.createS3Client;
+import static edu.uva.cs.utils.S3Helper.createS3Client;
 
 public class S3Actions<T> extends CollectionActions<T> {
     private Logger logger = LoggerFactory.getLogger(S3Actions.class);

@@ -21,7 +21,9 @@ public abstract class LambdaActionFactory<T extends Concept> {
 
     public Configuration createConfiguration(APIGatewayProxyRequestEvent event) {
         Configuration configuration = new Configuration();
-        configuration.config.putAll(event.getHeaders());
+        if(event.getHeaders() != null) {
+            configuration.config.putAll(event.getHeaders());
+        }
         configuration.config.putAll(event.getQueryStringParameters());
         return configuration;
     }

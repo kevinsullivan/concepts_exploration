@@ -5,9 +5,9 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.fasterxml.jackson.core.type.TypeReference;
 import edu.uva.cs.concepts.MockContext;
 import edu.uva.cs.concepts.lambda.concrete.S3CollectionHandler;
-import edu.uva.cs.concepts.utils.HashHelper;
-import edu.uva.cs.concepts.utils.JacksonHelper;
-import edu.uva.cs.concepts.utils.S3Helper;
+import edu.uva.cs.utils.HashHelper;
+import edu.uva.cs.utils.JacksonHelper;
+import edu.uva.cs.utils.S3Helper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

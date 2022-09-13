@@ -6,10 +6,9 @@ import edu.uva.cs.concepts.Context;
 import edu.uva.cs.concepts.contributingfactor.Category;
 import edu.uva.cs.concepts.contributingfactor.CategoryEnum;
 import edu.uva.cs.concepts.contributingfactor.ContributingFactor;
-import edu.uva.cs.concepts.contributingfactor.ContributingFactorEnum;
-import edu.uva.cs.concepts.utils.JacksonHelper;
-import edu.uva.cs.concepts.utils.S3Helper;
-import edu.uva.cs.concepts.utils.VariableManager;
+import edu.uva.cs.utils.JacksonHelper;
+import edu.uva.cs.utils.S3Helper;
+import edu.uva.cs.utils.VariableManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.core.exception.SdkServiceException;
@@ -19,7 +18,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import static edu.uva.cs.concepts.utils.S3Helper.createS3Client;
+import static edu.uva.cs.utils.S3Helper.createS3Client;
 
 public class S3Actions extends ContributingFactorActions {
     private Logger logger = LoggerFactory.getLogger(S3Actions.class);

@@ -46,6 +46,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>edu.uva.cs</groupId>
+            <artifactId>concepts</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-lambda-java-core</artifactId>
             <version>${aws.lambda.core.version}</version>

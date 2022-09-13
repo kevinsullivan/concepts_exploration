@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>edu.uva.cs.concepts</groupId>
-  <artifactId>collection</artifactId>
-  <name>Concepts Collection Exploration</name>
+  <groupId>edu.uva.cs</groupId>
+  <artifactId>concepts</artifactId>
+  <name>Concepts Exploration</name>
   <version>0.0.1</version>
   <build>
     <pluginManagement>
@@ -27,48 +27,6 @@
           </execution>
         </executions>
         <configuration />
-      </plugin>
-      <plugin>
-        <groupId>org.openapitools</groupId>
-        <artifactId>openapi-generator-maven-plugin</artifactId>
-        <version>6.0.1</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-            <configuration>
-              <inputSpec>${project.basedir}/src/main/resources/api.yaml</inputSpec>
-              <generatorName>java</generatorName>
-              <configOptions>
-                <sourceFolder>src/main/java</sourceFolder>
-              </configOptions>
-              <generateApis>false</generateApis>
-              <generateModelTests>false</generateModelTests>
-              <library>apache-httpclient</library>
-              <modelPackage>edu.uva.cs.concepts.collection.gen.model</modelPackage>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.3.0</version>
-        <executions>
-          <execution>
-            <id>add-source</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <sourceFolder>${project.basedir}/target/generated-sources/openapi/src/main</sourceFolder>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

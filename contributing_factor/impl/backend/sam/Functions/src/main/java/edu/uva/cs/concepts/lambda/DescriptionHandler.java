@@ -6,12 +6,11 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import edu.uva.cs.concepts.Configuration;
 import edu.uva.cs.concepts.Context;
-import edu.uva.cs.concepts.contributingfactor.Category;
 import edu.uva.cs.concepts.contributingfactor.ContributingFactor;
 import edu.uva.cs.concepts.contributingfactor.ContributingFactorEnum;
 import edu.uva.cs.concepts.contributingfactor.actions.ContributingFactorActions;
 import edu.uva.cs.concepts.lambda.concrete.LambdaContributingFactorActionFactory;
-import edu.uva.cs.concepts.utils.JacksonHelper;
+import edu.uva.cs.utils.JacksonHelper;
 
 import java.util.HashMap;
 import java.util.Map;
