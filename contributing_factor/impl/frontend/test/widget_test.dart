@@ -17,7 +17,9 @@ void main() {
     // print(ContributingFactor.patientAggressiveTreatment.name);
     // print(ContributingFactor.valueOf(
     //     ContributingFactor.patientAggressiveTreatment.name));
-    print(ContributingFactor.values);
+    final val = 'team_poor_communication';
+
+    print(serializers.deserializeWith(ContributingFactor.serializer, val));
     //print(serializers.serializeWith(ContributingFactor.serializer, ContributingFactor.patientAggressiveTreatment));
     //print(x.wireName);
   });

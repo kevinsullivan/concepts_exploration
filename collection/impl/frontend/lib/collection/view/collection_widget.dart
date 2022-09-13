@@ -3,6 +3,7 @@ import 'package:collectionsite/collection/view/uirepr/ui_representation_factory.
 
 import '../bloc/collection_bloc.dart';
 import 'package:collectiongen/collectiongen.dart' as gen;
+import 'package:contributingfactorgen/contributingfactorgen.dart' as cfgen;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/collection_bloc.dart' as cbloc;
@@ -101,9 +102,22 @@ class CollectionViewer<T> extends StatelessWidget {
           shrinkWrap: true,
           itemCount: collection.value!.length,
           itemBuilder: (context, index) {
+            T element;
+            // HACK.
+            if (T.toString() == "ContributingFactor") {
+              //final collectionBuilder = gen.CollectionBuilder();
+              //var x = repr.value!.map((p0) => p0!.asString).map((e) => cfgen.serializers
+              //    .deserializeWith(cfgen.ContributingFactor.serializer, e));
+              //collectionBuilder.value = ListBuilder(x);
+              //active = collectionBuilder.build();
+              var str = collection.value!.elementAt(index)!.asString;
+              element = cfgen.serializers
+                  .deserializeWith(cfgen.ContributingFactor.serializer, str) as T;
+            } else {
+              element = collection.value!.elementAt(index)!.value as T;
+            }
             return ListTile(
-                title: UIRepresentationFactory.constructFromT<T>(
-                    collection.value!.elementAt(index)!.value as T));
+                title: UIRepresentationFactory.constructFromT<T>(element));
           },
         );
       } else {

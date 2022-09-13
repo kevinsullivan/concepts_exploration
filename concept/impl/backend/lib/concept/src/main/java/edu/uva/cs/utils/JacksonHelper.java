@@ -36,6 +36,7 @@ public class JacksonHelper {
         try {
             return objectMapper.readValue(value, valueTypeRef);
         } catch (IOException e) {
+            e.printStackTrace();
             System.err.println("failed to deserialize object");
         }
         return null;

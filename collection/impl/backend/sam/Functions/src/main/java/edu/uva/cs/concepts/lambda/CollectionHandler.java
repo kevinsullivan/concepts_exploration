@@ -9,6 +9,7 @@ import edu.uva.cs.concepts.*;
 import edu.uva.cs.concepts.collection.Collection;
 import edu.uva.cs.concepts.collection.CollectionItemPair;
 import edu.uva.cs.concepts.collection.actions.CollectionActions;
+import edu.uva.cs.concepts.contributingfactor.ContributingFactor;
 import edu.uva.cs.concepts.lambda.concrete.LambdaCollectionActionFactory;
 import edu.uva.cs.utils.JacksonHelper;
 
@@ -52,6 +53,7 @@ public abstract class CollectionHandler implements RequestHandler<APIGatewayProx
                 Collection<?> outputCollection = collectionActions.init();
                 serializedOutput = JacksonHelper.toJson(outputCollection);
             } else if (path.toLowerCase().endsWith("insert")) {
+                System.out.println(cipTypeMap.get(type));
                 CollectionItemPair inputCollectionItemPair = (CollectionItemPair) JacksonHelper.fromJson(body, cipTypeMap.get(type));
                 Collection inputCollection = inputCollectionItemPair.getCollection();
                 Object inputItem = inputCollectionItemPair.getItem();
@@ -113,6 +115,9 @@ public abstract class CollectionHandler implements RequestHandler<APIGatewayProx
             return factory;
         } else if(type.equalsIgnoreCase("bool")) {
             LambdaCollectionActionFactory<Boolean> factory = createFactory();
+            return factory;
+        } else if(type.equalsIgnoreCase("contributingfactor")) {
+            LambdaCollectionActionFactory<ContributingFactor> factory = createFactory();
             return factory;
         }
 

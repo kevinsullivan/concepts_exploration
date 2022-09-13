@@ -12,14 +12,14 @@ class CollectionRepository<T> {
   }
 
   Future<gen.Collection> init() async {
-    Map<String, String> headers = {'t': T.toString()};
+    Map<String, String> headers = {'t': T.toString().toLowerCase()};
     final response = generator.getCollectionApi().init(headers: headers);
     final responseState = (await response).data;
     return responseState!;
   }
 
   Future<gen.Collection> insert(gen.CollectionItemPair arg) async {
-    Map<String, String> headers = {'t': T.toString()};
+    Map<String, String> headers = {'t': T.toString().toLowerCase()};
     final response = generator
         .getCollectionApi()
         .insert(collectionItemPair: arg, headers: headers);
@@ -28,7 +28,7 @@ class CollectionRepository<T> {
   }
 
   Future<gen.Collection> remove(gen.CollectionItemPair arg) async {
-    Map<String, String> headers = {'t': T.toString()};
+    Map<String, String> headers = {'t': T.toString().toLowerCase()};
     final response = generator
         .getCollectionApi()
         .remove(collectionItemPair: arg, headers: headers);
@@ -37,7 +37,7 @@ class CollectionRepository<T> {
   }
 
   Future<bool> member(gen.CollectionItemPair arg) async {
-    Map<String, String> headers = {'t': T.toString()};
+    Map<String, String> headers = {'t': T.toString().toLowerCase()};
     final response = generator
         .getCollectionApi()
         .member(collectionItemPair: arg, headers: headers);

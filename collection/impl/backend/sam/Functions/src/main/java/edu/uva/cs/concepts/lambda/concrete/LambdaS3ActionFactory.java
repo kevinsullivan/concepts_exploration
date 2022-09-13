@@ -5,6 +5,7 @@ import edu.uva.cs.concepts.*;
 import edu.uva.cs.concepts.collection.Collection;
 import edu.uva.cs.concepts.collection.CollectionItemPair;
 import edu.uva.cs.concepts.collection.actions.S3Actions;
+import edu.uva.cs.concepts.contributingfactor.ContributingFactor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +30,7 @@ public class LambdaS3ActionFactory<T> extends LambdaCollectionActionFactory<T> {
         typeReferenceMap.put("string", new TypeReference<CollectionItemPair<String, Collection<String>>>(){});
         typeReferenceMap.put("int", new TypeReference<CollectionItemPair<Integer, Collection<Integer>>>(){});
         typeReferenceMap.put("bool", new TypeReference<CollectionItemPair<Boolean, Collection<Boolean>>>(){});
+        typeReferenceMap.put("contributingfactor", new TypeReference<CollectionItemPair<String, Collection<String>>>(){});
 
         return typeReferenceMap;
     }
@@ -38,6 +40,7 @@ public class LambdaS3ActionFactory<T> extends LambdaCollectionActionFactory<T> {
         typeReferenceMap.put("string", new TypeReference<Collection<String>>(){});
         typeReferenceMap.put("int", new TypeReference<Collection<Integer>>(){});
         typeReferenceMap.put("bool", new TypeReference<Collection<Boolean>>(){});
+        typeReferenceMap.put("contributingfactor", new TypeReference<Collection<String>>(){});
 
         return typeReferenceMap;
     }

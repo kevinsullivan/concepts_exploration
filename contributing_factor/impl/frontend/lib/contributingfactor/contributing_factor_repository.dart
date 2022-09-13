@@ -13,8 +13,9 @@ class ContributingFactorRepository {
 
   Future<gen.Category> category(
       gen.ContributingFactor contributingFactor) async {
-    final cf = gen.serializers.serializeWith(
+    var cf = gen.serializers.serializeWith(
         gen.ContributingFactor.serializer, contributingFactor) as String;
+    cf = '"$cf"';
     final response =
         generator.getContributingFactorApi().category(contributingFactor: cf);
     final responseState = (await response).data;
@@ -22,8 +23,9 @@ class ContributingFactorRepository {
   }
 
   Future<String> description(gen.ContributingFactor contributingFactor) async {
-    final cf = gen.serializers.serializeWith(
+    var cf = gen.serializers.serializeWith(
         gen.ContributingFactor.serializer, contributingFactor) as String;
+    cf = '"$cf"';
     final response = generator
         .getContributingFactorApi()
         .description(contributingFactor: cf);

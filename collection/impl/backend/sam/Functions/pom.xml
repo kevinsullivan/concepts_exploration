@@ -51,6 +51,11 @@
             <version>0.0.1</version>
         </dependency>
         <dependency>
+            <groupId>edu.uva.cs.concepts</groupId>
+            <artifactId>contributing-factor</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-lambda-java-core</artifactId>
             <version>${aws.lambda.core.version}</version>

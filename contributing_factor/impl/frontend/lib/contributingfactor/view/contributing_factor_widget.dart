@@ -7,6 +7,8 @@ import '../bloc/contributing_factor_bloc.dart' as cfbloc;
 import '../bloc/contributing_factor_bloc.dart';
 
 // This is the iterface need to support parametrization.
+// The interface is not expressive enough. It seems bloc and ui widget needs to
+// be captured all together.
 class ContributingFactorRepresentation extends StatefulWidget
     implements UIRepresentation<gen.ContributingFactor> {
   // Any pieces needed for transform.
@@ -14,7 +16,8 @@ class ContributingFactorRepresentation extends StatefulWidget
 
   ContributingFactorRepresentation({Key? key}) : super(key: key);
 
-  ContributingFactorRepresentation.from({Key? key, required gen.ContributingFactor cf})
+  ContributingFactorRepresentation.from(
+      {Key? key, required gen.ContributingFactor cf})
       : super(key: key) {
     _cf = cf.name;
   }

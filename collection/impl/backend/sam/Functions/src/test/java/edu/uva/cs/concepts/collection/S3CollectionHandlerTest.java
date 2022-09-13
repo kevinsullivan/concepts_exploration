@@ -4,6 +4,8 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.fasterxml.jackson.core.type.TypeReference;
 import edu.uva.cs.concepts.MockContext;
+import edu.uva.cs.concepts.contributingfactor.ContributingFactor;
+import edu.uva.cs.concepts.contributingfactor.ContributingFactorEnum;
 import edu.uva.cs.concepts.lambda.concrete.S3CollectionHandler;
 import edu.uva.cs.utils.HashHelper;
 import edu.uva.cs.utils.JacksonHelper;
@@ -405,6 +407,57 @@ public class S3CollectionHandlerTest {
                 Boolean.class
         );
         assertFalse(isMember);
+    }
+
+    @Test
+    public void test_insert_contributing_factor() {
+        APIGatewayProxyRequestEvent event = new APIGatewayProxyRequestEvent();
+        Map<String, String> params = new HashMap<>();
+        params.put("bucket", BUCKET_NAME);
+        params.put("prefix", "foo/");
+        event.setQueryStringParameters(params);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("t", "contributingfactor");
+        event.setHeaders(headers);
+        event.setPath("init");
+
+        // Initialize a collection to operate on.
+        S3CollectionHandler s3CollectionHandler = new S3CollectionHandler();
+        APIGatewayProxyResponseEvent response = s3CollectionHandler.handleRequest(event, new MockContext());
+        Collection<String> initCollection = JacksonHelper.fromJson(
+                response.getBody(),
+                new TypeReference<Collection<String>>(){}
+        );
+
+        // Build an insert request.
+        CollectionItemPair<String, Collection<String>> collectionItemPair = new CollectionItemPair<>(
+                initCollection,
+                ContributingFactorEnum.PatientOther.name()
+        );
+        String body = JacksonHelper.toJson(collectionItemPair);
+        event.setPath("insert");
+        event.setBody(body);
+
+        // Invoke the insert handler.
+        APIGatewayProxyResponseEvent insertResponse = s3CollectionHandler.handleRequest(event, new MockContext());
+        assertEquals(200, insertResponse.getStatusCode());
+
+        // Test returned representation.
+        Collection<String> updated = JacksonHelper.fromJson(
+                insertResponse.getBody(),
+                new TypeReference<Collection<String>>(){}
+        );
+        assertTrue(updated.getValue().contains("PatientOther"));
+
+        // Test S3 representation.
+        String hash = HashHelper.hashAndEncode(updated.toString());
+        InputStream stream = S3Helper.getAsInputStream(s3Client, BUCKET_NAME, "foo/".concat(hash));
+        Collection<String> storedProxyCollection = JacksonHelper.fromJson(
+                stream,
+                new TypeReference<Collection<String>>(){}
+        );
+        System.out.println(storedProxyCollection);
+        assertTrue(storedProxyCollection.getValue().contains("PatientOther"));
     }
 
     private String initKey() {

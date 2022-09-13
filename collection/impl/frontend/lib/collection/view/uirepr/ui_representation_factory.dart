@@ -1,4 +1,5 @@
 import 'package:concept/concept/view/uirepr/uirepresentation.dart';
+import 'package:contributingfactor/contributingfactor/collection_app.dart';
 import 'package:contributingfactor/contributingfactor/view/contributing_factor_widget.dart';
 import 'package:contributingfactorgen/contributingfactorgen.dart' as gen;
 import 'bool_widget.dart';
@@ -22,7 +23,8 @@ class UIRepresentationFactory {
     } else if (t is bool) {
       return BoolUIRepresentation(val: t) as UIRepresentation<T>;
     } else if (t is gen.ContributingFactor) {
-      return ContributingFactorRepresentation.from(cf: t) as UIRepresentation<T>;
+      return ContributingFactorRepresentation.from(cf: t)
+          as UIRepresentation<T>;
     }
     throw Error();
   }
