@@ -30,6 +30,8 @@ dependencies:
     path: ../../../editor/impl/frontend
   concept:
     path: ../../../concept/impl/frontend
+  contributingfactor:
+    path: ../../../contributing_factor/impl/frontend
 
 dev_dependencies:
   flutter_test:

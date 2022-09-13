@@ -7,8 +7,22 @@ import 'package:built_value/json_object.dart';
 part 'collection_state.dart';
 part 'collection_event.dart';
 
+// bloc needs to be able to create T ui to pass up
+// bloc needs to be able to send T down
+
+// state should not be managed in ui ever. It is just visuals of the
+// actual stuff appening here.
+
+
+// all my collection items are here and have an interface tat I need
+
 class CollectionBloc<T> extends Bloc<CollectionEvent<T>, CollectionState> {
   CollectionRepository<T> repository;
+
+  // This bloc seems to be th most accurate flavor of our concept..
+  //  it seems like wat we need is for our collection bloc to emit T widgets? so
+  // is can display the concepts? But that seems odd. 
+  // Perhaps it instead emits some repr that the widge view can use to construct
 
   gen.Collection active = CollectionInitalState().initial;
 
@@ -25,7 +39,18 @@ class CollectionBloc<T> extends Bloc<CollectionEvent<T>, CollectionState> {
     emit(CollectionUpdateState(collectionRepresentation: repr));
   }
 
+  // void _begin_insert -> emit ui representation
+  // void _complete_insert -> do actual operation
+  // T must have a default constructor so I can create it in the bloc layer
+  //  -- having a ui version / widget version of a concept leads to bad
+  // design since it is best practice to separate business logic and view
+  //  really should be composing at bloc / business logic level
+
+
   void _insert(Insert<T> event, Emitter<CollectionState> emit) async {
+    // emit the ui 
+
+
     // From our bloc representations of T, and activeCollection, construct
     // a repository representation (collectionItemPair).
     final cipBuilder = gen.CollectionItemPairBuilder();

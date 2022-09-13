@@ -10,11 +10,14 @@ import '../bloc/contributing_factor_bloc.dart';
 class ContributingFactorRepresentation extends StatefulWidget
     implements UIRepresentation<gen.ContributingFactor> {
   // Any pieces needed for transform.
-  final String cf;
-  final String foo = "";
+  String _cf = gen.ContributingFactor.values.first.name;
 
-  const ContributingFactorRepresentation({Key? key, this.cf = ""})
-      : super(key: key);
+  ContributingFactorRepresentation({Key? key}) : super(key: key);
+
+  ContributingFactorRepresentation.from({Key? key, required gen.ContributingFactor cf})
+      : super(key: key) {
+    _cf = cf.name;
+  }
 
   @override
   State<StatefulWidget> createState() =>
@@ -22,7 +25,7 @@ class ContributingFactorRepresentation extends StatefulWidget
 
   @override
   gen.ContributingFactor transform() {
-    return gen.ContributingFactor.valueOf(cf);
+    return gen.ContributingFactor.valueOf(_cf);
   }
 }
 
@@ -30,23 +33,21 @@ class ContributingFactorRepresentation extends StatefulWidget
 // NB: Not sure I am being smart about statemanagement here...
 class ContributingFactorRepresentationState
     extends State<ContributingFactorRepresentation> {
-  String _cf = gen.ContributingFactor.values.first.name;
-
   void _handleCFChange(String val) {
     setState(() {
-      _cf = val;
+      widget._cf = val;
     });
   }
 
   void _handleDescriptionClick() {
     BlocProvider.of<cfbloc.ContributingFactorBloc>(context).add(
         cfbloc.Description(
-            constributingFactor: gen.ContributingFactor.valueOf(_cf)));
+            constributingFactor: gen.ContributingFactor.valueOf(widget._cf)));
   }
 
   void _handleCategoryClick() {
     BlocProvider.of<cfbloc.ContributingFactorBloc>(context).add(cfbloc.Category(
-        constributingFactor: gen.ContributingFactor.valueOf(_cf)));
+        constributingFactor: gen.ContributingFactor.valueOf(widget._cf)));
   }
 
   @override

@@ -106,6 +106,20 @@ packages:
       relative: true
     source: path
     version: "0.0.1+0"
+  contributingfactor:
+    dependency: "direct main"
+    description:
+      path: "../../../contributing_factor/impl/frontend"
+      relative: true
+    source: path
+    version: "0.0.1+0"
+  contributingfactorgen:
+    dependency: transitive
+    description:
+      path: "../../../contributing_factor/impl/frontend/packages/contributingfactorgen/generated/contributingfactorgen"
+      relative: true
+    source: path
+    version: "1.0.0"
   convert:
     dependency: transitive
     description:

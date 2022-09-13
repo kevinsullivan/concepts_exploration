@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:contributingfactorgen/contributingfactorgen.dart' as gen;
 import 'package:bloc/bloc.dart';
-import 'package:contributingfactorsite/contributingfactor/contributing_factor_repository.dart';
+
+import '../contributing_factor_repository.dart';
 
 part 'contributing_factor_state.dart';
 part 'contributing_factor_event.dart';
