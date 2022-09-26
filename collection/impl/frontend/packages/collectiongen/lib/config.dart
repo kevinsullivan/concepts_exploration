@@ -8,3 +8,5 @@ const spec = '../../../backend/sam/Functions/src/main/resources/api.yaml';
     generatorName: Generator.dio,
     outputDirectory: 'generated/collection')
 class CollectionConfig extends OpenapiGeneratorConfig {}
+
+final x = CollectionConfig();

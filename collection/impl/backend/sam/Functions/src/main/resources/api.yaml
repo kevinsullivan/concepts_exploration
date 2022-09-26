@@ -333,6 +333,8 @@ components:
       description: Can be any value - string, number, boolean, array or object.
     # Here are some stronger typed models. We cannot use these for dart client generation because
     # The client code would not be able to transmit arbitrary types.
+
+    #$ref: './common/Pet.yaml#/components/schemas/pet'
     CollectionInt:
       type: object
       properties:
