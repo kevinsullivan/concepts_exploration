@@ -1,0 +1,24 @@
+openapi: "3.0.1"
+info:
+  title: Integer
+  description: Integer object
+  version: 1.0.0
+paths: 
+  /survey: {}
+    #    get:
+    #      description: >
+    #        Fetch the latest moral distress questionnaire (MDQ) from the database.
+    #      responses:
+    #        '200':
+    #          description: 200 response
+    #          content:
+    #            application/json:
+    #              schema:
+    #                $ref: '#/components/schemas/JInt'
+components:
+  schemas:
+    JInt:
+      type: object
+      properties:
+        value:
+          type: integer
