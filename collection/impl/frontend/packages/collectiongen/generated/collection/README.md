@@ -81,6 +81,7 @@ Class | Method | HTTP request | Description
  - [CollectionBool](doc/CollectionBool.md)
  - [CollectionInt](doc/CollectionInt.md)
  - [CollectionItemPair](doc/CollectionItemPair.md)
+ - [CollectionItemPairInt](doc/CollectionItemPairInt.md)
 
 
 ## Documentation For Authorization

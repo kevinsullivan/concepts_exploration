@@ -26,10 +26,8 @@ dependencies:
   bloc_test: ^9.0.3
   collectiongen:
     path: packages/collectiongen/generated/collection
-  editorsite:
-    path: ../../../editor/impl/frontend
   concept:
-    path: ../../../concept/impl/frontend
+    path: ../../../concept/impl/frontend/packages/concept
   contributingfactor:
     path: ../../../contributing_factor/impl/frontend
 

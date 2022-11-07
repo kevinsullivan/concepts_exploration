@@ -15,3 +15,4 @@ export 'package:collectiongen/src/model/collection.dart';
 export 'package:collectiongen/src/model/collection_bool.dart';
 export 'package:collectiongen/src/model/collection_int.dart';
 export 'package:collectiongen/src/model/collection_item_pair.dart';
+export 'package:collectiongen/src/model/collection_item_pair_int.dart';

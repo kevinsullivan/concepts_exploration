@@ -6,6 +6,7 @@ doc/CollectionApi.md
 doc/CollectionBool.md
 doc/CollectionInt.md
 doc/CollectionItemPair.md
+doc/CollectionItemPairInt.md
 lib/collectiongen.dart
 lib/src/api.dart
 lib/src/api/collection_api.dart
@@ -20,6 +21,8 @@ lib/src/model/collection.dart
 lib/src/model/collection_bool.dart
 lib/src/model/collection_int.dart
 lib/src/model/collection_item_pair.dart
+lib/src/model/collection_item_pair_int.dart
 lib/src/model/date.dart
 lib/src/serializers.dart
 pubspec.yaml
+test/collection_item_pair_int_test.dart

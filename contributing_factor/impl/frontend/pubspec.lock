@@ -95,7 +95,7 @@ packages:
   concept:
     dependency: "direct main"
     description:
-      path: "../../../concept/impl/frontend"
+      path: "../../../concept/impl/frontend/packages/concept"
       relative: true
     source: path
     version: "0.0.1+0"

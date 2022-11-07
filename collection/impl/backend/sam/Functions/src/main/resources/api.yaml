@@ -338,10 +338,18 @@ components:
     CollectionInt:
       type: object
       properties:
-        value:
+       value:
           type: array
           items:
             type: integer
+    CollectionItemPairInt:
+      type: object
+      properties:
+        collection:
+          $ref: '#/components/schemas/CollectionInt'
+        item:
+          type: integer
+
     CollectionBool:
       type: object
       properties:
@@ -396,7 +404,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/CollectionItemPair'
+            $ref: '#/components/schemas/CollectionItemPairInt'
   responses:
     collectionResponse:
       description: Updated collection representation response.
@@ -418,6 +426,6 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Collection'
+            $ref: '#/components/schemas/CollectionInt'
 
 

@@ -1,8 +1,19 @@
-+ Move concepts to top-levl directory
-+ rename to editor_t
+collection composer
 
 
 
-implement collection concept - worry abot editor later
 
- everything name by its hash
+composition is preprocessing...
++ takes output directory
++ constructs an app
+
++ first composes to openapi
+
++ concepts uis have keys
++ composer mixes and matches
+
++ builds the source code
+
+
+
+

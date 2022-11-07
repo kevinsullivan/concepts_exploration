@@ -22,7 +22,7 @@ dependencies:
   contributingfactorgen:
     path: packages/contributingfactorgen/generated/contributingfactorgen
   concept:
-    path: ../../../concept/impl/frontend
+    path: ../../../concept/impl/frontend/packages/concept
 
 dev_dependencies:
   flutter_test:

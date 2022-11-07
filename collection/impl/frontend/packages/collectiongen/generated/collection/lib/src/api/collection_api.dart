@@ -8,8 +8,8 @@ import 'package:built_value/serializer.dart';
 import 'package:dio/dio.dart';
 
 import 'package:collectiongen/src/api_util.dart';
-import 'package:collectiongen/src/model/collection.dart';
-import 'package:collectiongen/src/model/collection_item_pair.dart';
+import 'package:collectiongen/src/model/collection_int.dart';
+import 'package:collectiongen/src/model/collection_item_pair_int.dart';
 
 class CollectionApi {
 
@@ -32,9 +32,9 @@ class CollectionApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [Collection] as data
+  /// Returns a [Future] containing a [Response] with a [CollectionInt] as data
   /// Throws [DioError] if API call or serialization fails
-  Future<Response<Collection>> init({ 
+  Future<Response<CollectionInt>> init({ 
     String bucket = 'jackson-concepts-concepts',
     String prefix = 'collection/Collection/',
     CancelToken? cancelToken,
@@ -71,14 +71,14 @@ class CollectionApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    Collection _responseData;
+    CollectionInt _responseData;
 
     try {
-      const _responseType = FullType(Collection);
+      const _responseType = FullType(CollectionInt);
       _responseData = _serializers.deserialize(
         _response.data!,
         specifiedType: _responseType,
-      ) as Collection;
+      ) as CollectionInt;
 
     } catch (error, stackTrace) {
       throw DioError(
@@ -89,7 +89,7 @@ class CollectionApi {
       )..stackTrace = stackTrace;
     }
 
-    return Response<Collection>(
+    return Response<CollectionInt>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -108,7 +108,7 @@ class CollectionApi {
   /// * [bucket] 
   /// * [prefix] 
   /// * [contentType] 
-  /// * [collectionItemPair] - A request including a collection X item pair to modify.
+  /// * [collectionItemPairInt] - A request including a collection X item pair to modify.
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -116,13 +116,13 @@ class CollectionApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [Collection] as data
+  /// Returns a [Future] containing a [Response] with a [CollectionInt] as data
   /// Throws [DioError] if API call or serialization fails
-  Future<Response<Collection>> insert({ 
+  Future<Response<CollectionInt>> insert({ 
     String bucket = 'jackson-concepts-concepts',
     String prefix = 'collection/Collection/',
     String? contentType,
-    CollectionItemPair? collectionItemPair,
+    CollectionItemPairInt? collectionItemPairInt,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -153,8 +153,8 @@ class CollectionApi {
     dynamic _bodyData;
 
     try {
-      const _type = FullType(CollectionItemPair);
-      _bodyData = collectionItemPair == null ? null : _serializers.serialize(collectionItemPair, specifiedType: _type);
+      const _type = FullType(CollectionItemPairInt);
+      _bodyData = collectionItemPairInt == null ? null : _serializers.serialize(collectionItemPairInt, specifiedType: _type);
 
     } catch(error, stackTrace) {
       throw DioError(
@@ -178,14 +178,14 @@ class CollectionApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    Collection _responseData;
+    CollectionInt _responseData;
 
     try {
-      const _responseType = FullType(Collection);
+      const _responseType = FullType(CollectionInt);
       _responseData = _serializers.deserialize(
         _response.data!,
         specifiedType: _responseType,
-      ) as Collection;
+      ) as CollectionInt;
 
     } catch (error, stackTrace) {
       throw DioError(
@@ -196,7 +196,7 @@ class CollectionApi {
       )..stackTrace = stackTrace;
     }
 
-    return Response<Collection>(
+    return Response<CollectionInt>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -215,7 +215,7 @@ class CollectionApi {
   /// * [bucket] 
   /// * [prefix] 
   /// * [contentType] 
-  /// * [collectionItemPair] - A request including a collection X item pair to modify.
+  /// * [collectionItemPairInt] - A request including a collection X item pair to modify.
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -229,7 +229,7 @@ class CollectionApi {
     String bucket = 'jackson-concepts-concepts',
     String prefix = 'collection/Collection/',
     String? contentType,
-    CollectionItemPair? collectionItemPair,
+    CollectionItemPairInt? collectionItemPairInt,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -260,8 +260,8 @@ class CollectionApi {
     dynamic _bodyData;
 
     try {
-      const _type = FullType(CollectionItemPair);
-      _bodyData = collectionItemPair == null ? null : _serializers.serialize(collectionItemPair, specifiedType: _type);
+      const _type = FullType(CollectionItemPairInt);
+      _bodyData = collectionItemPairInt == null ? null : _serializers.serialize(collectionItemPairInt, specifiedType: _type);
 
     } catch(error, stackTrace) {
       throw DioError(
@@ -498,7 +498,7 @@ class CollectionApi {
   /// * [bucket] 
   /// * [prefix] 
   /// * [contentType] 
-  /// * [collectionItemPair] - A request including a collection X item pair to modify.
+  /// * [collectionItemPairInt] - A request including a collection X item pair to modify.
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -506,13 +506,13 @@ class CollectionApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [Collection] as data
+  /// Returns a [Future] containing a [Response] with a [CollectionInt] as data
   /// Throws [DioError] if API call or serialization fails
-  Future<Response<Collection>> remove({ 
+  Future<Response<CollectionInt>> remove({ 
     String bucket = 'jackson-concepts-concepts',
     String prefix = 'collection/Collection/',
     String? contentType,
-    CollectionItemPair? collectionItemPair,
+    CollectionItemPairInt? collectionItemPairInt,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -543,8 +543,8 @@ class CollectionApi {
     dynamic _bodyData;
 
     try {
-      const _type = FullType(CollectionItemPair);
-      _bodyData = collectionItemPair == null ? null : _serializers.serialize(collectionItemPair, specifiedType: _type);
+      const _type = FullType(CollectionItemPairInt);
+      _bodyData = collectionItemPairInt == null ? null : _serializers.serialize(collectionItemPairInt, specifiedType: _type);
 
     } catch(error, stackTrace) {
       throw DioError(
@@ -568,14 +568,14 @@ class CollectionApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    Collection _responseData;
+    CollectionInt _responseData;
 
     try {
-      const _responseType = FullType(Collection);
+      const _responseType = FullType(CollectionInt);
       _responseData = _serializers.deserialize(
         _response.data!,
         specifiedType: _responseType,
-      ) as Collection;
+      ) as CollectionInt;
 
     } catch (error, stackTrace) {
       throw DioError(
@@ -586,7 +586,7 @@ class CollectionApi {
       )..stackTrace = stackTrace;
     }
 
-    return Response<Collection>(
+    return Response<CollectionInt>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

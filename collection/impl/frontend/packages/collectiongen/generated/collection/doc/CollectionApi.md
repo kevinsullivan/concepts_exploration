@@ -20,7 +20,7 @@ Method | HTTP request | Description
 
 
 # **init**
-> Collection init(bucket, prefix)
+> CollectionInt init(bucket, prefix)
 
 initialize a collection
 
@@ -51,7 +51,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**Collection**](Collection.md)
+[**CollectionInt**](CollectionInt.md)
 
 ### Authorization
 
@@ -65,7 +65,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **insert**
-> Collection insert(bucket, prefix, contentType, collectionItemPair)
+> CollectionInt insert(bucket, prefix, contentType, collectionItemPairInt)
 
 insert an item into the collection
 
@@ -79,10 +79,10 @@ final api = Collectiongen().getCollectionApi();
 final String bucket = bucket_example; // String | 
 final String prefix = prefix_example; // String | 
 final String contentType = contentType_example; // String | 
-final CollectionItemPair collectionItemPair = ; // CollectionItemPair | A request including a collection X item pair to modify.
+final CollectionItemPairInt collectionItemPairInt = ; // CollectionItemPairInt | A request including a collection X item pair to modify.
 
 try {
-    final response = api.insert(bucket, prefix, contentType, collectionItemPair);
+    final response = api.insert(bucket, prefix, contentType, collectionItemPairInt);
     print(response);
 } catch on DioError (e) {
     print('Exception when calling CollectionApi->insert: $e\n');
@@ -96,11 +96,11 @@ Name | Type | Description  | Notes
  **bucket** | **String**|  | [default to 'jackson-concepts-concepts']
  **prefix** | **String**|  | [default to 'collection/Collection/']
  **contentType** | **String**|  | [optional] 
- **collectionItemPair** | [**CollectionItemPair**](CollectionItemPair.md)| A request including a collection X item pair to modify. | [optional] 
+ **collectionItemPairInt** | [**CollectionItemPairInt**](CollectionItemPairInt.md)| A request including a collection X item pair to modify. | [optional] 
 
 ### Return type
 
-[**Collection**](Collection.md)
+[**CollectionInt**](CollectionInt.md)
 
 ### Authorization
 
@@ -114,7 +114,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **member**
-> bool member(bucket, prefix, contentType, collectionItemPair)
+> bool member(bucket, prefix, contentType, collectionItemPairInt)
 
 Boolean-returning membership predicate function
 
@@ -128,10 +128,10 @@ final api = Collectiongen().getCollectionApi();
 final String bucket = bucket_example; // String | 
 final String prefix = prefix_example; // String | 
 final String contentType = contentType_example; // String | 
-final CollectionItemPair collectionItemPair = ; // CollectionItemPair | A request including a collection X item pair to modify.
+final CollectionItemPairInt collectionItemPairInt = ; // CollectionItemPairInt | A request including a collection X item pair to modify.
 
 try {
-    final response = api.member(bucket, prefix, contentType, collectionItemPair);
+    final response = api.member(bucket, prefix, contentType, collectionItemPairInt);
     print(response);
 } catch on DioError (e) {
     print('Exception when calling CollectionApi->member: $e\n');
@@ -145,7 +145,7 @@ Name | Type | Description  | Notes
  **bucket** | **String**|  | [default to 'jackson-concepts-concepts']
  **prefix** | **String**|  | [default to 'collection/Collection/']
  **contentType** | **String**|  | [optional] 
- **collectionItemPair** | [**CollectionItemPair**](CollectionItemPair.md)| A request including a collection X item pair to modify. | [optional] 
+ **collectionItemPairInt** | [**CollectionItemPairInt**](CollectionItemPairInt.md)| A request including a collection X item pair to modify. | [optional] 
 
 ### Return type
 
@@ -315,7 +315,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **remove**
-> Collection remove(bucket, prefix, contentType, collectionItemPair)
+> CollectionInt remove(bucket, prefix, contentType, collectionItemPairInt)
 
 remove an item from the collection
 
@@ -329,10 +329,10 @@ final api = Collectiongen().getCollectionApi();
 final String bucket = bucket_example; // String | 
 final String prefix = prefix_example; // String | 
 final String contentType = contentType_example; // String | 
-final CollectionItemPair collectionItemPair = ; // CollectionItemPair | A request including a collection X item pair to modify.
+final CollectionItemPairInt collectionItemPairInt = ; // CollectionItemPairInt | A request including a collection X item pair to modify.
 
 try {
-    final response = api.remove(bucket, prefix, contentType, collectionItemPair);
+    final response = api.remove(bucket, prefix, contentType, collectionItemPairInt);
     print(response);
 } catch on DioError (e) {
     print('Exception when calling CollectionApi->remove: $e\n');
@@ -346,11 +346,11 @@ Name | Type | Description  | Notes
  **bucket** | **String**|  | [default to 'jackson-concepts-concepts']
  **prefix** | **String**|  | [default to 'collection/Collection/']
  **contentType** | **String**|  | [optional] 
- **collectionItemPair** | [**CollectionItemPair**](CollectionItemPair.md)| A request including a collection X item pair to modify. | [optional] 
+ **collectionItemPairInt** | [**CollectionItemPairInt**](CollectionItemPairInt.md)| A request including a collection X item pair to modify. | [optional] 
 
 ### Return type
 
-[**Collection**](Collection.md)
+[**CollectionInt**](CollectionInt.md)
 
 ### Authorization
 

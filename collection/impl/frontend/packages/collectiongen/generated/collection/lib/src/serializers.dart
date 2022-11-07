@@ -16,6 +16,7 @@ import 'package:collectiongen/src/model/collection.dart';
 import 'package:collectiongen/src/model/collection_bool.dart';
 import 'package:collectiongen/src/model/collection_int.dart';
 import 'package:collectiongen/src/model/collection_item_pair.dart';
+import 'package:collectiongen/src/model/collection_item_pair_int.dart';
 
 part 'serializers.g.dart';
 
@@ -24,6 +25,7 @@ part 'serializers.g.dart';
   CollectionBool,
   CollectionInt,
   CollectionItemPair,
+  CollectionItemPairInt,
 ])
 Serializers serializers = (_$serializers.toBuilder()
       ..add(const DateSerializer())

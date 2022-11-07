@@ -1,0 +1,49 @@
+compose has to partially be a preprocessing step, thats how clients
+are generated
+
+
+
+
+collection concept is specialized, its specialization isnt a concept
+
+
+specialize it by int which is just a report id. an object in te name role
+
+
+side by side concepts of collectio and int
+
+int you can create and mutate
+
+collection you add to by selecting int and calling operaion like insert
+
+you can swap out int for mod report and collection of <int> still works
+with mod id. objecg name
+
+
+reifying concepts up and down the stack doesnt work. implementations you dont want
+to expose. cant adere to concepts either.
+
+
+specializig is a different problem - what we need not is a mapping from object a
+to object b between concepts
+
+
+
+concepts itified up down now good, concepts cant be everywhere, the stack is
+the concept
+
+opeanpi gets us farther in specializing
+
+
+
+specialization is internal to a concept implementation - happens up and down the stack
+
+
+
+
+
+
+there is a difference between specializing a concept and an implementation. 
+
+Just because the concept is generic, does not mean you can have a generic implementation. There
+might be a role for generics in your code, but how to specialize an implementation can be doen a number of ways
