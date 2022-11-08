@@ -7,7 +7,7 @@ import 'package:intapp/int/view/int_layout.dart';
 class IntApp extends StatelessWidget {
   const IntApp({super.key});
 
-  static const String _title = 'Flutter Code Sample';
+  static const String _title = 'Int Concept';
 
   @override
   Widget build(BuildContext context) {

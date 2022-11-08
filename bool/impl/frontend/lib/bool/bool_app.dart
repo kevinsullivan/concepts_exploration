@@ -7,7 +7,7 @@ import 'package:boolapp/bool/view/bool_layout.dart';
 class BoolApp extends StatelessWidget {
   const BoolApp({super.key});
 
-  static const String _title = 'Flutter Code Sample';
+  static const String _title = 'Bool Concept';
 
   @override
   Widget build(BuildContext context) {

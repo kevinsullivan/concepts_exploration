@@ -1,39 +1,15 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "aws-sam",
-            "request": "direct-invoke",
-            "name": "sam:FetchSubmissionsFunction",
-            "invokeTarget": {
-                "target": "template",
-                "templatePath": "${workspaceFolder}/infrastructure/sam/template.yaml",
-                "logicalId": "FetchSubmissionsFunction"
-            },
-            "lambda": {
-                "payload": {},
-                "environmentVariables": {}
-            }
-        },
-        {
-            "name": "moralpain",
-            "cwd": "moraldistress",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "moralpain (profile mode)",
-            "cwd": "moraldistress",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
             "name": "bool app",
             "cwd": "bool/impl/frontend",
+            "request": "launch",
+            "type": "dart",
+        },
+        {
+            "name": "int app",
+            "cwd": "int/impl/frontend",
             "request": "launch",
             "type": "dart",
         }
