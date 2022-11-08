@@ -1,23 +1,29 @@
-import '../int_editor.dart';
-import 'package:editorsite/editor/bloc/editor_event.dart';
-import 'package:editorsite/editor/editor_repository.dart';
-import 'package:intapi/src/model/int.dart' as int_state;
 import 'package:bloc/bloc.dart';
+import 'package:intgen/intgen.dart';
+import 'package:intapp/int/int_repository.dart';
 
-class IntEditorBloc extends IntBlocType {
-  EditorRepository repository;
+part 'int_state.dart';
+part 'int_event.dart';
 
-  IntEditorBloc({required this.repository})
-      : super(int_state.Int((b) => b.value = 0)) {
+class IntBloc extends Bloc<IntEvent, IntState> {
+  IntRepository repository;
+
+  int active = 0;
+
+  IntBloc(this.repository) : super(IntGetState(val: 0)) {
     on<Get>(_get);
-    on<Create>(_set);
+    on<Set>(_set);
   }
 
-  void _get(Get event, Emitter<int_state.Int> emit) async {
-    emit(await repository.get());
+  void _get(Get event, Emitter<IntState> emit) async {
+    active = (await repository.get()).value!;
+
+    emit(IntGetState(val: active));
   }
 
-  void _set(Create event, Emitter<int_state.Int> emit) async {
-    repository.create(event.val);
+  void _set(Set event, Emitter<IntState> emit) async {
+    final value = Int((b) => b.value = event.val);
+
+    await repository.set(value);
   }
 }

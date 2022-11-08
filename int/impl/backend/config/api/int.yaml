@@ -1,0 +1,4 @@
+template:
+  type: sam
+  path: templates/api.yaml
+  artifact_bucket_name: !stack_attr template_bucket_name
