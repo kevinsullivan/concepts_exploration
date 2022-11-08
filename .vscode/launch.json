@@ -30,6 +30,12 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
+        },
+        {
+            "name": "bool app",
+            "cwd": "bool/impl/frontend",
+            "request": "launch",
+            "type": "dart",
         }
     ]
 }
